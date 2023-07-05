@@ -1,4 +1,0 @@
-E:\DBProject\ASP_Vue\vueapp\obj\Debug\vueapp.esproj.SuggestedBindingRedirects.cache
-E:\DBProject\ASP_Vue\vueapp\obj\Debug\vueapp.esproj.CoreCompileInputs.cache
-E:\DBProject\DatabaseDesignBackEnd\vueapp\obj\Debug\vueapp.esproj.SuggestedBindingRedirects.cache
-E:\DBProject\DatabaseDesignBackEnd\vueapp\obj\Debug\vueapp.esproj.CoreCompileInputs.cache
