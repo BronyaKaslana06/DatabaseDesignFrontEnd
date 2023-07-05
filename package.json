@@ -9,9 +9,12 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "element-plus": "^2.3.7",
     "jest": "^29.5.0",
     "jest-editor-support": "^31.1.0",
-    "vue": "^3.2.13"
+    "vue": "^3.2.13",
+    "vue-cli": "^2.9.6",
+    "vue-router": "^4.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
