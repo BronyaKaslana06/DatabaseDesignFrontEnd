@@ -14,6 +14,8 @@
 <script setup>
 import mySlNav from '../components/sliderbar-nav.vue'
 
+
+
 </script>
 
 <style scoped></style>
