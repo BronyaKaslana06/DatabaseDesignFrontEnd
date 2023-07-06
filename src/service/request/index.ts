@@ -44,7 +44,7 @@ class CMRequset {
 
     this.instance.interceptors.response.use(
       (res) => {
-        // 提取axios返回的datashuju 
+        // 提取axios返回的data
         return res.data
       },
       (err) => {
@@ -55,8 +55,12 @@ class CMRequset {
 
   request<T>(config: CMRequestConfig): Promise<T> {
     return new Promise((resolve, reject) => {
-      this.instance.request(config).then((res) => {
+      this.instance.request<any,T>(config).then((res) => {
         console.log(res)
+        resolve(res)
+      })
+      .catch((err)=>{
+        return err
       })
     })
   }
