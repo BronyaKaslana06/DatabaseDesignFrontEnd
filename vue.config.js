@@ -22,6 +22,7 @@ const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 module.exports = defineConfig({
 
   devServer: {
+    historyApiFallback: true,
     https: {
       key: fs.readFileSync(keyFilePath),
       cert: fs.readFileSync(certFilePath),
