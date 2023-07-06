@@ -27,8 +27,8 @@ module.exports = defineConfig({
       cert: fs.readFileSync(certFilePath),
     },
     proxy: {
-      "/api": {
-        target: 'https://localhost:7240',
+      "^/api": {
+        target: 'https://localhost:7241',
         changeOrigin: true,             //是否跨域
         pathRewrite: { //重写路径，不需要代理到api的接口
           '^/api': ''
