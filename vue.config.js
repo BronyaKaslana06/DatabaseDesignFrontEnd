@@ -19,7 +19,7 @@ if (!certificateName) {
 const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
-module.exports = {
+module.exports = defineConfig({
     devServer: {
         https: {
             key: fs.readFileSync(keyFilePath),
@@ -31,11 +31,23 @@ module.exports = {
             }
         },
         port: 5002
-    }
-}
-
-module.exports = defineConfig({
+    },
+    configureWebpack: {
+        resolve: { extensions: [".ts", ".tsx", ".js", ".json"] },
+        module: {
+          rules: [
+            {
+              test: /\.tsx?$/,
+              loader: 'ts-loader',
+              exclude: /node_modules/,
+              options: {
+                appendTsSuffixTo: [/\.vue$/],
+              }
+            }
+          ]
+        }
+    },
     transpileDependencies: true,
     lintOnSave: false,
     publicPath: "./"
-  })
+});

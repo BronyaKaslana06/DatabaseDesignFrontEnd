@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"
-import Home from '../view/HomePage.vue'
+import Home from '../views/HomePage.vue'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -12,27 +12,27 @@ const router = createRouter({
                 {
                     path: '/page1',
                     name: 'page1',
-                    component: ()=>import('../view/TestPage1')
+                    component: ()=>import('../views/TestPage1')
                 },
                 {
                     path: '/page2',
                     name: 'page2',
-                    component: ()=>import('../view/TestPage2')
+                    component: ()=>import('../views/TestPage2')
                 },
                 {
                     path: '/page3',
                     name: 'page3',
-                    component: ()=>import('../view/TestPage3')
+                    component: ()=>import('../views/TestPage3')
                 },
                 {
                     path: '/page4',
                     name: 'page4',
-                    component: ()=>import('../view/TestPage4')
+                    component: ()=>import('../views/TestPage4')
                 },
                 {
                     path: '/page5',
                     name: 'page5',
-                    component: ()=>import('../view/TestPage5')
+                    component: ()=>import('../views/TestPage5')
                 }
             ],
         }
