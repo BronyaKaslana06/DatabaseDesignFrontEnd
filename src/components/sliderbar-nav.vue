@@ -65,8 +65,8 @@ const onRoutes = computed(() => {
 <style>
 
 .slider-bar{
-    width:50%;
     height: 100vh;
     left: 0%;
+    width: 60%;
 }
 </style>

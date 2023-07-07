@@ -33,8 +33,7 @@ class CMRequset {
     )
     // 公共interceptor
     this.instance.interceptors.request.use(
-      (config) => {
-        console.log("成功拦截")
+      (config) => {        
         return config
       },
       (err) => {
@@ -44,8 +43,12 @@ class CMRequset {
 
     this.instance.interceptors.response.use(
       (res) => {
-        // 提取axios返回的data
-        return res.data
+        const contentType = res.headers['content-type'];
+        if (contentType && contentType.startsWith('application/octet-stream')) {
+          return res; // 是照片请求，返回整个响应对象
+        } else {
+          return res.data; // 不是照片请求，返回响应的 data 属性
+        }
       },
       (err) => {
         return err
