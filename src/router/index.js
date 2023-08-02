@@ -6,7 +6,7 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: '/page1' // 添加重定向路由
+            redirect: '/stuff-info-page' // 添加重定向路由
         },
         {
             path: '/',
@@ -14,9 +14,9 @@ const router = createRouter({
             component: Home,
             children: [
                 {
-                    path: '/page1',
-                    name: 'page1',
-                    component: () => import('../views/TestPage1')
+                    path: '/stuff-info-page',
+                    name: 'stuff-info-page',
+                    component: () => import('../views/StuffInfoPage')
                 },
                 {
                     path: '/page2',
