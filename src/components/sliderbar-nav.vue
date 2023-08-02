@@ -30,9 +30,9 @@ import { computed } from 'vue';
 
 const items = [
   {
-    name: 'page1',
-    index: '/page1',
-    title: 'page1'
+    name: '员工信息',
+    index: '/stuff-info-page',
+    title: '员工信息'
   },
   {
     name: 'page2',
