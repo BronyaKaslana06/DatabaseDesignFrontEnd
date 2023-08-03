@@ -24,7 +24,7 @@
     </div>
   </template>
   
-  <script setup>
+<script setup lang="js">
 import { useRoute } from "vue-router";
 import { computed } from 'vue';
 
@@ -63,7 +63,6 @@ const onRoutes = computed(() => {
 </script>
   
 <style>
-
 .slider-bar{
     height: 100vh;
     left: 0%;
