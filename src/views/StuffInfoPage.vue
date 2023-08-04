@@ -201,7 +201,7 @@ const editForm = reactive({
 var pageTotal = 1;
 const pullData = () => {
   cmRequest.request({
-    url: 'administrator/staff-info/message',
+    url: 'api/administrator/staff-info/query',
     method: 'GET',
     params: {
       pageIndex: query.pageIndex,
@@ -251,7 +251,7 @@ const resetAddedData = () => {
 
 const queryData = () => {
   cmRequest.request({
-    url: 'administrator/staff-info/query',
+    url: 'api/administrator/staff-info/query',
     method: 'GET',
     params: {
       pageNum: query.pageIndex,
@@ -314,7 +314,7 @@ const addData = () => {
   }
   else{
     cmRequest.request({
-      url: 'administrator/staff-info',
+      url: 'api/administrator/staff-info',
       method: 'POST',
       data:{
         username: addedData.username,
@@ -329,7 +329,7 @@ const addData = () => {
       if (!res.code) {
       ElMessage({
         type: 'success',
-        message: '新建成功, 新员工id为'+res.data.employee_id,
+        message: '新建成功, 新员工id为'+res.employee_id,
       })
     }
     else {
@@ -344,7 +344,7 @@ const addData = () => {
 
 const deleteInfo = (val) => {
   cmRequest.request({
-    url: 'administrator/stuff-info',
+    url: 'api/administrator/staff-info',
     method: 'DELETE',
     params: {
       employee_id: val.employee_id
@@ -367,9 +367,10 @@ const deleteInfo = (val) => {
 
 const saveEdit = () => {
   cmRequest.request({
-    url: 'administrator/stuff-info',
+    url: 'api/administrator/staff-info',
     method: 'PATCH',
     data: {
+      employee_id: editForm.employee_id,
       gender: editForm.gender,
       phone_number: editForm.phone_number,
       salary: editForm.salary,
