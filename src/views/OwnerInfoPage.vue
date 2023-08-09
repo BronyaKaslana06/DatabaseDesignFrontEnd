@@ -1,16 +1,22 @@
 <template>
+  <el-page-header :icon="ArrowLeft">
+      <template #content>
+        <span class="text-large font-600 mr-3"> 车主管理 </span>
+      </template>
+  </el-page-header>
+
   <div>
     <div class="block">
       <div class="inner-block2">
         <el-form :inline="true">
           <el-row>
             <el-col :span="8">
-              <el-form-item label="员工ID">
-                <el-input v-model="formData.employee_id" class="input-box"></el-input>
+              <el-form-item label="车主ID">
+                <el-input v-model="formData.owner_id" class="input-box"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="员工姓名">
+              <el-form-item label="车主姓名">
                 <el-input v-model="formData.username" class="input-box"></el-input>
               </el-form-item>
             </el-col>
@@ -27,20 +33,13 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="工资">
-                <el-input v-model="formData.salary" class="input-box"></el-input>
+              <el-form-item label="地址">
+                <el-input v-model="formData.address" class="input-box"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="所在换电站ID">
-                <el-input v-model="formData.station_id" class="input-box"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="所在换电站名称">
-                <el-input v-model="formData.station_name" class="input-box"></el-input>
+              <el-form-item label="密码">
+                <el-input v-model="formData.password" class="input-box"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -58,17 +57,15 @@
         </div>
         <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
           height="100vh">
-          <el-table-column prop="employee_id" label="员工ID" min-width="10%" align="center"></el-table-column>
-          <el-table-column prop="username" label="员工姓名" min-width="10%" align="center"></el-table-column>
+          <el-table-column prop="owner_id" label="车主ID" min-width="10%" align="center"></el-table-column>
+          <el-table-column prop="username" label="车主姓名" min-width="10%" align="center"></el-table-column>
           <el-table-column prop="gender" label="性别" min-width="5%" align="center">
-          </el-table-column>
-          <el-table-column prop="station_name" min-width="10%" label="换电站名" align="center">
-          </el-table-column>
-          <el-table-column prop="station_id" min-width="10%" label="换电站ID" align="center">
           </el-table-column>
           <el-table-column prop="phone_number" min-width="10%" label="手机号" align="center">
           </el-table-column>
-          <el-table-column prop="salary" min-width="8%" label="工资" align="center">
+          <el-table-column prop="address" min-width="15%" label="地址" align="center">
+          </el-table-column>
+          <el-table-column prop="password" min-width="15%" label="密码" align="center">
           </el-table-column>
           <el-table-column :inline="true" label="操作" min-width="15%" align="center">
             <template #default="scope">
@@ -98,10 +95,10 @@
 
   <el-dialog title="编辑" v-model="editFlag" width="30%">
     <el-form label-width="100px">
-      <el-form-item label="员工ID">
-        {{ editForm.employee_id }}
+      <el-form-item label="车主ID">
+        {{ editForm.owner_id }}
       </el-form-item>
-      <el-form-item label="员工姓名">
+      <el-form-item label="车主姓名">
         {{ editForm.username }}
       </el-form-item>
       <el-form-item label="性别">
@@ -110,14 +107,14 @@
           <el-option key="2" value="女" label="女"> </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="换电站ID">
-        <el-input v-model="editForm.station_id"></el-input>
-      </el-form-item>
       <el-form-item label="手机号">
         <el-input v-model="editForm.phone_number"></el-input>
       </el-form-item>
-      <el-form-item label="工资">
-        <el-input v-model="editForm.salary"></el-input>
+      <el-form-item label="地址">
+        <el-input v-model="editForm.address"></el-input>
+      </el-form-item>
+      <el-form-item label="密码">
+        <el-input v-model="editForm.password"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -130,7 +127,7 @@
 
   <el-dialog title="编辑" v-model="addFlag" width="30%" @close="cancleAddEvent">
     <el-form label-width="100px">
-      <el-form-item label="员工姓名">
+      <el-form-item label="车主姓名">
         <el-input v-model="addedData.username"></el-input>
       </el-form-item>
       <el-form-item label="性别">
@@ -139,14 +136,14 @@
           <el-option key="2" value="女" label="女"> </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="换电站ID">
-        <el-input v-model="addedData.station_id"></el-input>
-      </el-form-item>
       <el-form-item label="手机号">
         <el-input v-model="addedData.phone_number"></el-input>
       </el-form-item>
-      <el-form-item label="工资">
-        <el-input v-model="addedData.salary"></el-input>
+      <el-form-item label=地址>
+        <el-input v-model="addedData.address"></el-input>
+      </el-form-item>
+      <el-form-item label="密码">
+        <el-input v-model="addedData.password"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -169,21 +166,20 @@ const editFlag = ref(false);
 const addFlag = ref(false);
 
 const formData = reactive({
-  employee_id: '',
+  owner_id: '',
   username: '',
   gender: '',
   phone_number: '',
-  salary: '',
-  station_name: '',
-  station_id: ''
+  address: '',
+  password: ''
 });
 
 const addedData = reactive({
   username: '',
   gender: '',
   phone_number: '',
-  salary: '',
-  station_id: ''
+  address: '',
+  password: ''
 })
 
 const query = reactive({
@@ -194,14 +190,16 @@ const query = reactive({
 const editForm = reactive({
   gender: '',
   phone_number: '',
-  salary: '',
-  station_id: ''
+  address: '',
+  password: ''
 });
 
 var pageTotal = 1;
+
 const pullData = () => {
-  cmRequest.request({
-    url: 'api/administrator/staff-info/query',
+    cmRequest.request({
+    // url: 'api/administrator/owner-info/message',
+    url: 'administrator/owner-info/message',// 我的本地api地址
     method: 'GET',
     params: {
       pageIndex: query.pageIndex,
@@ -219,7 +217,7 @@ const pullData = () => {
     else{
       ElMessage({
         type: 'error',
-        message: '刷新成功',
+        message: '刷新失败',
       })
     }
   })
@@ -232,42 +230,42 @@ const cancleAddEvent =()=>{
   resetAddedData();
 }
 const resetFormData = () => {
-  formData.employee_id = '';
+  formData.owner_id = '';
   formData.username = '';
   formData.gender = '';
   formData.phone_number = '';
-  formData.salary = '';
-  formData.station_id = '';
-  formData.station_name = '';
+  formData.address = '';
+  formData.password = '';
 }
 
 const resetAddedData = () => {
   addedData.gender = '';
   addedData.phone_number = '';
-  addedData.salary = '';
-  addedData.station_id = '';
-  addedData.username = '';
+  addedData.address = '';
+  addedData.password = '';
 }
 
 const queryData = () => {
   cmRequest.request({
-    url: 'api/administrator/staff-info/query',
+    // url: 'api/administrator/owner-info/query', 
+    url: 'administrator/owner-info/query', // 我的本地api地址
     method: 'GET',
     params: {
       pageNum: query.pageIndex,
       pageSize: query.pageSize,
-      employee_id: formData.employee_id,
+      owner_id: formData.owner_id,
       username: formData.username,
       gender: formData.gender,
       phone_number: formData.phone_number,
-      salary: formData.salary,
-      station_id: formData.station_id,
-      station_name: formData.station_name
+      address: formData.address,
+      password: formData.password
     }
   }).then((res) => {
     if(!res.code){
+      console.log(res);
       tableData.value = res.data;
       pageTotal = parseInt(res.pageTotal);
+      console.log(pageTotal);
     }
     else{
       ElMessage({
@@ -288,13 +286,12 @@ const handlePageChange = (val) => {
 
 const handleEdit = (row) => {
   editFlag.value = true;
-  editForm.employee_id = row.employee_id;
+  editForm.owner_id = row.owner_id;
   editForm.gender = row.gender;
   editForm.phone_number = row.phone_number;
-  editForm.salary = row.salary;
-  editForm.station_id = row.station_id;
+  editForm.address = row.address;
+  editForm.password = row.password;
   editForm.username = row.username;
-  editForm.station_name = row.station_name;
 }
 
 
@@ -314,14 +311,15 @@ const addData = () => {
   }
   else{
     cmRequest.request({
-      url: 'api/administrator/staff-info',
+      // url: 'api/administrator/owner-info',
+      url: 'administrator/owner-info', // 我的本地api地址
       method: 'POST',
       data:{
         username: addedData.username,
         phone_number: addedData.phone_number,
         gender: addedData.gender,
-        station_id: addedData.station_id,
-        salary: addedData.salary
+        address: addedData.address,
+        password: addedData.password
       }
     }).then((res)=>{
       addFlag.value = false;
@@ -329,7 +327,7 @@ const addData = () => {
       if (!res.code) {
       ElMessage({
         type: 'success',
-        message: '新建成功, 新员工id为'+res.employee_id,
+        message: '新建成功, 新车主id为'+res.owner_id,
       })
     }
     else {
@@ -344,10 +342,11 @@ const addData = () => {
 
 const deleteInfo = (val) => {
   cmRequest.request({
-    url: 'api/administrator/staff-info',
+    // url: 'api/administrator/owner-info',
+    url: 'administrator/owner-info', // 我的本地api地址
     method: 'DELETE',
     params: {
-      employee_id: val.employee_id
+      owner_id: val.owner_id
     }
   }).then((res) => {
     if (!res.code) {
@@ -367,14 +366,16 @@ const deleteInfo = (val) => {
 
 const saveEdit = () => {
   cmRequest.request({
-    url: 'api/administrator/staff-info',
+    // url: 'api/administrator/owner-info',
+    url: 'administrator/owner-info', // 我的本地api地址
     method: 'PATCH',
     data: {
-      employee_id: editForm.employee_id,
+      owner_id: editForm.owner_id,
+      username: editForm.username,
       gender: editForm.gender,
       phone_number: editForm.phone_number,
-      salary: editForm.salary,
-      station_id: editForm.station_id,
+      address: editForm.address,
+      password: editForm.password,
     }
   }).then((res) => {
     editFlag.value = false;
@@ -392,6 +393,7 @@ const saveEdit = () => {
     }
   })
 }
+
 </script>
 
 <style scoped>

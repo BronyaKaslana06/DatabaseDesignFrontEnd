@@ -19,9 +19,9 @@ const router = createRouter({
                     component: () => import('../views/StuffInfoPage')
                 },
                 {
-                    path: '/page2',
-                    name: 'page2',
-                    component: () => import('../views/TestPage2')
+                    path: '/owner-info-page',
+                    name: 'owner-info-page',
+                    component: () => import('../views/OwnerInfoPage')
                 },
                 {
                     path: '/page3',

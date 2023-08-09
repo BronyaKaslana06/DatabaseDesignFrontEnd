@@ -24,7 +24,7 @@
     </div>
   </template>
   
-  <script setup>
+<script setup lang="js">
 import { useRoute } from "vue-router";
 import { computed } from 'vue';
 
@@ -35,9 +35,9 @@ const items = [
     title: '员工信息'
   },
   {
-    name: 'page2',
-    index: '/page2',
-    title: 'page2'
+    name: '车主信息',
+    index: '/owner-info-page',
+    title: '车主信息'
   },
   {
     name: 'page3',
@@ -63,7 +63,6 @@ const onRoutes = computed(() => {
 </script>
   
 <style>
-
 .slider-bar{
     height: 100vh;
     left: 0%;
