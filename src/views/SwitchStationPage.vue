@@ -46,7 +46,7 @@
       <div class="inner-block">
         <div class="button-wrapper">
           <el-button @click="addFlag = true" style="margin-bottom: 10px;">新增</el-button>
-          <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
+          <el-button @click="queryData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
         </div>
         <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
           height="100vh">     
@@ -222,33 +222,33 @@ const editForm = reactive({
 });
 
 var pageTotal = 1;
-const pullData = () => {
-  cmRequest.request({
-    //url: 'api/administrator/stationInfo/message',
-    url: 'administrator/stationInfo/message',
-    method: 'GET',
-    params: {
-      pageIndex: query.pageIndex,
-      pageSize: query.pageSize
-    }
-  }).then((res) => {
-    if(!res.code){
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
-      tableData.value = res.data;
-      pageTotal = parseInt(res.pageTotal);
-    }
-    else{
-      ElMessage({
-        type: 'error',
-        message: '刷新成功',
-      })
-    }
-  })
-}
-pullData();
+// const pullData = () => {
+//   cmRequest.request({
+//     //url: 'api/administrator/stationInfo/message',
+//     url: 'administrator/stationInfo/message',
+//     method: 'GET',
+//     params: {
+//       pageIndex: query.pageIndex,
+//       pageSize: query.pageSize
+//     }
+//   }).then((res) => {
+//     if(!res.code){
+//       ElMessage({
+//         type: 'success',
+//         message: '刷新成功',
+//       })
+//       tableData.value = res.data;
+//       pageTotal = parseInt(res.pageTotal);
+//     }
+//     else{
+//       ElMessage({
+//         type: 'error',
+//         message: '刷新成功',
+//       })
+//     }
+//   })
+// }
+// pullData();
 
 
 const cancleAddEvent =()=>{
@@ -277,12 +277,18 @@ const resetAddedData = () => {
 }
 
 const queryData = () => {
+  //将空属性置为Null
+  for (const key in formData) {
+    if (formData.hasOwnProperty(key) && formData[key] === "" ) {
+      formData[key] = null;
+    }
+  }
   cmRequest.request({
     //url: 'api/administrator/stationInfo/query',
-    url: 'administrator/stationInfo/query',
+    url: 'administrator/stationInfo',
     method: 'GET',
     params: {
-      pageNum: query.pageIndex,
+      pageIndex: query.pageIndex,
       pageSize: query.pageSize,
       station_name: formData.station_name,
       station_id: formData.station_id,
@@ -303,11 +309,11 @@ const queryData = () => {
     resetFormData();
   })
 }
+queryData();
 
 const handlePageChange = (val) => {
   query.pageIndex = val;
-
-  pullData();
+  queryData();
 };
 
 
@@ -340,8 +346,8 @@ const addData = () => {
   }
   else{
     cmRequest.request({
-      //url: 'api/administrator/stationInfo',
-      url: 'administrator/stationInfo',
+      url: 'api/administrator/stationInfo',
+      //url: 'administrator/stationInfo',
       method: 'POST',
       data:{
         station_id: addedData.station_id,
@@ -374,8 +380,8 @@ const addData = () => {
 
 const deleteInfo = (val) => {
   cmRequest.request({
-    //url: 'api/administrator/stationInfo',
-    url: 'administrator/stationInfo',
+    url: 'api/administrator/stationInfo',
+    //url: 'administrator/stationInfo',
     method: 'DELETE',
     params: {
       station_id: val.station_id
@@ -398,8 +404,8 @@ const deleteInfo = (val) => {
 
 const saveEdit = () => {
   cmRequest.request({
-    //url: 'api/administrator/stationInfo',
-    url: 'administrator/stationInfo',
+    url: 'api/administrator/stationInfo',
+    //url: 'administrator/stationInfo',
     method: 'PATCH',
     data: {
       station_id: editForm.station_id,
