@@ -8,5 +8,6 @@ if (process.env.NODE_ENV === 'development') {
     BASE_URL = 'https://a9ccf582-e1ef-4d00-891a-4e40f24c2459.mock.pstmn.io';
 }
 
+
 module.exports = { BASE_URL };
  
