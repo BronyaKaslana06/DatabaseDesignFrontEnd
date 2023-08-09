@@ -44,11 +44,11 @@ const items = [
     index: '/switch-station-page',
     title: '换电站管理'
   },
-  {
-    name: 'page2',
-    index: '/page2',
-    title: 'page2'
-  },
+  // {
+  //   name: 'page2',
+  //   index: '/page2',
+  //   title: 'page2'
+  // },
   {
     name: 'page3',
     index: '/page3',

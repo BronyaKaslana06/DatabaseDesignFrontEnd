@@ -29,12 +29,12 @@ const router = createRouter({
                     name: 'switch-station-page',
                     component: () => import('../views/SwitchStationPage')
                 },
-                {
-                    path: '/page2',
-                    name: 'page2',
-                    component: () => import('../views/TestPage2')
+                // {
+                //     path: '/page2',
+                //     name: 'page2',
+                //     component: () => import('../views/TestPage2')
 
-                },
+                // },
                 {
                     path: '/page3',
                     name: 'page3',
