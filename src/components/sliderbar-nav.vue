@@ -35,10 +35,20 @@ const items = [
     title: '员工信息'
   },
   {
-    name: 'page2',
-    index: '/page2',
-    title: 'page2'
+    name: '车主信息',
+    index: '/owner-info-page',
+    title: '车主信息'
   },
+  {
+    name: '换电站管理',
+    index: '/switch-station-page',
+    title: '换电站管理'
+  },
+  // {
+  //   name: 'page2',
+  //   index: '/page2',
+  //   title: 'page2'
+  // },
   {
     name: 'page3',
     index: '/page3',
