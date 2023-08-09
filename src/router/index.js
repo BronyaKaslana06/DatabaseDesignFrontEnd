@@ -19,10 +19,22 @@ const router = createRouter({
                     component: () => import('../views/StuffInfoPage')
                 },
                 {
-                    path: '/page2',
-                    name: 'page2',
-                    component: () => import('../views/TestPage2')
+                    path: '/owner-info-page',
+                    name: 'owner-info-page',
+                    component: () => import('../views/OwnerInfoPage')
                 },
+                {
+
+                    path: '/switch-station-page',
+                    name: 'switch-station-page',
+                    component: () => import('../views/SwitchStationPage')
+                },
+                // {
+                //     path: '/page2',
+                //     name: 'page2',
+                //     component: () => import('../views/TestPage2')
+
+                // },
                 {
                     path: '/page3',
                     name: 'page3',
@@ -39,8 +51,38 @@ const router = createRouter({
                     component: () => import('../views/TestPage5')
                 }
             ],
+        },
+        {
+            path:'/login',
+            name: 'Login',
+            component:()=> import('../views/LoginPage.vue')
+        },
+        {
+            path: '/sign-up',
+            name: 'Signup',
+            component: ()=>import('../views/SignupPage.vue')
+        
         }
     ]
+})
+
+router.beforeEach((to,from,next)=>{
+    if(to.path === '/sign-up'){
+        next();
+        return;
+    }
+    if(from.path === '/sign-up'){
+        console.log("hi");
+        next();
+        return;
+    }
+    const role = localStorage.getItem('user');
+    if(!role&&to.path !=='/login'){
+        next('/login');
+    }
+    else{
+        next();
+    }
 })
 
 export default router;
