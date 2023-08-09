@@ -39,8 +39,38 @@ const router = createRouter({
                     component: () => import('../views/TestPage5')
                 }
             ],
+        },
+        {
+            path:'/login',
+            name: 'Login',
+            component:()=> import('../views/LoginPage.vue')
+        },
+        {
+            path: '/sign-up',
+            name: 'Signup',
+            component: ()=>import('../views/SignupPage.vue')
+        
         }
     ]
+})
+
+router.beforeEach((to,from,next)=>{
+    if(to.path === '/sign-up'){
+        next();
+        return;
+    }
+    if(from.path === '/sign-up'){
+        console.log("hi");
+        next();
+        return;
+    }
+    const role = localStorage.getItem('user');
+    if(!role&&to.path !=='/login'){
+        next('/login');
+    }
+    else{
+        next();
+    }
 })
 
 export default router;
