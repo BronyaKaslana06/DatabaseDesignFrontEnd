@@ -6,3 +6,24 @@ body{
     margin: 20px 0;
     text-align: right;
 }
+
+/* 用于登录页和注册页的样式 */
+.box {
+    background-color: white;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.box::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: url(../assets/login-background.png) no-repeat center top;
+    background-size: cover;
+}
+
+
+
