@@ -49,6 +49,11 @@ const items = [
     index: '/switch-station-page',
     title: '换电站管理'
   },
+  {
+    path: '公告管理',
+    index: '/Notice',
+    title: '公告管理'
+  },
   // {
   //   name: 'page2',
   //   index: '/page2',
