@@ -197,7 +197,7 @@ const submitForm = async () => {
             }
             console.log(obj);
             cmrequest.request({
-                url: "api/owners",
+                url: "api/sign-up",
                 method: 'POST',
                 data: {
                     user_type: type,
@@ -210,7 +210,7 @@ const submitForm = async () => {
                     address: formData.address === '' ? 'null' : formData.address,
                     phone_number: formData.phone_number === '' ? 'null' : formData.phone_number,
                     email: formData.email === '' ? 'null' : formData.email,
-                    invite_code: formData.invite_code === '' ? 'null' : formData.invite_code
+                    invite_code: formData.invite_code === '' ? 'null' : formData.invite_code,
                 }
             }).then((res) => {
                 if (!res.code) {

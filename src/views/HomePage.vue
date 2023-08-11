@@ -23,8 +23,10 @@ import mySlNav from '../components/sliderbar-nav.vue'
 
 .content {
   margin-left: 20%; /* 设置内容区域左边距以避免被导航栏遮挡 */
-  overflow-y: auto; /* 添加垂直滚动条 */
   height: 100vh; /* 设置内容区域高度为视口高度 */
+}
 
+.el-main{
+  height: 100vh;
 }
 </style>
