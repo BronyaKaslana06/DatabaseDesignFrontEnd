@@ -43,6 +43,7 @@ class CMRequset {
 
     this.instance.interceptors.response.use(
       (res) => {
+        console.log("!!",res);
         const contentType = res.headers['content-type'];
         if (contentType && contentType.startsWith('application/octet-stream')) {
           return res; // 是照片请求，返回整个响应对象
