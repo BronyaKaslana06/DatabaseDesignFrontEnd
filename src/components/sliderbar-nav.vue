@@ -51,7 +51,7 @@ const items = [
   },
   {
     path: '公告管理',
-    index: '/Notice',
+    index: '/notice-info-page',
     title: '公告管理'
   },
   // {
