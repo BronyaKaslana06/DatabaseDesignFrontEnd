@@ -35,6 +35,11 @@ const items = [
     title: '员工信息'
   },
   {
+    name: '换电申请信息',
+    index: '/switch-info-page',
+    title: '换电申请信息'
+  },
+  {
     name: 'page2',
     index: '/page2',
     title: 'page2'
