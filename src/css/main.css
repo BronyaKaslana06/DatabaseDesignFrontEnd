@@ -1,10 +1,5 @@
-body{
-    margin:0;
-}
-
-.pagination {
-    margin: 20px 0;
-    text-align: right;
+body {
+    margin: 0;
 }
 
 /* 用于登录页和注册页的样式 */
@@ -24,6 +19,3 @@ body{
     background: url(../assets/login-background.png) no-repeat center top;
     background-size: cover;
 }
-
-
-

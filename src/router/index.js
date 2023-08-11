@@ -76,7 +76,7 @@ router.beforeEach((to,from,next)=>{
         next();
         return;
     }
-    const role = localStorage.getItem('user');
+    const role = localStorage.getItem('user_id');
     if(!role&&to.path !=='/login'){
         next('/login');
     }

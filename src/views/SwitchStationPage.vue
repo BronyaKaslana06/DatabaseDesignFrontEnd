@@ -222,33 +222,32 @@ const editForm = reactive({
 });
 
 var pageTotal = 1;
-// const pullData = () => {
-//   cmRequest.request({
-//     //url: 'api/administrator/stationInfo/message',
-//     url: 'administrator/stationInfo/message',
-//     method: 'GET',
-//     params: {
-//       pageIndex: query.pageIndex,
-//       pageSize: query.pageSize
-//     }
-//   }).then((res) => {
-//     if(!res.code){
-//       ElMessage({
-//         type: 'success',
-//         message: '刷新成功',
-//       })
-//       tableData.value = res.data;
-//       pageTotal = parseInt(res.pageTotal);
-//     }
-//     else{
-//       ElMessage({
-//         type: 'error',
-//         message: '刷新成功',
-//       })
-//     }
-//   })
-// }
-// pullData();
+const pullData = () => {
+  cmRequest.request({
+    url: 'api/administrator/stationInfo/query',
+    method: 'GET',
+    params: {
+      pageIndex: query.pageIndex,
+      pageSize: query.pageSize
+    }
+  }).then((res) => {
+    if(!res.code){
+      ElMessage({
+        type: 'success',
+        message: '刷新成功',
+      })
+      tableData.value = res.data;
+      pageTotal = parseInt(res.pageTotal);
+    }
+    else{
+      ElMessage({
+        type: 'error',
+        message: '刷新成功',
+      })
+    }
+  })
+}
+pullData();
 
 
 const cancleAddEvent =()=>{
