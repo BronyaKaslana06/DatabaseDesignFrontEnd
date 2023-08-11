@@ -35,9 +35,10 @@ const router = createRouter({
                     component: () => import('../views/SwitchStationPage')
                 },
                 {
-                    path: '/Notice',
-                    name: '/Notice',
-                    component: () => import('../views/Notice')
+                    path: '/notice-info-page',
+                    name: '/notice-info-page',
+                    component: () => import('../views/NoticePage')
+                }
                 }，
                 // {
                 //     path: '/page2',
