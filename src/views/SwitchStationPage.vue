@@ -146,9 +146,9 @@
       <el-form-item label="换电站ID">
         <el-input v-model="addedData.station_id"></el-input>
       </el-form-item>
-      <!-- <el-form-item label="管理员ID">
+      <el-form-item label="管理员ID">
         <el-input v-model="addedData.employee_id"></el-input>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="换电站位置">
         <div id="myMapAdd"></div>
       </el-form-item>
@@ -200,7 +200,7 @@ const formData = reactive({
 const addedData = reactive({
   station_id: '',
   station_name: '',
-  //employee_id: '',
+  employee_id: '',
   longtitude: '',
   latitude: '',
   faliure_status: '',
@@ -317,7 +317,7 @@ const resetFormData = () => {
 const resetAddedData = () => {
   addedData.station_id = '';
   addedData.station_name = '';
-  //addedData.employee_id = '';
+  addedData.employee_id = '';
   addedData.longtitude = '';
   addedData.latitude = '';
   addedData.faliure_status = '';
@@ -401,7 +401,7 @@ const addData = () => {
       data:{
         station_id: addedData.station_id,
         station_name: addedData.station_name,
-        //employee_id: addedData.employee_id,
+        employee_id: addedData.employee_id,
         longtitude: addedData.longtitude,
         latitude: addedData.latitude,
         faliure_status: addedData.faliure_status,
@@ -460,7 +460,7 @@ const saveEdit = () => {
       station_id: editForm.station_id,
       employee_name: editForm.station_name,
       //employee_id: editForm.employee_id,
-      longtitude: editForm.longtitude,
+      longitude: editForm.longtitude,
       latitude: editForm.latitude,
       faliure_status: editForm.faliure_status,
       battery_capacity: editForm.battery_capacity,
