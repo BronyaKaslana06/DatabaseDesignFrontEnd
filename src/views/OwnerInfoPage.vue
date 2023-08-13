@@ -198,8 +198,8 @@ var pageTotal = 1;
 
 const pullData = () => {
     cmRequest.request({
-    // url: 'api/administrator/owner-info/message',
-    url: 'administrator/owner-info/message',// 我的本地api地址
+    url: 'api/administrator/owner-info/message',
+    // url: 'administrator/owner-info/message',// 我的本地api地址
     method: 'GET',
     params: {
       pageIndex: query.pageIndex,
@@ -229,6 +229,7 @@ const cancleAddEvent =()=>{
   addFlag.value = false;
   resetAddedData();
 }
+
 const resetFormData = () => {
   formData.owner_id = '';
   formData.username = '';
@@ -247,11 +248,11 @@ const resetAddedData = () => {
 
 const queryData = () => {
   cmRequest.request({
-    // url: 'api/administrator/owner-info/query', 
-    url: 'administrator/owner-info/query', // 我的本地api地址
+    url: 'api/administrator/owner-info/query', 
+    // url: 'administrator/owner-info/query', // 我的本地api地址
     method: 'GET',
     params: {
-      pageNum: query.pageIndex,
+      pageIndex: query.pageIndex,
       pageSize: query.pageSize,
       owner_id: formData.owner_id,
       username: formData.username,
@@ -311,8 +312,8 @@ const addData = () => {
   }
   else{
     cmRequest.request({
-      // url: 'api/administrator/owner-info',
-      url: 'administrator/owner-info', // 我的本地api地址
+      url: 'api/administrator/owner-info',
+      // url: 'administrator/owner-info', // 我的本地api地址
       method: 'POST',
       data:{
         username: addedData.username,
@@ -342,8 +343,8 @@ const addData = () => {
 
 const deleteInfo = (val) => {
   cmRequest.request({
-    // url: 'api/administrator/owner-info',
-    url: 'administrator/owner-info', // 我的本地api地址
+    url: 'api/administrator/owner-info',
+    // url: 'administrator/owner-info', // 我的本地api地址
     method: 'DELETE',
     params: {
       owner_id: val.owner_id
@@ -366,8 +367,8 @@ const deleteInfo = (val) => {
 
 const saveEdit = () => {
   cmRequest.request({
-    // url: 'api/administrator/owner-info',
-    url: 'administrator/owner-info', // 我的本地api地址
+    url: 'api/administrator/owner-info',
+    // url: 'administrator/owner-info', // 我的本地api地址
     method: 'PATCH',
     data: {
       owner_id: editForm.owner_id,

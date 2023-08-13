@@ -34,12 +34,18 @@ const router = createRouter({
                     name: 'switch-station-page',
                     component: () => import('../views/SwitchStationPage')
                 },
-                // {
-                //     path: '/page2',
-                //     name: 'page2',
-                //     component: () => import('../views/TestPage2')
+                {
+                    path: '/notice-info-page',
+                    name: '/notice-info-page',
+                    component: () => import('../views/NoticePage')
+                },
+                
+                {
+                    path: '/maintenance-item-page',
+                    name: 'maintenance-item-page',
+                    component: () => import('../views/Maintenance_itemPage')
 
-                // },
+                },
                 {
                     path: '/page3',
                     name: 'page3',

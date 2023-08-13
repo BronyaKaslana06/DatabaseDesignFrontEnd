@@ -49,11 +49,16 @@ const items = [
     index: '/switch-station-page',
     title: '换电站管理'
   },
-  // {
-  //   name: 'page2',
-  //   index: '/page2',
-  //   title: 'page2'
-  // },
+  {
+    path: '公告管理',
+    index: '/notice-info-page',
+    title: '公告管理'
+  },
+  {
+    name: '维修订单管理',
+    index: '/maintenance-item-page',
+    title: '维修订单管理'
+  },
   {
     name: 'page3',
     index: '/page3',
