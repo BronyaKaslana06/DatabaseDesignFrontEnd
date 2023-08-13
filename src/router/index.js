@@ -38,14 +38,14 @@ const router = createRouter({
                     path: '/notice-info-page',
                     name: '/notice-info-page',
                     component: () => import('../views/NoticePage')
-                }
-                }，
-                // {
-                //     path: '/page2',
-                //     name: 'page2',
-                //     component: () => import('../views/TestPage2')
+                },
+                
+                {
+                    path: '/maintenance-item-page',
+                    name: 'maintenance-item-page',
+                    component: () => import('../views/Maintenance_itemPage')
 
-                // },
+                },
                 {
                     path: '/page3',
                     name: 'page3',

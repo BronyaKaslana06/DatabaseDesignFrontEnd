@@ -283,8 +283,8 @@ const queryData = () => {
     }
   }
   cmRequest.request({
-    //url: 'api/administrator/stationInfo/query',
-    url: 'administrator/stationInfo',
+    url: 'api/administrator/stationInfo/query',
+    // url: 'administrator/stationInfo',
     method: 'GET',
     params: {
       pageIndex: query.pageIndex,
