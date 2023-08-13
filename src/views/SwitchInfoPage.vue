@@ -16,12 +16,12 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="员工id">
+                <el-form-item label="员工ID">
                   <el-input v-model="formData.employee_id" class="input-box"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="车辆id">
+                <el-form-item label="车辆ID">
                   <el-input v-model="formData.vehicle_id" class="input-box"></el-input>
                 </el-form-item>
               </el-col>
@@ -279,6 +279,7 @@
         })
       }
     })
+    pullData();
   }
   
   const saveEdit = () => {
