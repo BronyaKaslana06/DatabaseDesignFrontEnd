@@ -43,7 +43,7 @@ const router = createRouter({
                 {
                     path: '/maintenance-item-page',
                     name: 'maintenance-item-page',
-                    component: () => import('../views/Maintenance_itemPage')
+                    component: () => import('../views/maintenance_itemPage')
 
                 },
                 {
