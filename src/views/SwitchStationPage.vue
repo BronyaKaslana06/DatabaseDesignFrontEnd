@@ -305,7 +305,7 @@ pullData();
 
 const cancleAddEvent =()=>{
   addFlag.value = false;
-  resetAddedData();
+  //resetAddedData();
 }
 const resetFormData = () => {
   //formData.employee_id = '';
@@ -410,11 +410,13 @@ const addData = () => {
       }
     }).then((res)=>{
       addFlag.value = false;
-      resetAddedData();
+      //resetAddedData();
       if (!res.code) {
+      resetAddedData();
       ElMessage({
         type: 'success',
-        message: '新建成功, 新换电站id为'+res.station_id,
+        //message: '新建成功, 新换电站id为'+res.station_id,
+        message: '新建成功',
       })
     }
     else {
@@ -425,6 +427,7 @@ const addData = () => {
     }
     })
   }
+  pullData();
 }
 
 const deleteInfo = (val) => {
@@ -449,6 +452,7 @@ const deleteInfo = (val) => {
       })
     }
   })
+  pullData();
 }
 
 const saveEdit = () => {
@@ -480,6 +484,7 @@ const saveEdit = () => {
       })
     }
   })
+  pullData();
 }
 </script>
 

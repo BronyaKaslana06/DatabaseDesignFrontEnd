@@ -229,6 +229,7 @@ const cancleAddEvent =()=>{
   addFlag.value = false;
   resetAddedData();
 }
+
 const resetFormData = () => {
   formData.owner_id = '';
   formData.username = '';
@@ -251,7 +252,7 @@ const queryData = () => {
     // url: 'administrator/owner-info/query', // 我的本地api地址
     method: 'GET',
     params: {
-      pageNum: query.pageIndex,
+      pageIndex: query.pageIndex,
       pageSize: query.pageSize,
       owner_id: formData.owner_id,
       username: formData.username,
