@@ -62,8 +62,7 @@ const logout = () => {
 .logout-icon {
   /*font-size: 2em;*/
   cursor: pointer;
-  margin-left: 0.5
-  em; 
+  margin-left: 0.5em; 
 }
 
 .setting-icon:hover,
