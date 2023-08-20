@@ -25,11 +25,6 @@ const router = createRouter({
                     component: () => import('../views/SwitchInfoPage')
                 },
                 {
-                    path: '/switch-info-page',
-                    name: 'switch-info-page',
-                    component: () => import('../views/SwitchInfoPage')
-                },
-                {
                     path: '/owner-info-page',
                     name: 'owner-info-page',
                     component: () => import('../views/OwnerInfoPage')
