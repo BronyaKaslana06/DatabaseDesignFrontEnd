@@ -186,14 +186,14 @@ const submitForm = async () => {
                 user_type: type,
                 username: formData.username,
                 password: formData.password,
-                nickname: formData.nickname === '' ? 'null' : formData.nickname,
+                nickname: formData.nickname === '' ? null : formData.nickname,
                 gender: formData.gender,
-                birthday: formData.birthday === '' ? 'null' : formData.birthday,
+                birthday: formData.birthday === '' ? null : formData.birthday,
                 create_time: dataReplaced,
-                address: formData.address === '' ? 'null' : formData.address,
-                phone_number: formData.phone_number === '' ? 'null' : formData.phone_number,
-                email: formData.email === '' ? 'null' : formData.email,
-                invite_code: formData.invite_code === '' ? 'null' : formData.invite_code
+                address: formData.address === '' ? null : formData.address,
+                phone_number: formData.phone_number === '' ? null : formData.phone_number,
+                email: formData.email === '' ? null : formData.email,
+                invite_code: formData.invite_code === '' ? null : formData.invite_code
             }
             console.log(obj);
             cmrequest.request({
@@ -203,14 +203,14 @@ const submitForm = async () => {
                     user_type: type,
                     username: formData.username,
                     password: formData.password,
-                    nickname: formData.nickname === '' ? 'null' : formData.nickname,
+                    nickname: formData.nickname === '' ? null : formData.nickname,
                     gender: formData.gender,
-                    birthday: formData.birthday === '' ? 'null' : formData.birthday,
+                    birthday: formData.birthday === '' ? null : formData.birthday,
                     create_time: dataReplaced,
-                    address: formData.address === '' ? 'null' : formData.address,
-                    phone_number: formData.phone_number === '' ? 'null' : formData.phone_number,
-                    email: formData.email === '' ? 'null' : formData.email,
-                    invite_code: formData.invite_code === '' ? 'null' : formData.invite_code,
+                    address: formData.address === '' ? null : formData.address,
+                    phone_number: formData.phone_number === '' ? null : formData.phone_number,
+                    email: formData.email === '' ? null : formData.email,
+                    invite_code: formData.invite_code === '' ? null : formData.invite_code,
                 }
             }).then((res) => {
                 if (!res.code) {

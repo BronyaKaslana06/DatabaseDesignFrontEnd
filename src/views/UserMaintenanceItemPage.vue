@@ -21,7 +21,6 @@
                 </el-form>
             </div>
         </div>
-
         <div class="block">
             <div class="inner-block2">
                 <div class="top-right">
@@ -105,7 +104,7 @@
                 </div>
                 <div class="infinite-list-wrapper" style="overflow:auto">
                     <ul class="list" v-infinite-scroll="load" infinite-scroll-disabled="disabled">
-                        <li v-for="item in listdata.slice(0, count)" :key="item.maintenance_item_id" class="list-item">
+                        <li v-for="item in listdata" :key="item.maintenance_item_id" class="list-item">
                             <div class="list-item-content">
                                 <div class="list-item-image">
                                     <img src="@/assets/repair.png" alt="Image" />
@@ -118,6 +117,14 @@
                                 <div class="list-item-button">
                                     <el-button text :icon="Document"
                                         @click="Detail(item.maintenance_item_id)">查看详情</el-button>
+                                    <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" title="请确认是否删除"
+                                        @confirm="deleteInfo(item.maintenance_item_id)">
+                                        <template #reference>
+                                            <el-button style="color: red;" text :icon="Delete">
+                                                删除
+                                            </el-button>
+                                        </template>
+                                    </el-popconfirm>
                                 </div>
                             </div>
                         </li>
@@ -134,9 +141,9 @@
 <script setup lang="js">
 import cmRequest from '../service/index.js'
 import { useRouter } from 'vue-router';
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElButton, ElSelect, ElOption } from 'element-plus';
-import { RefreshRight, Edit, Delete, Plus,Document } from '@element-plus/icons-vue';
+import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-vue';
 
 const options = [
     { value: '1', label: '沪A12345' },
@@ -157,6 +164,8 @@ const infoForm = reactive({
     vehicle_model: '',
     purchase_date: '',
     current_capacity: '',
+
+    //可能需要加时间两个变量
 });
 
 
@@ -168,7 +177,7 @@ const updateSelected = () => {
     infoForm.purchase_date = '更新后的购车时间';
     infoForm.current_capacity = '更新后的电池电量';
     //获取当前的维修订单的接口
-    //更新repairRoughItem的值
+    //更新listdata的值
 };
 
 const repairRoughItem = reactive({
@@ -297,37 +306,38 @@ const listdata = ref([
     // ...其他数据
 ]);
 
-const maxItems = 10; // 设置一次性最多显示的条数
 
-const count = ref(maxItems); // 初始显示的条数为 maxItems
+
+const count = ref(3);
 const loading = ref(false);
 
-const noMore = computed(() => {
-    return count.value >= listdata.length;
-});
+const noMore = computed(() => count.value >= listdata.value.length);
 
-const disabled = computed(() => {
-    return loading.value || noMore.value;
-});
+const disabled = computed(() => loading.value || noMore.value);
 
 const load = () => {
-    if (!noMore.value) { // 仅在未加载完所有数据时加载更多
-        loading.value = true;
-        setTimeout(() => {
-            count.value = Math.min(count.value + 2, listdata.length); // 增加显示的条数，但不超过数据总数
-            loading.value = false;
-        }, 2000);
-    }
+    console.log(1);
+  loading.value = true;
+  setTimeout(() => {
+    count.value += 2;
+    loading.value = false;
+  }, 2000);
 };
+
 
 const router = useRouter();
 const Detail = (maintenanceItemId) => {
-  // Perform the desired action using the maintenanceItemId parameter
-  console.log('Editing item with ID:', maintenanceItemId);
-  router.push({
-     name: 'detailRepairInfo', 
-     params: { val: maintenanceItemId } 
+    // Perform the desired action using the maintenanceItemId parameter
+    console.log('Editing item with ID:', maintenanceItemId);
+    router.push({
+        name: 'detailRepairInfo',
+        params: { val: maintenanceItemId }
     });
+};
+
+const deleteInfo = (maintenanceItemId) => {
+  // Perform the desired delete action
+  console.log('Deleting item with ID:', maintenanceItemId);
 };
 
 /*  ccr   */
@@ -508,7 +518,11 @@ const handleClose = () => {
 
 
 
-
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .list-item {
     display: flex;
     align-items: center;
@@ -574,4 +588,5 @@ const handleClose = () => {
 #myMap {
     width: 100%;
     height: 30em;
-}</style>
+}
+</style>
