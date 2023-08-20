@@ -60,6 +60,11 @@ const items = [
     title: '维修订单管理'
   },
   {
+    name: '维修服务',
+    index: '/repair',
+    title: '维修服务'
+  },
+  {
     name: 'page3',
     index: '/page3',
     title: 'page3'
