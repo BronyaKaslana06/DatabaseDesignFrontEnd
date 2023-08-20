@@ -20,6 +20,16 @@ const router = createRouter({
                     component: () => import('../views/StaffInfoPage')
                 },
                 {
+                    path: '/switch-info-page',
+                    name: 'switch-info-page',
+                    component: () => import('../views/SwitchInfoPage')
+                },
+                {
+                    path: '/switch-info-page',
+                    name: 'switch-info-page',
+                    component: () => import('../views/SwitchInfoPage')
+                },
+                {
                     path: '/owner-info-page',
                     name: 'owner-info-page',
                     component: () => import('../views/OwnerInfoPage')
@@ -29,6 +39,18 @@ const router = createRouter({
                     path: '/switch-station-page',
                     name: 'switch-station-page',
                     component: () => import('../views/SwitchStationPage')
+                },
+                {
+                    path: '/notice-info-page',
+                    name: '/notice-info-page',
+                    component: () => import('../views/NoticePage')
+                },
+                
+                {
+                    path: '/maintenance-item-page',
+                    name: 'maintenance-item-page',
+                    component: () => import('../views/maintenance_itemPage')
+
                 },
                 {
                     path: '/page3',
