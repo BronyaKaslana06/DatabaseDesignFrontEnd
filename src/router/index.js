@@ -43,7 +43,7 @@ const router = createRouter({
                 {
                     path: '/maintenance-item-page',
                     name: 'maintenance-item-page',
-                    component: () => import('../views/maintenance_itemPage')
+                    component: () => import('../views/Maintenance_itemPage')
 
                 },
                 {
@@ -60,6 +60,18 @@ const router = createRouter({
                     path: '/page5',
                     name: 'page5',
                     component: () => import('../views/TestPage5')
+                },
+                {
+                    path: '/repair',
+                    name: 'Repair',
+                    component: ()=>import('../views/UserMaintenanceItemPage.vue')
+        
+                },
+                {
+                    path: '/detailRepairInfo/:val',
+                    name: 'detailRepairInfo',
+                    component: ()=>import('../views/DetailRepairInfoPage.vue')
+        
                 }
             ],
         },
