@@ -28,10 +28,10 @@
 import { useRoute } from "vue-router";
 import { computed } from 'vue';
 
-const items = [
+const admin_items = [
   {
     name: '员工信息',
-    index: '/stuff-info-page',
+    index: '/staff-info-page',
     title: '员工信息'
   },
   {
@@ -50,21 +50,36 @@ const items = [
   //   title: 'page2'
   // },
   {
-    name: 'page3',
-    index: '/page3',
-    title: 'page3'
-  },
-  {
-    name: 'page4',
-    index: '/page4',
-    title: 'page4'
-  },
-  {
     name: 'page5',
     index: '/page5',
     title: 'page5'
   }
 ];
+
+const owner_items = [
+  {
+    name: 'page3',
+    index: '/page3',
+    title: 'page3',
+  },
+]
+
+const staff_items = [
+  {
+    name: 'page4',
+    index: '/page4',
+    title: 'page4'
+  }
+]
+
+const user_type = localStorage.getItem("user_type");
+let items = [];
+if(user_type == 0)
+  items = owner_items;
+else if(user_type == 1)
+  items = staff_items;
+else
+  items = admin_items;
 
 const route = useRoute();
 const onRoutes = computed(() => {

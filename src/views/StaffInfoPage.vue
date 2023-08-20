@@ -275,13 +275,13 @@
       params: {
         pageIndex: query.pageIndex,
         pageSize: query.pageSize,
-        employee_id: formData.employee_id === '' ? 'null' : formData.employee_id,
-        username: formData.username=== '' ? 'null' : formData.username,
-        gender: formData.gender=== '' ? 'null' : formData.gender,
-        phone_number: formData.phone_number=== '' ? 'null' : formData.phone_number,
-        salary: formData.salary=== '' ? 'null' : formData.salary,
-        station_id: formData.station_id=== '' ? 'null' : formData.station_id,
-        station_name: formData.station_name=== '' ? 'null' : formData.station_name
+        employee_id: formData.employee_id === '' ? null : formData.employee_id,
+        username: formData.username=== '' ? null : formData.username,
+        gender: formData.gender=== '' ? null: formData.gender,
+        phone_number: formData.phone_number=== '' ? null: formData.phone_number,
+        salary: formData.salary=== '' ? null: formData.salary,
+        station_id: formData.station_id=== '' ? null : formData.station_id,
+        station_name: formData.station_name=== '' ? null : formData.station_name
       }
     }).then((res) => {
       if(!res.code){

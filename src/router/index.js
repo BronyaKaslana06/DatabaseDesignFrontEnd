@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from "vue-router"
 import Home from '../views/HomePage.vue'
 
+const user_type = localStorage.getItem("user_type");
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
             path: '/',
-            redirect: '/stuff-info-page' // 添加重定向路由
+            redirect: user_type == 0? '/page3':(user_type == 1? '/page4': '/staff-info-page') // 添加重定向路由
         },
         {
             path: '/',
@@ -14,9 +15,9 @@ const router = createRouter({
             component: Home,
             children: [
                 {
-                    path: '/stuff-info-page',
-                    name: 'stuff-info-page',
-                    component: () => import('../views/StuffInfoPage')
+                    path: '/staff-info-page',
+                    name: 'staff-info-page',
+                    component: () => import('../views/StaffInfoPage')
                 },
                 {
                     path: '/owner-info-page',
@@ -29,12 +30,6 @@ const router = createRouter({
                     name: 'switch-station-page',
                     component: () => import('../views/SwitchStationPage')
                 },
-                // {
-                //     path: '/page2',
-                //     name: 'page2',
-                //     component: () => import('../views/TestPage2')
-
-                // },
                 {
                     path: '/page3',
                     name: 'page3',
@@ -66,23 +61,15 @@ const router = createRouter({
     ]
 })
 
-router.beforeEach((to,from,next)=>{
-    if(to.path === '/sign-up'){
-        next();
-        return;
-    }
-    if(from.path === '/sign-up'){
-        console.log("hi");
-        next();
-        return;
-    }
+router.beforeEach((to, from, next) => {
+    // Check authentication and perform redirection
     const role = localStorage.getItem('user_id');
-    if(!role&&to.path !=='/login'){
+    if (!role && to.path !== '/login') {
         next('/login');
-    }
-    else{
+    } else {
         next();
     }
 })
+
 
 export default router;
