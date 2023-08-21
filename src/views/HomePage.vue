@@ -3,7 +3,7 @@
     <el-header class="custom-header">
       <div class="logo-text-container">
         <div class="logo">
-          <img src="@/assets/Logo.png" alt="Logo">
+          <img src="@/assets/logo.png" alt="Logo">
         </div>
         <span class="logo-text">智能电动汽车管理系统</span>
       </div>

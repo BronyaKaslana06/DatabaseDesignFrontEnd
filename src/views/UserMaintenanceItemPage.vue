@@ -4,7 +4,7 @@
             <template #content>
               <span class="text-large font-600 mr-3 custom-text"> 维修服务 </span>
             </template>
-          </el-page-header>
+        </el-page-header>
         <div class="block">
             <div class="inner-block">
                 <el-form label-width="100px" class="form-item-margin">
