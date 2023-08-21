@@ -49,10 +49,10 @@
           </div>
           <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
             height="100vh">
-            <el-table-column prop="employee_id" label="订单ID" min-width="10%" align="center"></el-table-column>
-            <el-table-column prop="username" label="车辆ID" min-width="10%" align="center"></el-table-column>
-            <el-table-column prop="gender" label="维修地点" min-width="25%" align="center"></el-table-column>
-            <el-table-column prop="station_name" min-width="10%" label="订单状态" align="center"></el-table-column>
+            <el-table-column prop="maintenance_item" label="订单ID" min-width="10%" align="center"></el-table-column>
+            <el-table-column prop="vehicle_id" label="车辆ID" min-width="10%" align="center"></el-table-column>
+            <el-table-column prop="maintenance_location" label="维修地点" min-width="25%" align="center"></el-table-column>
+            <el-table-column prop="order_status" min-width="10%" label="订单状态" align="center"></el-table-column>
             <el-table-column :inline="true" label="操作" min-width="15%" align="center">
               <template #default="scope">
                 <span>

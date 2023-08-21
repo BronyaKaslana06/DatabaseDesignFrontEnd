@@ -46,6 +46,7 @@ const submitForm = () => {
         localStorage.setItem('user_type', parseInt(formData.user_id));
         localStorage.setItem('user_id',formData.user_id+'000001');
         const user_type = localStorage.getItem('user_type');
+        localStorage.setItem('user_type', '2');
         if(user_type == 0)
             router.push('/page3');
         else if(user_type == 1)
