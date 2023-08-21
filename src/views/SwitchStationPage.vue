@@ -251,7 +251,7 @@ const openAdd = () =>{
   map.enableScrollWheelZoom(true);              //开启鼠标滚轮缩放
   var marker = new BMap.Marker(point);
   var geoc = new BMap.Geocoder();
-  map.addOverlay(marker);
+  //map.addOverlay(marker);
   map.addEventListener("click", (e)=>{        
     var pt = e.point;
     geoc.getLocation(pt, (rs) => {

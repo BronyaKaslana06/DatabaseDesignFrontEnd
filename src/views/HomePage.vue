@@ -32,10 +32,13 @@
 import mySlNav from '../components/sliderbar-nav.vue'
 import { ref, onMounted } from 'vue';
 import { Setting, CloseBold } from '@element-plus/icons-vue';
+import { useRouter } from 'vue-router';
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const userAvatar = ref('');
 const user_id = ref('');
 const defaultAvatar = '@/assets/defaultAvatar.jpg'; // 设置默认头像路径
+const router = useRouter();
 // localStorage.setItem('user_type', '0');
 
 onMounted(() => {
@@ -50,10 +53,32 @@ const goToSettings = () => {
   // 进行相应的操作
 };
 
+const cleanLocalStorage = () =>{
+  localStorage.removeItem("user_type");
+  localStorage.removeItem("user_id");
+}
+
 const logout = () => {
-  // 处理退出登录按钮点击事件
-  // 进行相应的操作
-};
+  ElMessageBox.confirm(
+    '您确定要退出吗',
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(() => {
+      cleanLocalStorage();
+      router.push('/login');
+    })
+    .catch(() => {
+      // ElMessage({
+      //   type: 'info',
+      //   message: '退出取消',
+      // })
+    })
+}
 
 </script>
 
