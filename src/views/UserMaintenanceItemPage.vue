@@ -1,5 +1,10 @@
 <template>
     <div>
+        <el-page-header  @back="goBack">
+            <template #content>
+              <span class="text-large font-600 mr-3 custom-text"> 维修服务 </span>
+            </template>
+        </el-page-header>
         <div class="block">
             <div class="inner-block">
                 <el-form label-width="100px" class="form-item-margin">
@@ -306,6 +311,10 @@ const load = () => {
   }, 2000)
 }
 
+const goBack = () => {
+  // 使用 Vue Router 的 go(-1) 方法返回上一个访问的页面
+  router.go(-1);
+};
 
 const router = useRouter();
 const Detail = (maintenanceItemId) => {
@@ -492,6 +501,9 @@ const handleClose = () => {
 </script>
 
 <style scoped>
+.custom-text {
+    font-size: 1.5em; /* 调整字体大小 */
+  }
 .block {
     border: 1px white solid;
     border-radius: 10px;

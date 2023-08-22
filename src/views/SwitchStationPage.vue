@@ -108,14 +108,11 @@
       <el-form-item label="换电站ID">
         <el-input v-model="editForm.station_id"></el-input>
       </el-form-item>
-      <!-- <el-form-item label="换电站经度">
-        <el-input v-model="editForm.longtitude"></el-input>
-      </el-form-item>
-      <el-form-item label="换电站纬度">
-        <el-input v-model="editForm.latitude"></el-input>
-      </el-form-item> -->
       <el-form-item label="换电站位置">
         <div id="myMapEdit"></div>
+      </el-form-item>
+      <el-form-item label="换电站地址">
+        <el-input v-model="addedData.station_address"></el-input>
       </el-form-item>
       <el-form-item label="可用状态">
         <el-select v-model="editForm.faliure_status">
@@ -125,6 +122,12 @@
       </el-form-item>
       <el-form-item label="电池容量">
         <el-input v-model="editForm.battery_capacity"></el-input>
+      </el-form-item>
+      <el-form-item label="电费">
+        <el-input v-model="editForm.electricity_fee"></el-input>
+      </el-form-item>
+      <el-form-item label="服务费">
+        <el-input v-model="editForm.service_fee"></el-input>
       </el-form-item>
       <!-- <el-form-item label="可用电池数目">
         <el-input v-model="editForm.available_battery_count"></el-input>
@@ -152,12 +155,11 @@
       <el-form-item label="换电站位置">
         <div id="myMapAdd"></div>
       </el-form-item>
-      <!-- <el-form-item label="换电站经度">
-        <el-input v-model="addedData.longitude"></el-input>
+      <el-form-item label="换电站地址">
+        <el-input :disabled="addedData.station_address === ''"
+        :placeholder="addedData.station_address === '' ? '请先在地图上选点' : ''"
+         v-model="addedData.station_address"></el-input>
       </el-form-item>
-      <el-form-item label="换电站纬度">
-        <el-input v-model="addedData.latitude"></el-input>
-      </el-form-item> -->
       <el-form-item label="可用状态">
         <el-select v-model="addedData.faliure_status">
           <el-option key="1" value="是" label="是"> </el-option>
@@ -167,9 +169,13 @@
       <el-form-item label="电池容量">
         <el-input v-model="addedData.battery_capacity"></el-input>
       </el-form-item>
-      <el-form-item label="可用电池数">
-        <el-input v-model="addedData.available_battery_count"></el-input>
+      <el-form-item label="电费">
+        <el-input v-model="addedData.electricity_fee"></el-input>
       </el-form-item>
+      <el-form-item label="服务费">
+        <el-input v-model="addedData.service_fee"></el-input>
+      </el-form-item>
+
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -205,7 +211,10 @@ const addedData = reactive({
   latitude: '',
   faliure_status: '',
   battery_capacity: '',
-  available_battery_count: ''
+  // available_battery_count: ''
+  electricity_fee:'',
+  service_fee:'',
+  station_address:''
 })
 
 const query = reactive({
@@ -226,6 +235,9 @@ const editForm = reactive({
   faliure_status: '',
   battery_capacity: '',
   available_battery_count: '',
+  electricity_fee:'',
+  service_fee:'',
+  station_address:'',
   //employee_id: ''
 });
 
@@ -238,18 +250,26 @@ const openAdd = () =>{
   map.centerAndZoom(point, 10);                 // 初始化地图，设置中心点坐标和地图级别
   map.enableScrollWheelZoom(true);              //开启鼠标滚轮缩放
   var marker = new BMap.Marker(point);
-  map.addOverlay(marker);
-  marker.enableDragging();
-  marker.addEventListener("dragend", (e) => {     
-    //console.log("当前位置：" + e.point.lng + ", " + e.point.lat)
+  var geoc = new BMap.Geocoder();
+  //map.addOverlay(marker);
+  map.addEventListener("click", (e)=>{        
+    var pt = e.point;
+    geoc.getLocation(pt, (rs) => {
+        addedData.station_address = rs.address
+        console.log('地理信息'+addedData.station_address)
+    });
+    map.removeOverlay(marker);
+    marker = null;
     point.lng = e.point.lng;
     point.lat = e.point.lat;
     stationLocation.lng = point.lng;
     stationLocation.lat = point.lat;
     addedData.longtitude = point.lng;
     addedData.latitude = point.lat;
-    console.log("当前位置：" + addedData.longtitude + ", " + addedData.latitude);
-  })
+    console.log('地理信息'+addedData.longtitude+' '+addedData.latitude)
+    marker = new BMap.Marker(point); 
+    map.addOverlay(marker);      
+  });
 }
 
 const openEdit = () =>{
@@ -261,17 +281,26 @@ const openEdit = () =>{
   map.centerAndZoom(point, 15);                 // 初始化地图，设置中心点坐标和地图级别
   map.enableScrollWheelZoom(true);              //开启鼠标滚轮缩放
   var marker = new BMap.Marker(point);
+  var geoc = new BMap.Geocoder();
   map.addOverlay(marker);
-  marker.enableDragging();
-  marker.addEventListener("dragend", (e) => {     
-    console.log("当前位置：" + e.point.lng + ", " + e.point.lat)
+  map.addEventListener("click", (e)=>{        
+    var pt = e.point;
+    geoc.getLocation(pt, (rs) => {
+        editForm.station_address = rs.address
+        console.log('地理信息'+editForm.station_address)
+    });
+    map.removeOverlay(marker);
+    marker = null;
     point.lng = e.point.lng;
     point.lat = e.point.lat;
     stationLocation.lng = point.lng;
     stationLocation.lat = point.lat;
     editForm.longtitude = point.lng;
     editForm.latitude = point.lat;
-  })
+    console.log('地理信息'+editForm.longtitude+' '+editForm.latitude)
+    marker = new BMap.Marker(point); 
+    map.addOverlay(marker);      
+  });
 }
 
 var pageTotal = 1;
@@ -375,6 +404,9 @@ const handleEdit = (row) => {
   editForm.latitude = row.latitude;
   editForm.faliure_status = row.faliure_status;
   editForm.battery_capacity = row.battery_capacity;
+  editForm.electricity_fee = row.electricity_fee;
+  editForm.service_fee = row.service_fee;
+  editForm.station_address = row.station_address;
   //editForm.available_battery_count = row.available_battery_count;
 }
 
@@ -407,6 +439,9 @@ const addData = () => {
         faliure_status: addedData.faliure_status,
         battery_capacity: Number(addedData.battery_capacity),
         available_battery_count: Number(addedData.available_battery_count),
+        electricity_fee:addedData.electricity_fee,
+        service_fee:addedData.service_fee,
+        station_address: addedData.station_address,
       }
     }).then((res)=>{
       addFlag.value = false;
@@ -468,6 +503,9 @@ const saveEdit = () => {
       latitude: editForm.latitude,
       faliure_status: editForm.faliure_status,
       battery_capacity: editForm.battery_capacity,
+      electricity_fee:editForm.electricity_fee,
+      service_fee:editForm.service_fee,
+      station_address:editForm.station_address,
     }
   }).then((res) => {
     editFlag.value = false;

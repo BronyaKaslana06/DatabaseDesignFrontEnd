@@ -2,7 +2,7 @@
     <div>
       <el-menu
         :default-active="onRoutes"
-        background-color="#324157"
+        background-color="#f5f5f5"
         text-color="#bfcbd9"
         active-text-color="#20a0ff"
         unique-opened
@@ -106,6 +106,11 @@ const onRoutes = computed(() => {
 .slider-bar{
     height: 100vh;
     left: 0%;
-    width: 60%;
+    width: 100%;
+}
+
+.slider-bar .el-menu-item {
+  color: #333; /* 设置字体颜色 */
+  font-size: 1.1em;
 }
 </style>
