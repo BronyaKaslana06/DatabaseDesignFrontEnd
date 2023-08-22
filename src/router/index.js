@@ -69,6 +69,18 @@ const router = createRouter({
         
                 },
                 {
+                    path: '/personal-information-page',
+                    name: 'personal-information-page',
+                    component: ()=>import('../views/PersonalInformationPage.vue')
+        
+                },
+                {
+                    path: '/employee-notice-page',
+                    name: 'employee-notice-page',
+                    component: ()=>import('../views/EmployeeNotice.vue')
+        
+                },
+                {
                     path: '/detailRepairInfo/:val',
                     name: 'detailRepairInfo',
                     component: ()=>import('../views/DetailRepairInfoPage.vue')
