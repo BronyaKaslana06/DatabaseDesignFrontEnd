@@ -60,6 +60,11 @@ const admin_items = [
     title: '维修订单管理'
   },
   {
+    name: '管理员仪表盘',
+    index: '/admin-dashboard-page',
+    title: '管理员仪表盘'
+  },
+  {
     name: 'page5',
     index: '/page5',
     title: 'page5'
@@ -81,6 +86,11 @@ const owner_items = [
     name: '公告信息',
     index: '/employee-notice-page',
     title: '公告信息'
+  },
+  {
+    name: '员工仪表盘',
+    index: '/employee-dashboard-page',
+    title: '员工仪表盘'
   },
   {
     name: '个人信息',
