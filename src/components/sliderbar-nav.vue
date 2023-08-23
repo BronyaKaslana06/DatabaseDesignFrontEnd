@@ -74,11 +74,6 @@ const admin_items = [
 
 const owner_items = [
   {
-    name: '员工仪表盘',
-    index: '/employee-dashboard-page',
-    title: '员工仪表盘'
-  },
-  {
     name: 'page3',
     index: '/page3',
     title: 'page3',
@@ -88,24 +83,28 @@ const owner_items = [
     index: '/repair',
     title: '维修服务'
   },
+]
+
+const staff_items = [
+  {
+    name: '员工仪表盘',
+    index: '/employee-dashboard-page',
+    title: '员工仪表盘'
+  },
+  {
+    name: 'page4',
+    index: '/page4',
+    title: 'page4'
+  },
   {
     name: '公告信息',
     index: '/employee-notice-page',
     title: '公告信息'
   },
-
   {
     name: '个人信息',
     index: '/personal-information-page',
     title: '个人信息'
-  },
-]
-
-const staff_items = [
-  {
-    name: 'page4',
-    index: '/page4',
-    title: 'page4'
   }
 ]
 
