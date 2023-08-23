@@ -10,7 +10,7 @@
                 <el-form label-width="100px" class="form-item-margin">
                     <el-form-item label="当前车辆">
                         <el-select v-model="selectedValue" filterable placeholder="请选择" @change="updateSelected">
-                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                            <el-option v-for="item in options" :key="item.vehicle_id" :label="item.plate_number" :value="item.vehicle_id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -49,7 +49,7 @@
                                     <el-col :span="4"><span :style="{ fontSize: '1.3em' }">车牌号</span></el-col>
                                     <el-col :span="20">
                                         <el-select v-model="selectedValue2" placeholder="请选择" @change="updateSelected2">
-                                            <el-option v-for="item in options" :key="item.value" :label="item.label"
+                                            <el-option v-for="item in options" :key="item.vehicle_id" :label="item.plate_number"
                                                 :value="item.value" />
                                         </el-select>
                                     </el-col>
@@ -102,13 +102,13 @@
                     <div class="date-picker-wrapper">
                         <el-date-picker v-model="timeValue" type="daterange" align="right" unlink-panels range-separator="至"
                             start-placeholder="开始日期" end-placeholder="结束日期" value-format="YYYY-MM-DD"
-                            format="YYYY 年 MM 月 DD 日" :picker-options="pickerOptions" @change="getDate">
+                            format="YYYY 年 MM 月 DD 日" :shortcuts="shortcuts" @change="getDate">
                         </el-date-picker>
                     </div>
 
                 </div>
                 <div class="infinite-list-wrapper" style="overflow:auto">
-                    <ul class="list" v-infinite-scroll="load" infinite-scroll-disabled="disabled">
+                    <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
                         <li v-for="item in listdata" :key="item.maintenance_item_id" class="list-item">
                             <div class="list-item-content">
                                 <div class="list-item-image">
@@ -150,18 +150,35 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElButton, ElSelect, ElOption } from 'element-plus';
 import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-vue';
 
-const options = [
-    { value: '1', label: '沪A12345' },
-    { value: '2', label: '沪B12345' },
-    { value: '3', label: '沪C12345' },
-    { value: '4', label: '沪D12345' },
-    { value: '5', label: '沪E12345' }
-];
+const options =  ref([]);
 
 const getOptions = () => {
-    //写接口
-    return options;
+    cmRequest.request({
+      //url: 'api/administrator/switch-info/query',
+      url: '/owner/repair_reservation/own_query',      
+      method: 'GET',
+      params: {
+        owner_id: localStorage.getItem('user_id')  
+      }
+    }).then((res) => {
+      if(!res.code){
+        ElMessage({
+          type: 'success',
+          message: '刷新成功',
+        })
+        options.value = res.data;
+      }
+      else{
+        ElMessage({
+          type: 'error',
+          message: '刷新失败',
+        })
+      }
+    })
 };
+getOptions();
+
+
 const selectedValue = ref('');
 
 const infoForm = reactive({
@@ -170,164 +187,129 @@ const infoForm = reactive({
     purchase_date: '',
     current_capacity: '',
 
-    //可能需要加时间两个变量
+    //车模的图片信息尚未加入
+    start_time:'',
+    end_time:''
 });
 
+const rough_query=()=>{
+    cmRequest.request({
+      //url: 'api/owner/repair_reservation/rough_query',
+      url: '/owner/repair_reservation/rough_query',      
+      method: 'GET',
+      params: {
+        vehicle_id : infoForm.vehicle_id,
+        start_time : infoForm.start_time,
+        end_time : infoForm.end_time
+      }
+    }).then((res) => {
+      if(!res.code){
+        ElMessage({
+          type: 'success',
+          message: '刷新成功',
+        })
+        listdata.value=res.data;
+      }
+      else{
+        ElMessage({
+          type: 'error',
+          message: '刷新失败',
+        })
+      }
+    })
+};
 
 const updateSelected = () => {
     // 根据选择器的选择更新相关变量的值
     infoForm.vehicle_id = selectedValue;
-    //写接口 
-    infoForm.vehicle_model = '更新后的车型';
-    infoForm.purchase_date = '更新后的购车时间';
-    infoForm.current_capacity = '更新后的电池电量';
+    cmRequest.request({
+      //url: 'api/owner/repair_reservation/info_query',
+      url: '/owner/repair_reservation/info_query',      
+      method: 'GET',
+      params: {
+        vehicle_id : infoForm.vehicle_id
+      }
+    }).then((res) => {
+      if(!res.code){
+        ElMessage({
+          type: 'success',
+          message: '刷新成功',
+        })
+        infoForm.vehicle_model = res.data.vehicle_model;
+        infoForm.purchase_date = res.data.purchase_date;
+        infoForm.current_capacity = res.data.current_capacity;
+        //更新图片信息
+      }
+      else{
+        ElMessage({
+          type: 'error',
+          message: '刷新失败',
+        })
+      }
+    })
+
     //获取当前的维修订单的接口
     //更新listdata的值
+    rough_query();
 };
-
-const repairRoughItem = reactive({
-    maintenance_item_id: '',
-    title: '',
-    order_submission_time: '',
-    maintenance_location: '',
-});
 
 const timeValue = ref('');
 
 
-const pickerOptions = {
-    shortcuts: [
-        {
-            text: '最近一周',
-            onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                picker.$emit('pick', [start, end]);
-            },
-        },
-        {
-            text: '最近一个月',
-            onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                picker.$emit('pick', [start, end]);
-            },
-        },
-        {
-            text: '最近三个月',
-            onClick(picker) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                picker.$emit('pick', [start, end]);
-            },
-        },
-    ]
-};
+const shortcuts = [
+  {
+    text: '最近一周',
+    value: () => {
+      const end = new Date()
+      const start = new Date()
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+      return [start, end]
+    },
+  },
+  {
+    text: '最近一个月',
+    value: () => {
+      const end = new Date()
+      const start = new Date()
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+      return [start, end]
+    },
+  },
+  {
+    text: '最近三个月',
+    value: () => {
+      const end = new Date()
+      const start = new Date()
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+      return [start, end]
+    },
+  },
+]
 
 const getDate = ([startDate, endDate]) => {
     console.log('开始日期:', startDate);
     console.log('结束日期:', endDate);
+    infoForm.start_time = startDate;
+    infoForm.end_time = endDate;
     //写接口，进行搜索
+    rough_query();
 };
 
-const listdata = ref([
-    {
-        maintenance_item_id: '1',
-        title: '维修项目1',
-        order_submission_time: '2023-08-01',
-        maintenance_location: '地点1',
-    },
-    {
-        maintenance_item_id: '2',
-        title: '维修项目2',
-        order_submission_time: '2023-08-02',
-        maintenance_location: '地点2',
-    },
-    {
-        maintenance_item_id: '1',
-        title: '维修项目1',
-        order_submission_time: '2023-08-01',
-        maintenance_location: '地点1',
-    },
-    {
-        maintenance_item_id: '1',
-        title: '维修项目1',
-        order_submission_time: '2023-08-01',
-        maintenance_location: '地点1',
-    },
-    {
-        maintenance_item_id: '1',
-        title: '维修项目1',
-        order_submission_time: '2023-08-01',
-        maintenance_location: '地点1',
-    },
-    {
-        maintenance_item_id: '1',
-        title: '维修项目1',
-        order_submission_time: '2023-08-01',
-        maintenance_location: '地点1',
-    },
-    {
-        maintenance_item_id: '1',
-        title: '维修项目1',
-        order_submission_time: '2023-08-01',
-        maintenance_location: '地点1',
-    },
-    {
-        maintenance_item_id: '1',
-        title: '维修项目1',
-        order_submission_time: '2023-08-01',
-        maintenance_location: '地点1',
-    },
-    {
-        maintenance_item_id: '1',
-        title: '维修项目1',
-        order_submission_time: '2023-08-01',
-        maintenance_location: '地点1',
-    },
-    {
-        maintenance_item_id: '1',
-        title: '维修项目1',
-        order_submission_time: '2023-08-01',
-        maintenance_location: '地点1',
-    },
+const listdata = ref([]);
 
 
-    {
-        maintenance_item_id: '1',
-        title: '维修项目1',
-        order_submission_time: '2023-08-01',
-        maintenance_location: '地点1',
-    },
-    {
-        maintenance_item_id: '1',
-        title: '维修项目1',
-        order_submission_time: '2023-08-01',
-        maintenance_location: '地点1',
-    },
-    // ...其他数据
-]);
-
-
-
-const count = ref(3);
-const loading = ref(false);
-
-const noMore = computed(() => count.value >= listdata.value.length);
-
-const disabled = computed(() => loading.value || noMore.value);
-
+const count = ref(4)
+const loading = ref(false)
+const noMore = computed(() => count.value >= listdata.value.length)
+const disabled = computed(() => loading.value || noMore.value)
 const load = () => {
-    console.log(1);
-  loading.value = true;
+  console.log("Scroll event triggered");
+  loading.value = true
   setTimeout(() => {
-    count.value += 2;
-    loading.value = false;
-  }, 2000);
-};
+    count.value += 2
+    loading.value = false
+  }, 2000)
+}
 
 const goBack = () => {
   // 使用 Vue Router 的 go(-1) 方法返回上一个访问的页面
@@ -347,6 +329,28 @@ const Detail = (maintenanceItemId) => {
 const deleteInfo = (maintenanceItemId) => {
   // Perform the desired delete action
   console.log('Deleting item with ID:', maintenanceItemId);
+  cmRequest.request({
+      //url: 'api/owner/repair_reservation/delete',
+      url: '/owner/repair_reservation/delete',
+      method: 'DELETE',
+      params: {
+        maintenance_item_id: maintenanceItemId
+      }
+    }).then((res) => {
+      if (!res.code) {
+        ElMessage({
+          type: 'success',
+          message: '删除成功',
+        })
+      }
+      else {
+        ElMessage({
+          type: 'error',
+          message: '删除失败',
+        })
+      }
+    })
+    rough_query();
 };
 
 /*  ccr   */
@@ -529,47 +533,57 @@ const handleClose = () => {
 }
 
 
+.infinite-list-wrapper {
+    height: 300px;
+  }
 
-.list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.list-item {
+  .infinite-list-wrapper .list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .infinite-list-wrapper .list-item {
     display: flex;
     align-items: center;
-    padding: 10px;
+    justify-content: center;
+    height: 60px;
     border-bottom: 1px solid #ddd;
-}
+  }
 
-.list-item-content {
+  .infinite-list-wrapper .list-item + .list-item {
+    margin-top: 10px;
+  }
+
+  .infinite-list-wrapper .list-item-content {
     display: flex;
     align-items: center;
     width: 100%;
-}
+  }
 
-.list-item-image {
+  .infinite-list-wrapper .list-item-image {
     margin-right: 10px;
-}
+  }
 
-.list-item-image img {
+  .infinite-list-wrapper .list-item-image img {
     width: 50px;
     height: 50px;
     object-fit: cover;
-}
+  }
 
-.list-item-text {
+  .infinite-list-wrapper .list-item-text {
     flex: 1;
-}
+    margin-left: 10px;
+  }
 
-.title {
+  .infinite-list-wrapper .title {
     font-weight: bold;
-}
+  }
 
-.location-date {
+  .infinite-list-wrapper .location-date {
     font-size: 14px;
     color: #999;
-}
+  }
 
 
 

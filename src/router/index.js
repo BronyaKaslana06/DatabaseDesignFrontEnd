@@ -69,6 +69,30 @@ const router = createRouter({
         
                 },
                 {
+                    path: '/personal-information-page',
+                    name: 'personal-information-page',
+                    component: ()=>import('../views/PersonalInformationPage.vue')
+        
+                },
+                {
+                    path: '/employee-notice-page',
+                    name: 'employee-notice-page',
+                    component: ()=>import('../views/EmployeeNotice.vue')
+        
+                },
+                {
+                    path: '/employee-dashboard-page',
+                    name: 'employee-dashboard-page',
+                    component: ()=>import('../views/EmployeeDashboard.vue')
+        
+                },
+                {
+                    path: '/admin-dashboard-page',
+                    name: 'admin-dashboard-page',
+                    component: ()=>import('../views/AdminDashboard.vue')
+        
+                },
+                {
                     path: '/detailRepairInfo/:val',
                     name: 'detailRepairInfo',
                     component: ()=>import('../views/DetailRepairInfoPage.vue')
