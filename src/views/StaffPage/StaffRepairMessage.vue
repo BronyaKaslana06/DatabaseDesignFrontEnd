@@ -76,7 +76,7 @@
   
 <script setup>
 import { ref, reactive, onMounted } from "vue";
-import cmRequest from "../service/index.js";
+import cmRequest from "../../service/index.js";
 import { ElMessage } from "element-plus";
 import { useRouter, useRoute } from 'vue-router';
 

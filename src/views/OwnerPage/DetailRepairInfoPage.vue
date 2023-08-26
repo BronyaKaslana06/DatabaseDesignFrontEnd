@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="js">
-import cmRequest from '../service/index.js'
+import cmRequest from '../../service/index.js'
 import { ref, reactive, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'

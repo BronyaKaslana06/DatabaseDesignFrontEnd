@@ -144,7 +144,7 @@
 </template>
 
 <script setup lang="js">
-import cmRequest from '../service/index.js'
+import cmRequest from '../../service/index.js'
 import { useRouter } from 'vue-router';
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElButton, ElSelect, ElOption } from 'element-plus';

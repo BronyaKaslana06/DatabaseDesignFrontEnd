@@ -63,7 +63,7 @@
                             排队人数
                         </div>
                     </div>
-                    <img src="../assets/logo2.png"
+                    <img src="@/assets/logo2.png"
                         style="position: absolute;bottom: 10px;right: 16px;transform: scale(0.05);transform-origin: bottom right; " />
                 </div>
                 <div style="display:flex; flex-direction: column;">
@@ -160,7 +160,7 @@
 import { ElMessage } from 'element-plus';
 import { reactive, ref, onMounted, nextTick } from 'vue';
 
-import cmRequest from '../service/index.js';
+import cmRequest from '../../service/index.js';
 
 let curInfoIndex = 1;
 let curStationID = null;
@@ -575,7 +575,7 @@ const drawMap = () => {
 
 .cell::before {
     display: flex;
-    content: url(../assets/battery.svg);
+    content: url(../../assets/battery.svg);
     margin-right: 12px;
     align-items: center;
 }
@@ -607,25 +607,25 @@ const drawMap = () => {
 }
 
 .spc-address::before {
-    content: url(../assets/address.svg);
+    content: url(../../assets/address.svg);
     margin-right: 18px;
     align-items: center;
 }
 
 .spc-space::before {
-    content: url(../assets/space.png);
+    content: url(../../assets/space.png);
     margin-right: 18px;
     align-items: center;
 }
 
 .spc-battery::before {
-    content: url(../assets/battery.svg);
+    content: url(../../assets/battery.svg);
     margin-right: 18px;
     align-items: center
 }
 
 .spc-parking_fee::before {
-    content: url(../assets/parking_fee.svg);
+    content: url(../../assets/parking_fee.svg);
     margin-right: 18px;
     align-items: center
 }
@@ -640,31 +640,31 @@ const drawMap = () => {
 }
 
 .spc-power_rate::before {
-    content: url(../assets/power_rate.svg);
+    content: url(../../assets/power_rate.svg);
     margin-right: 18px;
     align-items: center
 }
 
 .spc-opening_time::before {
-    content: url(../assets/opening_time.svg);
+    content: url(../../assets/opening_time.svg);
     margin-right: 18px;
     align-items: center
 }
 
 .opening_time::before {
-    content: url(../assets/opening_time.svg);
+    content: url(../../assets/opening_time.svg);
     margin-right: 12px;
     align-items: center
 }
 
 .waiting_number::before {
-    content: url(../assets/waiting_people.svg);
+    content: url(../../assets/waiting_people.svg);
     margin-right: 12px;
     align-items: center
 }
 
 .distance::before {
-    content: url(../assets/location.svg);
+    content: url(../../assets/location.svg);
     align-items: center;
 }
 
@@ -724,7 +724,7 @@ const drawMap = () => {
     border-radius: 22.5px;
     outline: none;
     padding: 3px 40px;
-    background: url(../assets/search.svg) no-repeat;
+    background: url(../../assets/search.svg) no-repeat;
     background-position: 10px center;
     width: 80%;
     background-color: white;

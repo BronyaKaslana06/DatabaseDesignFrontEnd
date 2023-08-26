@@ -156,7 +156,7 @@
   
   <script setup>
 import { ref, onMounted, reactive } from "vue";
-import cmRequest from "../service/index.js";
+import cmRequest from "../../service/index.js";
 import { ElMessage } from "element-plus";
 
 const announcementArray = ref([]);

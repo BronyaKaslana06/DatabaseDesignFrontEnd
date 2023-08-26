@@ -29,7 +29,8 @@
 </template>
 
 <script setup>
-import mySlNav from '../components/sliderbar-nav.vue'
+import mySlNav from '@/components/sliderbar-nav.vue'
+//import mySlNav from '../../components/sliderbar-nav.vue'
 import { ref, computed,getCurrentInstance,onBeforeMount,onMounted } from 'vue';
 import { useRouter, createRouter } from 'vue-router';
 import { Setting, CloseBold } from '@element-plus/icons-vue';

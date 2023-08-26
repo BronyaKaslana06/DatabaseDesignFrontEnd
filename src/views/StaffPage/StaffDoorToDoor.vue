@@ -88,7 +88,7 @@
 </template>
 
 <script setup lang="js">
-import cmRequest from '../service/index.js'
+import cmRequest from '@/service/index.js'
 import { useRouter, useRoute } from 'vue-router';
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElButton, ElSelect, ElOption, ElCard } from 'element-plus';
@@ -98,7 +98,7 @@ const userAvatar = ref('');
 const user_id = ref('');
 const user_name = ref('');
 const staff_type = ref('');
-const defaultAvatar = '@/assets/defaultAvatar.jpg'; // 设置默认头像路径
+const defaultAvatar = '../../assets/defaultAvatar.jpg'; // 设置默认头像路径
 const router = useRouter();
 const route = useRoute();
 
