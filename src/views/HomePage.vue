@@ -18,7 +18,7 @@
       <el-aside class="nav-class">
         <my-sl-nav/>
       </el-aside>
-      <el-main>
+      <el-main class="main-content">
         <div class="content">
           <router-view></router-view>
         </div>
@@ -83,6 +83,9 @@ const logout = () => {
 </script>
 
 <style scoped>
+.main-content {
+  background-color: #f5f5f5; /* 设置浅灰色背景颜色 */
+}
 .setting-icon,
 .logout-icon {
   /*font-size: 2em;*/

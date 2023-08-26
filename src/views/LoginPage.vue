@@ -48,8 +48,11 @@ const submitForm = () => {
         const user_type = localStorage.getItem('user_type');
         if(user_type == 0)
             router.push('/page3');
-        else if(user_type == 1)
+        else if(user_type == 1){
             router.push('/page4');
+            localStorage.setItem('staff_type','换电站管理员');
+        }
+
         else if(user_type == 2)
             router.push('/staff-info-page');
     // if (!formData)

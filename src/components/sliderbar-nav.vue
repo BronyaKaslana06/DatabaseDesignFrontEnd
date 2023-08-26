@@ -2,7 +2,7 @@
     <div>
       <el-menu
         :default-active="onRoutes"
-        background-color="#f5f5f5"
+        background-color="#eaeaea"
         text-color="#bfcbd9"
         active-text-color="#20a0ff"
         unique-opened
@@ -90,6 +90,11 @@ const staff_items = [
     name: '员工仪表盘',
     index: '/employee-dashboard-page',
     title: '员工仪表盘'
+  },
+  {
+    name: '上门服务',
+    index: '/staffDoorToDoor',
+    title: '上门服务'
   },
   {
     name: 'page4',

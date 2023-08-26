@@ -96,8 +96,18 @@ const router = createRouter({
                     path: '/detailRepairInfo/:val',
                     name: 'detailRepairInfo',
                     component: ()=>import('../views/DetailRepairInfoPage.vue')
-        
-                }
+                },
+                {
+                    path: '/staffDoorToDoor',
+                    name: 'doorToDoorService',
+                    component: ()=>import('../views/StaffDoorToDoor.vue')
+                },
+                {
+                    //path: '/staffRepair/:val',
+                    path: '/staffRepair',
+                    name: 'staffRepair',
+                    component: ()=>import('../views/StaffRepairMessage.vue')
+                },
             ],
         },
         {
