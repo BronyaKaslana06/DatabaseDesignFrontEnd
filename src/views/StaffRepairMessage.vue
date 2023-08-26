@@ -89,7 +89,7 @@ const repairLocation = reactive({
 });
 
 const repairInfo = reactive({
-  //maintenance_items_id: route.params.val,
+  maintenance_items_id: route.params.val,
   username: "",
   phone_number: "",
   maintenance_location: "",
@@ -127,7 +127,7 @@ const queryData = () => {
   url: 'https://mock.apifox.cn/m1/3058331-0-default/staff/door_to_door_service/get_maintenance_item',// 我的本地api地址
   method: 'GET',
   params: {
-    //maintenance_item_id:route.params.val
+    maintenance_item_id:route.params.val
       // 传入输入的maintenance_item_id
   }
   }).then((res) => {

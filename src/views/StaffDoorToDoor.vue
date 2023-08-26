@@ -259,7 +259,7 @@ const toDetail = (id) => {
   console.log(id);
   router.push({
     name: 'staffRepair',
-    //params: { val: id }
+    params: { val: id }
   });
 }
 const getSwitchData = () => {

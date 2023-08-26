@@ -108,8 +108,8 @@ const router = createRouter({
                     component: ()=>import('../views/StaffDoorToDoor.vue')
                 },
                 {
-                    //path: '/staffRepair/:val',
-                    path: '/staffRepair',
+                    path: '/staffRepair/:val',
+                    //path: '/staffRepair',
                     name: 'staffRepair',
                     component: ()=>import('../views/StaffRepairMessage.vue')
                 },
