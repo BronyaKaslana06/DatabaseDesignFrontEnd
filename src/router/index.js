@@ -15,6 +15,11 @@ const router = createRouter({
             component: Home,
             children: [
                 {
+                    path: '/reservation',
+                    name: 'reservation-page',
+                    component: ()=>import('../views/ReservationPage.vue')
+                },
+                {
                     path: '/staff-info-page',
                     name: 'staff-info-page',
                     component: () => import('../views/StaffInfoPage')
