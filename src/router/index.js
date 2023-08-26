@@ -7,7 +7,7 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: user_type == 0? '/page3':(user_type == 1? '/page4': '/staff-info-page') // 添加重定向路由
+            redirect: user_type == 0? '/reservation':(user_type == 1? '/employee-dashboard-page': '/admin-dashboard-page') // 添加重定向路由
         },
         {
             path: '/',
@@ -51,21 +51,6 @@ const router = createRouter({
                     component: () => import('../views/AdminstratorPage/Maintenance_itemPage.vue')
                 },
                 {
-                    path: '/page3',
-                    name: 'page3',
-                    component: () => import('../views/OwnerPage/TestPage3.vue')
-                },
-                {
-                    path: '/page4',
-                    name: 'page4',
-                    component: () => import('../views/StaffPage/TestPage4')
-                },
-                {
-                    path: '/page5',
-                    name: 'page5',
-                    component: () => import('../views/AdminstratorPage/TestPage5.vue')
-                },
-                {
                     path: '/repair',
                     name: 'Repair',
                     component: ()=>import('../views/OwnerPage/UserMaintenanceItemPage.vue')
@@ -107,7 +92,6 @@ const router = createRouter({
                 },
                 {
                     path: '/staffRepair/:val',
-                    //path: '/staffRepair',
                     name: 'staffRepair',
                     component: ()=>import('../views/StaffPage/StaffRepairMessage.vue')
                 },

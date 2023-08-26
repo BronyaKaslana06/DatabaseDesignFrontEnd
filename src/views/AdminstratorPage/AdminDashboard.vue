@@ -1,9 +1,9 @@
 <template>
-    <el-page-header :icon="ArrowLeft">
+    <!-- <el-page-header :icon="ArrowLeft">
       <template #content>
         <span class="text-large font-600 mr-3"> 仪表盘 </span>
       </template>
-    </el-page-header>
+    </el-page-header> -->
 
     <header class="dashboard-header">
       <h1 class="dashboard-title">管理员仪表盘</h1>

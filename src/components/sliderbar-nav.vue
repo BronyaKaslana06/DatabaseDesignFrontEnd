@@ -64,30 +64,19 @@ const admin_items = [
     index: '/maintenance-item-page',
     title: '维修订单管理'
   },
-
-  {
-    name: 'page5',
-    index: '/page5',
-    title: 'page5'
-  }
 ];
 
 const owner_items = [
-  {
-    name: 'page3',
-    index: '/page3',
-    title: 'page3',
-  },
-  {
-    name: '维修服务',
-    index: '/repair',
-    title: '维修服务'
-  },
   {
     name: '换电预约',
     index: '/reservation',
     title: '换电预约'
   },
+  {
+    name: '维修服务',
+    index: '/repair',
+    title: '维修服务'
+  }
 ]
 
 const staff_items = [
@@ -100,11 +89,6 @@ const staff_items = [
     name: '上门服务',
     index: '/staffDoorToDoor',
     title: '上门服务'
-  },
-  {
-    name: 'page4',
-    index: '/page4',
-    title: 'page4'
   },
   {
     name: '公告信息',
