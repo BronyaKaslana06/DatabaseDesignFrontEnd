@@ -77,6 +77,11 @@ const owner_items = [
     index: '/repair',
     title: '维修服务'
   },
+  {
+    name: '换电预约',
+    index: '/reservation',
+    title: '换电预约'
+  },
 ]
 
 const staff_items = [
