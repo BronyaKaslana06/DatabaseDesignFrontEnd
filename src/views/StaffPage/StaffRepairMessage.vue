@@ -64,11 +64,12 @@
         <div class="order-field">
           <span class="field-label"></span> 
           <select v-model="order_status">
-          <option value="pending">待处理</option>
-          <option value="processing">处理中</option>
-          <option value="completed">已完成</option>
+          <option value="待处理">待处理</option>
+          <option value="已完成">已完成</option>
           </select>
+          <span class="field-label">{{ order_status }}</span> 
         </div>
+        <el-button @click="save" type="primary" class="save-button">保存</el-button>
       </el-card>
     </div>
   </div>
@@ -120,6 +121,7 @@ const vehicle_model= ref();
 const order_submission_time= ref();
 const order_status = ref();
 const remarks = ref();
+const maintenance_items_id= ref();
 
 const queryData = () => {
   cmRequest.request({
@@ -154,6 +156,30 @@ const queryData = () => {
 }
 
 queryData();
+
+const save = () => {
+    cmRequest.request({
+    url: 'api/staff/doortodoorservice/switch-record',
+    method: 'PATCH',
+    data: {
+      maintenance_items_id: maintenance_items_id.value,
+      order_status:order_status.value,
+    }
+    }).then((res) => {
+    if (!res.code) {
+      ElMessage({
+        type: 'success',
+        message: '更新成功',
+      })
+    }
+    else {
+      ElMessage({
+        type: 'error',
+        message: '更新失败',
+      })
+    }
+  })
+  }
 
 const goBack = () => {
   router.go(-1); // 返回上次访问的页面

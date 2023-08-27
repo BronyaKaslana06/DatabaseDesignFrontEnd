@@ -257,10 +257,19 @@ const showDetail = (item) => {
 
 const toDetail = (id) => {
   console.log(id);
-  router.push({
-    name: 'staffRepair',
-    params: { val: id }
-  });
+  
+  if (staff_type.value === '换电站管理员'){
+    router.push({
+      name: 'staffSwitch',
+      params: { val: id }
+    });
+  }
+  else if (staff_type.value === '维修工'){
+    router.push({
+      name: 'staffRepair',
+      params: { val: id }
+    });
+  }
 }
 const getSwitchData = () => {
   cmRequest.request({
