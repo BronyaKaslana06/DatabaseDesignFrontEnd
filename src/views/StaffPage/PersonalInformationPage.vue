@@ -113,7 +113,7 @@
 
 <script setup>
 import { ref, reactive } from "vue";
-import cmRequest from "../service/index.js";
+import cmRequest from "../../service/index.js";
 import { ElMessage } from "element-plus";
 
 /* 车辆组件区开始 */

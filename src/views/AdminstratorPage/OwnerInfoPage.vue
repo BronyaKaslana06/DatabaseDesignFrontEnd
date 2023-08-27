@@ -156,7 +156,7 @@
 </template>
 
 <script setup lang="js">
-import cmRequest from '../service/index.js'
+import cmRequest from '../../service/index.js'
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { RefreshRight, Edit, Delete } from '@element-plus/icons-vue';

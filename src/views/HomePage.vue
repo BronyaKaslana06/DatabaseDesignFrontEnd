@@ -18,7 +18,7 @@
       <el-aside class="nav-class">
         <my-sl-nav/>
       </el-aside>
-      <el-main>
+      <el-main :style="mainStyle">
         <div class="content">
           <router-view></router-view>
         </div>
@@ -29,16 +29,42 @@
 </template>
 
 <script setup>
-import mySlNav from '../components/sliderbar-nav.vue'
-import { ref, onMounted } from 'vue';
+import mySlNav from '@/components/sliderbar-nav.vue'
+//import mySlNav from '../../components/sliderbar-nav.vue'
+import { ref, computed,getCurrentInstance,onBeforeMount,onMounted } from 'vue';
+import { useRouter, createRouter } from 'vue-router';
 import { Setting, CloseBold } from '@element-plus/icons-vue';
-import { useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus'
+
+
+const router = useRouter();
+const shouldChangeOverflow = ref(false);
+const instance = getCurrentInstance();
+const mainStyle = computed(() => {
+  return {
+    overflow: shouldChangeOverflow.value ? 'hidden' : 'auto',
+    height: shouldChangeOverflow.value? "110hv" : '100hv',
+    // 其他样式属性
+  };
+});
+
+onBeforeMount(() => {
+  // 在组件挂载前，检查是否在 reservation.vue 文件中
+  shouldChangeOverflow.value = instance.proxy.$route.name === 'reservation-page';
+});
+// 使用 beforeEach 导航守卫来检查路由
+router.beforeEach((to, from, next) => {
+  console.log(to.name);
+  shouldChangeOverflow.value = to.name === 'reservation-page';
+  next();
+});
+
+
 
 const userAvatar = ref('');
 const user_id = ref('');
 const defaultAvatar = '@/assets/defaultAvatar.jpg'; // 设置默认头像路径
-const router = useRouter();
+
 // localStorage.setItem('user_type', '0');
 
 onMounted(() => {
@@ -83,6 +109,9 @@ const logout = () => {
 </script>
 
 <style scoped>
+.main-content {
+  background-color: #f5f5f5; /* 设置浅灰色背景颜色 */
+}
 .setting-icon,
 .logout-icon {
   /*font-size: 2em;*/
@@ -116,8 +145,12 @@ const logout = () => {
 }
 
 .content {
-  margin-left: 20%;
+  margin-left: 20%; /* 设置内容区域左边距以避免被导航栏遮挡 */
+}
+
+.el-main{
   height: 100vh;
+  padding: 0;
 }
 
 .el-main {

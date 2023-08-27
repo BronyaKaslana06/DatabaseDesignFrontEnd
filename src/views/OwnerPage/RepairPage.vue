@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="js">
-import cmRequest from '../service/index.js'
+import cmRequest from '../../service/index.js'
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue';

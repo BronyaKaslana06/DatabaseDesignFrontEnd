@@ -7,7 +7,7 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: user_type == 0? '/page3':(user_type == 1? '/page4': '/staff-info-page') // 添加重定向路由
+            redirect: user_type == 0? '/reservation':(user_type == 1? '/employee-dashboard-page': '/admin-dashboard-page') // 添加重定向路由
         },
         {
             path: '/',
@@ -15,88 +15,95 @@ const router = createRouter({
             component: Home,
             children: [
                 {
+                    path: '/reservation',
+                    name: 'reservation-page',
+                    component: ()=>import('../views/OwnerPage/ReservationPage.vue')
+                },
+                {
                     path: '/staff-info-page',
                     name: 'staff-info-page',
-                    component: () => import('../views/StaffInfoPage')
+                    component: () => import('../views/AdminstratorPage/StaffInfoPage.vue')
                 },
                 {
                     path: '/switch-info-page',
                     name: 'switch-info-page',
-                    component: () => import('../views/SwitchInfoPage')
+                    component: () => import('../views/AdminstratorPage/SwitchInfoPage.vue')
                 },
                 {
                     path: '/owner-info-page',
                     name: 'owner-info-page',
-                    component: () => import('../views/OwnerInfoPage')
+                    component: () => import('../views/AdminstratorPage/OwnerInfoPage.vue')
                 },
                 {
 
                     path: '/switch-station-page',
                     name: 'switch-station-page',
-                    component: () => import('../views/SwitchStationPage')
+                    component: () => import('../views/AdminstratorPage/SwitchStationPage.vue')
                 },
                 {
                     path: '/notice-info-page',
                     name: '/notice-info-page',
-                    component: () => import('../views/NoticePage')
+                    component: () => import('../views/AdminstratorPage/NoticePage.vue')
                 },
-                
                 {
                     path: '/maintenance-item-page',
                     name: 'maintenance-item-page',
-                    component: () => import('../views/Maintenance_itemPage')
-
-                },
-                {
-                    path: '/page3',
-                    name: 'page3',
-                    component: () => import('../views/TestPage3')
-                },
-                {
-                    path: '/page4',
-                    name: 'page4',
-                    component: () => import('../views/TestPage4')
-                },
-                {
-                    path: '/page5',
-                    name: 'page5',
-                    component: () => import('../views/TestPage5')
+                    component: () => import('../views/AdminstratorPage/Maintenance_itemPage.vue')
                 },
                 {
                     path: '/repair',
                     name: 'Repair',
-                    component: ()=>import('../views/UserMaintenanceItemPage.vue')
+                    component: ()=>import('../views/OwnerPage/UserMaintenanceItemPage.vue')
         
                 },
                 {
                     path: '/personal-information-page',
                     name: 'personal-information-page',
-                    component: ()=>import('../views/PersonalInformationPage.vue')
+                    component: ()=>import('../views/StaffPage/PersonalInformationPage.vue')
         
                 },
                 {
                     path: '/employee-notice-page',
                     name: 'employee-notice-page',
-                    component: ()=>import('../views/EmployeeNotice.vue')
+                    component: ()=>import('../views/StaffPage/EmployeeNotice.vue')
         
                 },
                 {
                     path: '/employee-dashboard-page',
                     name: 'employee-dashboard-page',
-                    component: ()=>import('../views/EmployeeDashboard.vue')
+                    component: ()=>import('../views/StaffPage/EmployeeDashboard.vue')
         
                 },
                 {
                     path: '/admin-dashboard-page',
                     name: 'admin-dashboard-page',
-                    component: ()=>import('../views/AdminDashboard.vue')
+                    component: ()=>import('../views/AdminstratorPage/AdminDashboard.vue')
         
                 },
                 {
                     path: '/detailRepairInfo/:val',
                     name: 'detailRepairInfo',
-                    component: ()=>import('../views/DetailRepairInfoPage.vue')
-        
+                    component: ()=>import('../views/OwnerPage/DetailRepairInfoPage.vue')
+                },
+                {
+                    path: '/staffDoorToDoor',
+                    name: 'doorToDoorService',
+                    component: ()=>import('../views/StaffPage/StaffDoorToDoor.vue')
+                },
+                {
+                    path: '/staffRepair/:val',
+                    name: 'staffRepair',
+                    component: ()=>import('../views/StaffPage/StaffRepairMessage.vue')
+                },
+                {
+                    path: '/staffMaintenanceItem',
+                    name: 'staffMaintenanceItem',
+                    component: ()=>import('../views/StaffPage/StaffMaintenanceItemPage.vue')
+                },
+                {
+                    path: '/staffSwitch',
+                    name: 'staffSwitch',
+                    component: ()=>import('../views/StaffPage/StaffSwitchPage.vue')
                 }
             ],
         },

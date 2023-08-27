@@ -46,13 +46,16 @@ const submitForm = () => {
         localStorage.setItem('user_type', parseInt(formData.user_id));
         localStorage.setItem('user_id',formData.user_id+'000001');
         const user_type = localStorage.getItem('user_type');
-        localStorage.setItem('user_type', '2');
+        //localStorage.setItem('user_type', '2');
         if(user_type == 0)
-            router.push('/page3');
-        else if(user_type == 1)
-            router.push('/page4');
+            router.push('/reservation');
+        else if(user_type == 1){
+            router.push('/employee-dashboard-page');
+            localStorage.setItem('staff_type','换电站管理员');
+        }
+
         else if(user_type == 2)
-            router.push('/staff-info-page');
+            router.push('/admin-dashboard-page');
     // if (!formData)
     //     return;
     // if(formData.user_id === ''||formData.password === ''){

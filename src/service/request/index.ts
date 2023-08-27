@@ -43,7 +43,6 @@ class CMRequset {
 
     this.instance.interceptors.response.use(
       (res) => {
-        console.log("!!",res);
         const contentType = res.headers['content-type'];
         if (contentType && contentType.startsWith('application/octet-stream')) {
           return res; // 是照片请求，返回整个响应对象
@@ -60,7 +59,6 @@ class CMRequset {
   request<T>(config: CMRequestConfig): Promise<T> {
     return new Promise((resolve, reject) => {
       this.instance.request<any,T>(config).then((res) => {
-        console.log(res)
         resolve(res)
       })
       .catch((err)=>{

@@ -1,67 +1,63 @@
 <template>
-    <el-page-header :icon="ArrowLeft">
+    <!-- <el-page-header :icon="ArrowLeft">
       <template #content>
         <span class="text-large font-600 mr-3"> 仪表盘 </span>
       </template>
-    </el-page-header>
+    </el-page-header> -->
 
     <header class="dashboard-header">
-      <h1 class="dashboard-title">管理员仪表盘</h1>
+      <h1 class="dashboard-title">员工仪表盘</h1>
       <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
     </header> 
 
     <div class="info-card">
         <div class="info-card-item">
-          <h2 class="info-card-value">{{ totalUsers }}</h2>
-          <p class="info-card-label">总用户数</p>
+          <h2 class="info-card-value">{{ orderTodo }}</h2>
+          <p class="info-card-label">待处理订单</p>
         </div>
 
         <div class="info-card-item">
-          <h2 class="info-card-value">{{ totalOrders }}</h2>
-          <p class="info-card-label">总订单数</p>
+          <h2 class="info-card-value">{{ orderFinished }}</h2>
+          <p class="info-card-label">已完成订单</p>
         </div>
 
         <div class="info-card-item">
-          <h2 class="info-card-value">{{ totalStations }}</h2>
-          <p class="info-card-label">总换电站数</p>
+          <h2 class="info-card-value">{{ staffSalary }}</h2>
+          <p class="info-card-label">本月工资</p>
         </div> 
 
         <div class="info-card-item">
-          <h2 class="info-card-value">{{ totalStuff }}</h2>
-          <p class="info-card-label">总员工数</p>
+          <h2 class="info-card-value">{{ orderGrabed }}</h2>
+          <p class="info-card-label">抢单次数</p>
         </div> 
     </div>
     
     <div class="dashboard">
-        <h1 class="dashboard-title">管理员仪表盘</h1>
+        <h1 class="dashboard-title">员工仪表盘</h1>
       
         <div class="chart-container">
           <div ref="barChart" class="chart"></div>
         </div>
-      
-        <div class="chart-container">
-          <div ref="lineChart" class="chart"></div>
-        </div>
-      
-        <div class="chart-container">
-          <div ref="pieChart" class="chart"></div>
-        </div>
 
+        <div class="image-container">
+          <img src="../../assets/StuffDashboard-1.png" alt="page_1" />
+        </div>
     </div>
+
 
 </template>
 
 <script setup lang="js">
-import cmRequest from '../service/index.js'
+import cmRequest from '../../service/index.js'
 import { ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { RefreshRight } from '@element-plus/icons-vue';
 import * as echarts from 'echarts';
 
-const totalUsers = ref();
-const totalOrders = ref();
-const totalStations = ref();
-const totalStuff = ref();
+const orderTodo = ref();
+const orderFinished = ref();
+const staffSalary = ref();
+const orderGrabed = ref();
 
 const pullData = () => {
     cmRequest.request({
@@ -75,10 +71,10 @@ const pullData = () => {
         type: 'success',
         message: '刷新成功',
       })
-      totalUsers.value = res.data.totalUsers;
-      totalOrders.value = res.data.totalOrders;
-      totalStations.value = res.data.totalStations;
-      totalStuff.value = res.data.totalStuff;
+      orderTodo.value = res.data.orderTodo;
+      orderFinished.value = res.data.orderFinished;
+      staffSalary.value = res.data.staffSalary;
+      orderGrabed.value = res.data.orderGrabed;
     }
     else{
       ElMessage({
@@ -91,12 +87,11 @@ const pullData = () => {
 pullData();
 
 const barChart = ref();
-const lineChart = ref();
-const pieChart = ref();
+// const lineChart = ref();
+// const pieChart = ref();
 const barChartData = ref([]);
 const lineChartData = ref([]);
 const pieChartData = ref([]);
-
 
 const getOrderData= () =>{
     cmRequest.request({
@@ -146,40 +141,6 @@ onMounted(() => {
         }],
     });
 
-    const lineChartInstance = echarts.init(lineChart.value);
-    lineChartInstance.setOption({
-        title: {
-        text: '本周的每日充电车次',
-        },
-        xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri','Sat','Sun'],
-        },
-        yAxis: {
-        type: 'value',
-        },
-        series: [{
-        data: [20,40,50,80],
-        type: 'line',
-        }],
-    });
-
-    const pieChartInstance = echarts.init(pieChart.value);
-    pieChartInstance.setOption({
-        title: {
-        text: '换电站订单图',
-        },
-        series: [{
-        type: 'pie',
-        data: [
-            { name: 'A', value: 335 },
-            { name: 'B', value: 310 },
-            { name: 'C', value: 234 },
-            { name: 'D', value: 135 },
-            { name: 'E', value: 1548 },
-          ],
-        }],
-    });
 
 });
 
@@ -246,5 +207,14 @@ onMounted(() => {
   .chart {
     width: 100%;
     height: 400px;
+  }
+
+  .image-container {
+  display: flex; /* 使用 Flex 布局 */
+  align-items: center; /* 垂直居中对齐 */
+  }
+
+  .image-container img {
+  margin-right: 10px; /* 可以根据需要调整间距大小 */
   }
 </style>

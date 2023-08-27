@@ -2,7 +2,7 @@
     <div>
       <el-menu
         :default-active="onRoutes"
-        background-color="#f5f5f5"
+        background-color="#eaeaea"
         text-color="#bfcbd9"
         active-text-color="#20a0ff"
         unique-opened
@@ -64,25 +64,19 @@ const admin_items = [
     index: '/maintenance-item-page',
     title: '维修订单管理'
   },
-
-  {
-    name: 'page5',
-    index: '/page5',
-    title: 'page5'
-  }
 ];
 
 const owner_items = [
   {
-    name: 'page3',
-    index: '/page3',
-    title: 'page3',
+    name: '换电预约',
+    index: '/reservation',
+    title: '换电预约'
   },
   {
     name: '维修服务',
     index: '/repair',
     title: '维修服务'
-  },
+  }
 ]
 
 const staff_items = [
@@ -92,9 +86,9 @@ const staff_items = [
     title: '员工仪表盘'
   },
   {
-    name: 'page4',
-    index: '/page4',
-    title: 'page4'
+    name: '上门服务',
+    index: '/staffDoorToDoor',
+    title: '上门服务'
   },
   {
     name: '公告信息',
@@ -105,6 +99,16 @@ const staff_items = [
     name: '个人信息',
     index: '/personal-information-page',
     title: '个人信息'
+  },
+  {
+    name: '维修订单',
+    index: '/staffMaintenanceItem',
+    title: '维修订单'
+  },
+  {
+    name: '换电订单',
+    index: '/staffSwitch',
+    title: '换电订单'
   }
 ]
 
