@@ -2,7 +2,7 @@
     <div>
         <el-page-header  @back="goBack">
             <template #content>
-              <span class="text-large font-600 mr-3 custom-text"> 上门服务 </span>
+              <span class="text-large font-600 mr-3 custom-text"> 上门维修服务 </span>
             </template>
         </el-page-header>
 

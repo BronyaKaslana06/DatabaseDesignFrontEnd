@@ -29,7 +29,7 @@ module.exports = defineConfig({
     },
     proxy: {
       "^/api": {
-        target: 'http://123.57.140.176:8080',
+        target: 'http://8.130.9.72:8080',
         changeOrigin: true,             //是否跨域
         pathRewrite: { //重写路径，不需要代理到api的接口
           '^/api': ''
