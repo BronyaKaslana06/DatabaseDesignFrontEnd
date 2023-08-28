@@ -24,6 +24,7 @@
                         <div class="value">{{ infoForm.current_capacity }}</div>
                     </el-form-item>
                 </el-form>
+                <img :src="infoForm.snip" class="right-image" alt="Right Image">
             </div>
         </div>
         <div class="block">
@@ -154,8 +155,8 @@ const options =  ref([]);
 
 const getOptions = () => {
     cmRequest.request({
-      //url: 'api/administrator/switch-info/query',
-      url: '/owner/repair_reservation/own_query',      
+      url: 'api/owner/repair_reservation/own_query',
+      //url: '/owner/repair_reservation/own_query',      
       method: 'GET',
       params: {
         owner_id: localStorage.getItem('user_id')  
@@ -186,16 +187,15 @@ const infoForm = reactive({
     vehicle_model: '',
     purchase_date: '',
     current_capacity: '',
-
-    //车模的图片信息尚未加入
-    start_time:'',
-    end_time:''
+    snip:'',
+    start_time:'1000-01-01',
+    end_time:'9999-12-31'
 });
 
 const rough_query=()=>{
     cmRequest.request({
-      //url: 'api/owner/repair_reservation/rough_query',
-      url: '/owner/repair_reservation/rough_query',      
+      url: 'api/owner/repair_reservation/rough_query',
+      //url: '/owner/repair_reservation/rough_query',      
       method: 'GET',
       params: {
         vehicle_id : infoForm.vehicle_id,
@@ -223,8 +223,8 @@ const updateSelected = () => {
     // 根据选择器的选择更新相关变量的值
     infoForm.vehicle_id = selectedValue;
     cmRequest.request({
-      //url: 'api/owner/repair_reservation/info_query',
-      url: '/owner/repair_reservation/info_query',      
+      url: 'api/owner/repair_reservation/info_query',
+      //url: '/owner/repair_reservation/info_query',      
       method: 'GET',
       params: {
         vehicle_id : infoForm.vehicle_id
@@ -235,10 +235,11 @@ const updateSelected = () => {
           type: 'success',
           message: '刷新成功',
         })
-        infoForm.vehicle_model = res.data.vehicle_model;
-        infoForm.purchase_date = res.data.purchase_date;
-        infoForm.current_capacity = res.data.current_capacity;
+        infoForm.vehicle_model = res.data[0].vehicle_model;
+        infoForm.purchase_date = res.data[0].purchase_date;
+        infoForm.current_capacity = res.data[0].current_capacity;
         //更新图片信息
+        infoForm.snip = res.data[0].snip;
       }
       else{
         ElMessage({
@@ -330,8 +331,8 @@ const deleteInfo = (maintenanceItemId) => {
   // Perform the desired delete action
   console.log('Deleting item with ID:', maintenanceItemId);
   cmRequest.request({
-      //url: 'api/owner/repair_reservation/delete',
-      url: '/owner/repair_reservation/delete',
+      url: 'api/owner/repair_reservation/delete',
+      //url: '/owner/repair_reservation/delete',
       method: 'DELETE',
       params: {
         maintenance_item_id: maintenanceItemId
@@ -526,7 +527,10 @@ const handleClose = () => {
     font-weight: bold;
     margin-bottom: 10px;
 }
-
+.right-image {
+    float: right;
+    margin-left: 10px; /* 添加一些间距，可根据需要进行调整 */
+}
 .date-picker-wrapper {
 
     text-align: right;

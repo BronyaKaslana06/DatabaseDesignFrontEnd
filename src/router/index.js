@@ -59,7 +59,7 @@ const router = createRouter({
                 {
                     path: '/personal-information-page',
                     name: 'personal-information-page',
-                    component: ()=>import('../views/StaffPage/PersonalInformationPage.vue')
+                    component: ()=>import('../views/OwnerPage/PersonalInformationPage.vue')
         
                 },
                 {
@@ -94,6 +94,12 @@ const router = createRouter({
                     path: '/staffRepair/:val',
                     name: 'staffRepair',
                     component: ()=>import('../views/StaffPage/StaffRepairMessage.vue')
+                },
+                {
+                    path: '/staffSwitch/:val',
+                    //path: '/staffSwitch',
+                    name: 'staffSwitch',
+                    component: ()=>import('../views/StaffPage/StaffSwitchMessage.vue')
                 },
             ],
         },
