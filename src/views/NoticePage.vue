@@ -8,7 +8,7 @@
     <div class="search-bar">
       <el-form :inline="true" class="search-form">
         <el-row>
-          <el-col :span="10">
+          <el-col :span="8">
             <el-form-item label="标题">
               <el-input
                 v-model="searchFormData.title"
@@ -16,7 +16,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="8">
             <el-form-item label="发布者">
               <el-input
                 v-model="searchFormData.publisher"
@@ -24,9 +24,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="10">
+          <el-col :span="8">
             <el-form-item label="发布时间">
               <el-date-picker
                 v-model="searchFormData.publish_time"
@@ -153,6 +151,7 @@
       </div>
     </div>
   </el-dialog>
+
 </template>
   
   <script setup>
@@ -172,6 +171,7 @@ const searchFormData = reactive({
 const queryData = () => {
   cmRequest
     .request({
+      //url: "api/administrator/announcement/message",
       url: "administrator/announcement/message",
       method: "GET",
       // 如果需要发送其他参数，请在params中添加
@@ -219,6 +219,7 @@ const searchData = () => {
   cmRequest
     .request({
       url: "administrator/announcement/query",
+      //url: "api/administrator/announcement/query",
       method: "GET",
       params: searchParams, // 将搜索参数作为查询参数传递
     })
@@ -305,6 +306,7 @@ const saveEdit = () => {
   cmRequest
     .request({
       url: "administrator/announcement",
+        //url: "api/administrator/announcement",
       method: "PATCH",
       data: patchData,
     })
@@ -361,6 +363,7 @@ const saveCreate = () => {
   cmRequest
     .request({
       url: "administrator/announcement/addition",
+      //url: "api/administrator/announcement/addition",
       method: "POST",
       data: postData,
     })
@@ -398,6 +401,7 @@ const deleteAnnouncement = () => {
   cmRequest
     .request({
       url: "administrator/announcement/erasure",
+      //url: "api/administrator/announcement/erasure",
       method: "DELETE",
       data: { announcement_id: announcementIdToDelete },
     })

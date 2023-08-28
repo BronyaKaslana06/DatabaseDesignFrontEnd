@@ -2,7 +2,7 @@
     <div>
       <el-menu
         :default-active="onRoutes"
-        background-color="#324157"
+        background-color="#f5f5f5"
         text-color="#bfcbd9"
         active-text-color="#20a0ff"
         unique-opened
@@ -29,6 +29,11 @@ import { useRoute } from "vue-router";
 import { computed } from 'vue';
 
 const admin_items = [
+  {
+    name: '管理员仪表盘',
+    index: '/admin-dashboard-page',
+    title: '管理员仪表盘'
+  },
   {
     name: '员工信息',
     index: '/staff-info-page',
@@ -59,6 +64,7 @@ const admin_items = [
     index: '/maintenance-item-page',
     title: '维修订单管理'
   },
+
   {
     name: 'page5',
     index: '/page5',
@@ -86,9 +92,24 @@ const owner_items = [
 
 const staff_items = [
   {
+    name: '员工仪表盘',
+    index: '/employee-dashboard-page',
+    title: '员工仪表盘'
+  },
+  {
     name: 'page4',
     index: '/page4',
     title: 'page4'
+  },
+  {
+    name: '公告信息',
+    index: '/employee-notice-page',
+    title: '公告信息'
+  },
+  {
+    name: '个人信息',
+    index: '/personal-information-page',
+    title: '个人信息'
   }
 ]
 
@@ -111,6 +132,11 @@ const onRoutes = computed(() => {
 .slider-bar{
     height: 100vh;
     left: 0%;
-    width: 60%;
+    width: 100%;
+}
+
+.slider-bar .el-menu-item {
+  color: #333; /* 设置字体颜色 */
+  font-size: 1.1em;
 }
 </style>
