@@ -30,11 +30,9 @@
 
 <script setup>
 import mySlNav from '../components/sliderbar-nav.vue'
-import { ref, computed,getCurrentInstance,onBeforeMount } from 'vue';
+import { ref, computed,getCurrentInstance,onBeforeMount,onMounted } from 'vue';
 import { useRouter, createRouter } from 'vue-router';
-import { ref, onMounted } from 'vue';
 import { Setting, CloseBold } from '@element-plus/icons-vue';
-import { useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 
