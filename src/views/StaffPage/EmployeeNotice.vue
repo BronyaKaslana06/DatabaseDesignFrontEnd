@@ -111,8 +111,8 @@
   const queryData = () => {
     cmRequest
       .request({
-        //url: "api/administrator/announcement/message",
-        url: "administrator/announcement/message",
+        url: "api/administrator/announcement/message",
+        //url: "administrator/announcement/message",
         method: "GET",
         // 如果需要发送其他参数，请在params中添加
       })

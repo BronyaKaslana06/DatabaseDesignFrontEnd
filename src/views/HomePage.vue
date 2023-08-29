@@ -153,10 +153,6 @@ const logout = () => {
   padding: 0;
 }
 
-.el-main {
-  height: 100vh;
-}
-
 .custom-header {
   display: flex;
   justify-content: space-between;

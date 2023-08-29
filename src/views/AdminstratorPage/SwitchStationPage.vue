@@ -112,7 +112,7 @@
         <div id="myMapEdit"></div>
       </el-form-item>
       <el-form-item label="换电站地址">
-        <el-input v-model="addedData.station_address"></el-input>
+        <el-input v-model="editForm.station_address"></el-input>
       </el-form-item>
       <el-form-item label="可用状态">
         <el-select v-model="editForm.faliure_status">
@@ -391,8 +391,8 @@ const queryData = () => {
 
 const handlePageChange = (val) => {
   query.pageIndex = val;
-  queryData();
-};
+  pullData();
+}
 
 
 const handleEdit = (row) => {
