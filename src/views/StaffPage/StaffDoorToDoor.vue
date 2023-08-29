@@ -268,19 +268,6 @@ function getKey(item) {
   }
 }
 
-// const count = ref(6);
-// const loading = ref(false)
-// //const noMore = computed(() => count.value >= switch_data.value.length)
-// const load = () => {
-//   //console.log("Scroll event triggered");
-//   loading.value = true
-//   setTimeout(() => {
-//     count.value += 2
-//     //loading.value = false
-//   }, 2000)
-// }
-//const disabled = computed(() => loading.value || noMore.value)
-
 const selectedDetail = ref(null);
 
 const showLocation = (item) => {
