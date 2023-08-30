@@ -1,7 +1,7 @@
 <template>
     <el-page-header :icon="ArrowLeft">
       <template #content>
-        <span class="text-large font-600 mr-3"> 公告管理 </span>
+        <span class="text-large font-600 mr-3"> 公告信息 </span>
       </template>
     </el-page-header>
     <div class="block">
@@ -111,8 +111,8 @@
   const queryData = () => {
     cmRequest
       .request({
-        //url: "api/administrator/announcement/message",
-        url: "administrator/announcement/message",
+        url: "api/administrator/announcement/message",
+        //url: "administrator/announcement/message",
         method: "GET",
         // 如果需要发送其他参数，请在params中添加
       })
@@ -158,8 +158,8 @@
     console.log(searchParams);
     cmRequest
       .request({
-        url: "administrator/announcement/query",
-        //url: "api/administrator/announcement/query",
+        //url: "administrator/announcement/query",
+        url: "api/administrator/announcement/query",
         method: "GET",
         params: searchParams, // 将搜索参数作为查询参数传递
       })
