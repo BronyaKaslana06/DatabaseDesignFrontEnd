@@ -75,6 +75,18 @@ const router = createRouter({
         
                 },
                 {
+                    path: '/employee-notice-page',
+                    name: 'employee-notice-page',
+                    component: ()=>import('../views/StaffPage/EmployeeNotice.vue')
+        
+                },
+                {
+                    path: '/staff-information-page',
+                    name: 'staff-information-page',
+                    component: ()=>import('../views/StaffPage/StaffInformation.vue')
+        
+                },
+                {
                     path: '/station-battery-page',
                     name: 'station-battery-page',
                     component: ()=>import('../views/StaffPage/StationBattery.vue')
@@ -98,6 +110,16 @@ const router = createRouter({
                     component: ()=>import('../views/OwnerPage/DetailRepairInfoPage.vue')
                 },
                 {
+                    path: '/orderDashboard',
+                    name: 'ownerDashboard',
+                    component: ()=>import('../views/OwnerPage/OwnerDashboard.vue')
+                },
+                {
+                    path: '/car-page',
+                    name: 'car-page',
+                    component: ()=>import('../views/OwnerPage/CarPage.vue')
+                },
+                {
                     path: '/staffDoorToDoor',
                     name: 'doorToDoorService',
                     component: ()=>import('../views/StaffPage/StaffDoorToDoor.vue')
@@ -106,6 +128,11 @@ const router = createRouter({
                     path: '/staffRepair/:val',
                     name: 'staffRepair',
                     component: ()=>import('../views/StaffPage/StaffRepairMessage.vue')
+                },
+                {
+                    path: '/owner-notice-page',
+                    name: 'owner-notice-page',
+                    component: ()=>import('../views/OwnerPage/OwnerNotice.vue')
                 },
                 {
                     path: '/staffSwitch/:val',

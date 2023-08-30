@@ -161,12 +161,13 @@ const userInfo = reactive({
 const queryData = () => {
   cmRequest
     .request({
-      url: "http://127.0.0.1:4523/m2/3058331-0-default/103497189",
+      url: "api/owner/1/message",
       method: "GET",
     })
     .then((res) => {
+      console.log(res);
       if (!res.code) {
-        const userData = res; // 假设响应数据就是用户信息
+        const userData = res.data; // 假设响应数据就是用户信息
         Object.assign(userInfo, userData); // 将获取的用户信息赋值给 userInfo
       } else {
         ElMessage({
@@ -221,12 +222,13 @@ const saveEditedInfo = () => {
   editedUserInfo.birthday = formatDate(editedUserInfo.birthday);
   cmRequest
     .request({
-      url: "http://127.0.0.1:4523/m2/3058331-0-default/98567695",
+      url: "api/owner/1/information",
       method: "PATCH",
       data: editedUserInfo, // 使用编辑后的用户信息作为请求数据
     })
     .then((res) => {
       console.log(editedUserInfo);
+      console.log(res);
       if (!res.code) {
         ElMessage({
           type: "success",
