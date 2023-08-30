@@ -487,7 +487,7 @@ const deleteInfo = (val) => {
       })
     }
   })
-  pullData();
+  //pullData();
 }
 
 const saveEdit = () => {
@@ -497,7 +497,7 @@ const saveEdit = () => {
     method: 'PATCH',
     data: {
       station_id: editForm.station_id,
-      employee_name: editForm.station_name,
+      station_name: editForm.station_name,
       //employee_id: editForm.employee_id,
       longitude: editForm.longtitude,
       latitude: editForm.latitude,
@@ -522,7 +522,7 @@ const saveEdit = () => {
       })
     }
   })
-  pullData();
+  //pullData();
 }
 </script>
 

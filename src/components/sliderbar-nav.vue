@@ -1,33 +1,24 @@
 <template>
-    <div>
-      <el-menu
-        :default-active="onRoutes"
-        background-color="#eaeaea"
-        text-color="#bfcbd9"
-        active-text-color="#20a0ff"
-        unique-opened
-        router
-        class="slider-bar"
-      >
-        <template v-for="item in items" :key="item.index">
-          <el-menu-item :index="item.index">
-            <!-- 
-            <el-icon>
-              <component :is="item.icon"></component>
-            </el-icon>
-            <template #title>{{ item.title }}</template>
-            -->
-            <template #title>{{ item.title }}</template>
-          </el-menu-item>
-        </template>
-      </el-menu>
-    </div>
-  </template>
+  <div>
+    <el-menu :default-active="activePath" background-color="#F9FAFB" text-color="#bfcbd9" active-text-color="#20a0ff"
+      unique-opened router class="slider-bar" @select="onMenuSelect">
+      <template v-for="item in items" :key="item.index">
+        <el-menu-item :index="item.index">
+          <div :class="['icon-placeholder', item.index == selectedItem ? 'icon-active-' + item.title : 'icon-' + item.title]">
+          </div>
+          <template #title>{{ item.title }}</template>
+        </el-menu-item>
+      </template>
+    </el-menu>
+  </div>
+</template>
   
 <script setup lang="js">
-import { useRoute } from "vue-router";
-import { computed } from 'vue';
+import { useRoute, onBeforeRouteUpdate } from "vue-router";
+import { computed, ref } from 'vue';
 
+const selectedItem = ref(null);
+const activePath = ref(null);
 const admin_items = [
   {
     name: '管理员仪表盘',
@@ -50,9 +41,9 @@ const admin_items = [
     title: '车主信息'
   },
   {
-    name: '换电站管理',
+    name: '换电站信息',
     index: '/switch-station-page',
-    title: '换电站管理'
+    title: '换电站信息'
   },
   {
     path: '公告管理',
@@ -91,9 +82,9 @@ const staff_items = [
     title: '员工仪表盘'
   },
   {
-    name: '上门服务',
+    name: '上门维修服务',
     index: '/staffDoorToDoor',
-    title: '上门服务'
+    title: '上门维修服务'
   },
   {
     name: '公告信息',
@@ -104,28 +95,171 @@ const staff_items = [
 
 const user_type = localStorage.getItem("user_type");
 let items = [];
-if(user_type == 0)
+if (user_type == 0) {
   items = owner_items;
-else if(user_type == 1)
+  activePath.value = '/reservation';
+  selectedItem.value = '/reservation';
+}
+else if (user_type == 1) {
   items = staff_items;
-else
+  activePath.value = '/employee-dashboard-page';
+  selectedItem.value = '/employee-dashboard-page';
+}
+else {
   items = admin_items;
-
+  activePath.value = '/admin-dashboard-page';
+  selectedItem.value = '/admin-dashboard-page';
+}
 const route = useRoute();
-const onRoutes = computed(() => {
-  return route.path;
-});
+onBeforeRouteUpdate((to) => {
+  activePath.value = to.path;
+})
+
+const onMenuSelect = (item) => {
+  selectedItem.value = item;
+  console.log(selectedItem.value);
+}
+
+// 对于选中时的svg图片进行预加载，防止使用时出现滞后出现
+const svgArray = [
+  '车主信息',
+  '公告管理',
+  '管理员仪表盘',
+  '换电申请信息',
+  '换电站信息',
+  '上门维修服务',
+  '维修订单管理',
+  '员工信息'
+]
+
+for (let name of svgArray) {
+  const svgUrl = require('@/assets/'+name+'-active.svg');
+  const img = new Image();
+  img.src = svgUrl;
+}
+
+
 </script>
   
-<style>
-.slider-bar{
-    height: 100vh;
-    left: 0%;
-    width: 100%;
+<style scoped>
+.slider-bar {
+  height: 100vh;
+  left: 0%;
+  width: 100%;
 }
 
 .slider-bar .el-menu-item {
-  color: #333; /* 设置字体颜色 */
+  color: #333;
+  /* 设置字体颜色 */
   font-size: 1.1em;
 }
-</style>
+
+.el-menu-item.is-active {
+  border-radius: 19.412px;
+  background: var(--black-amp-white-white, #FFF);
+  box-shadow: 0px 4.529411315917969px 7.117647171020508px 0px rgba(0, 0, 0, 0.09);
+}
+
+.el-menu-item {
+  display: flex;
+  align-items: center;
+
+}
+
+.icon-placeholder {
+  height: 46px;
+  margin-right: 20px;
+  transition: margin-right 0.3s
+}
+
+.icon-员工信息::before {
+  content: url(../assets/员工信息.svg);
+}
+
+.icon-active-员工信息::before {
+  content: url(../assets/员工信息-active.svg);
+}
+
+.icon-管理员仪表盘::before,
+.icon-员工仪表盘::before {
+  content: url(../assets/管理员仪表盘.svg);
+}
+
+.icon-active-管理员仪表盘::before,
+.icon-active-员工仪表盘::before {
+  content: url(../assets/管理员仪表盘-active.svg);
+}
+
+.icon-车主信息::before,
+.icon-个人信息::before {
+  content: url(../assets/车主信息.svg);
+}
+
+.icon-active-车主信息::before,
+.icon-active-个人信息::before {
+  content: url(../assets/车主信息-active.svg);
+}
+
+.icon-active-换电申请信息::before,
+.icon-active-换电预约::before {
+  content: url(../assets/换电申请信息-active.svg);
+}
+
+.icon-换电申请信息::before,
+.icon-换电预约::before {
+  content: url(../assets/换电申请信息.svg);
+}
+
+.icon-换电站信息::before {
+  content: url(../assets/换电站信息.svg);
+}
+
+.icon-active-换电站信息::before {
+  content: url(../assets/换电站信息-active.svg);
+}
+
+.icon-公告管理::before,
+.icon-公告信息::before {
+  content: url(../assets/公告管理.svg);
+}
+
+.icon-active-公告管理::before,
+.icon-active-公告信息::before {
+  content: url(../assets/公告管理-active.svg);
+}
+
+.icon-维修订单管理::before {
+  content: url(../assets/维修订单管理.svg);
+}
+
+.icon-active-维修订单管理::before {
+  content: url(../assets/维修订单管理-active.svg);
+}
+
+.icon-上门维修服务::before,
+.icon-维修服务::before {
+  content: url(../assets/上门维修服务.svg);
+}
+
+.icon-active-上门维修服务::before,
+.icon-active-维修服务::before {
+  content: url(../assets/上门维修服务-active.svg);
+}
+
+.el-menu-item:hover {
+  background-color: rgb(255, 255, 255) !important;
+  border-radius: 19.412px;
+}
+
+.slider-bar .el-menu-item {
+  color: #A0AEC0;
+}
+
+.el-menu-item.is-active {
+  color: #585858 !important;
+}
+
+.el-menu-item {
+  height: 75px !important;
+  margin-bottom: 3px;
+}</style> 

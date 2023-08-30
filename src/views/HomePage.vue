@@ -1,5 +1,5 @@
 <template>
-  <el-container class="main-container">
+  <!-- <el-container class="main-container"> -->
     <el-header class="custom-header">
       <div class="logo-text-container">
         <div class="logo">
@@ -24,7 +24,7 @@
         </div>
       </el-main>
     </el-container>
-  </el-container>
+  <!-- </el-container> -->
   
 </template>
 
@@ -110,7 +110,7 @@ const logout = () => {
 
 <style scoped>
 .main-content {
-  background-color: #f5f5f5; /* 设置浅灰色背景颜色 */
+  background-color: #F9FAFB;
 }
 .setting-icon,
 .logout-icon {
@@ -140,16 +140,12 @@ const logout = () => {
 
 .el-aside {
   width: 15%;
-  position: fixed;
   background-color: #f5f5f5; /* 较浅的灰色 */
 }
 
-.content {
-  margin-left: 20%; /* 设置内容区域左边距以避免被导航栏遮挡 */
-}
-
-.el-main{
+.el-main {
   height: 100vh;
+  max-height: 100vh;
   padding: 0;
 }
 
@@ -158,7 +154,6 @@ const logout = () => {
   justify-content: space-between;
   align-items: center;
   padding: 1.2em 2em; /* 增加顶栏的上下内边距 */
-  background: linear-gradient(to right, #f3f6f3, #51f83b);
   height: 4.5em; /* 增加顶栏的高度 */
 }
 
