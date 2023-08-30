@@ -86,6 +86,11 @@ const router = createRouter({
                     component: ()=>import('../views/OwnerPage/DetailRepairInfoPage.vue')
                 },
                 {
+                    path: '/orderDashboard',
+                    name: 'ownerDashboard',
+                    component: ()=>import('../views/OwnerPage/OwnerDashboard.vue')
+                },
+                {
                     path: '/staffDoorToDoor',
                     name: 'doorToDoorService',
                     component: ()=>import('../views/StaffPage/StaffDoorToDoor.vue')

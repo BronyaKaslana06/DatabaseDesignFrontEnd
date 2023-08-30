@@ -59,6 +59,11 @@ const admin_items = [
 
 const owner_items = [
   {
+    name: '个人主页',
+    index: '/orderDashboard',
+    title: '个人主页'
+  },
+  {
     name: '换电预约',
     index: '/reservation',
     title: '换电预约'
