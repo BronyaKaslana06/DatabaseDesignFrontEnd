@@ -118,6 +118,11 @@ const router = createRouter({
                     component: ()=>import('../views/StaffPage/StaffRepairMessage.vue')
                 },
                 {
+                    path: '/owner-notice-page',
+                    name: 'owner-notice-page',
+                    component: ()=>import('../views/OwnerPage/OwnerNotice.vue')
+                },
+                {
                     path: '/staffSwitch/:val',
                     //path: '/staffSwitch',
                     name: 'staffSwitch',
