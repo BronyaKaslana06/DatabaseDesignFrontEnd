@@ -77,6 +77,16 @@ const owner_items = [
     name: '个人信息',
     index: '/personal-information-page',
     title: '个人信息'
+  },
+  {
+    name: '公告信息',
+    index: '/owner-notice-page',
+    title: '公告信息'
+  },
+  {
+    name: '车辆信息',
+    index: '/car-page',
+    title: '车辆信息'
   }
 ]
 
@@ -95,6 +105,11 @@ const staff_items = [
     name: '公告信息',
     index: '/employee-notice-page',
     title: '公告信息'
+  },
+  {
+    name: '员工信息',
+    index: '/staff-information-page',
+    title: '员工信息'
   }
 ]
 
