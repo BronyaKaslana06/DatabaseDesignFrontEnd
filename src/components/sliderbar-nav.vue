@@ -91,6 +91,16 @@ const staff_items = [
     title: '员工仪表盘'
   },
   {
+    name: '换电站电池管理',
+    index: '/station-battery-page',
+    title: '换电站电池管理'
+  },
+  {
+    name: '换电站管理',
+    index: '/station-info-page',
+    title: '换电站管理'
+  },
+  {
     name: '上门服务',
     index: '/staffDoorToDoor',
     title: '上门服务'

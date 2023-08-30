@@ -122,7 +122,7 @@
       method: 'GET',
       params: {
         page_index: query.page_index,
-        page_size: query.page_size,
+        page_size: query.page_size
         //switch_request_id:'',
         //employee_id:'',
         //vehicle_id:''

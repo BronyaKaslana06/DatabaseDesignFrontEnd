@@ -75,6 +75,18 @@ const router = createRouter({
         
                 },
                 {
+                    path: '/station-battery-page',
+                    name: 'station-battery-page',
+                    component: ()=>import('../views/StaffPage/StationBattery.vue')
+        
+                },
+                {
+                    path: '/station-info-page',
+                    name: 'station-info-page',
+                    component: ()=>import('../views/StaffPage/StationInfo.vue')
+        
+                },
+                {
                     path: '/admin-dashboard-page',
                     name: 'admin-dashboard-page',
                     component: ()=>import('../views/AdminstratorPage/AdminDashboard.vue')
