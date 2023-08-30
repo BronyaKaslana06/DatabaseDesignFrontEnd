@@ -75,6 +75,18 @@ const router = createRouter({
         
                 },
                 {
+                    path: '/employee-notice-page',
+                    name: 'employee-notice-page',
+                    component: ()=>import('../views/StaffPage/EmployeeNotice.vue')
+        
+                },
+                {
+                    path: '/staff-information-page',
+                    name: 'staff-information-page',
+                    component: ()=>import('../views/StaffPage/StaffInformation.vue')
+        
+                },
+                {
                     path: '/admin-dashboard-page',
                     name: 'admin-dashboard-page',
                     component: ()=>import('../views/AdminstratorPage/AdminDashboard.vue')
@@ -89,6 +101,11 @@ const router = createRouter({
                     path: '/orderDashboard',
                     name: 'ownerDashboard',
                     component: ()=>import('../views/OwnerPage/OwnerDashboard.vue')
+                },
+                {
+                    path: '/car-page',
+                    name: 'car-page',
+                    component: ()=>import('../views/OwnerPage/CarPage.vue')
                 },
                 {
                     path: '/staffDoorToDoor',
