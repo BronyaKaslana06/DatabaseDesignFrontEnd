@@ -171,8 +171,8 @@ const searchFormData = reactive({
 const queryData = () => {
   cmRequest
     .request({
-      //url: "api/administrator/announcement/message",
-      url: "administrator/announcement/message",
+      url: "api/administrator/announcement/message",
+      //url: "administrator/announcement/message",
       method: "GET",
       // 如果需要发送其他参数，请在params中添加
     })
@@ -200,6 +200,13 @@ onMounted(() => {
 });
 
 const formatDate = (dateString) => {
+  console.log(dateString);
+  if (dateString === "") {
+    return "";
+  }
+  if (dateString === null) {
+    return "";
+  }
   const date = new Date(dateString);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -218,12 +225,13 @@ const searchData = () => {
   console.log(searchParams);
   cmRequest
     .request({
-      url: "administrator/announcement/query",
-      //url: "api/administrator/announcement/query",
+      //url: "administrator/announcement/query",
+      url: "api/administrator/announcement/query",
       method: "GET",
       params: searchParams, // 将搜索参数作为查询参数传递
     })
     .then((res) => {
+      console.log(res);
       if (!res.code) {
         announcementArray.value = res.announcementArray;
       } else {
@@ -305,8 +313,8 @@ const saveEdit = () => {
   console.log(editFormData);
   cmRequest
     .request({
-      url: "administrator/announcement",
-        //url: "api/administrator/announcement",
+      //url: "administrator/announcement",
+      url: "api/administrator/announcement",
       method: "PATCH",
       data: patchData,
     })
@@ -362,8 +370,8 @@ const saveCreate = () => {
 
   cmRequest
     .request({
-      url: "administrator/announcement/addition",
-      //url: "api/administrator/announcement/addition",
+      //url: "administrator/announcement/addition",
+      url: "api/administrator/announcement",
       method: "POST",
       data: postData,
     })
@@ -400,8 +408,8 @@ const deleteAnnouncement = () => {
 
   cmRequest
     .request({
-      url: "administrator/announcement/erasure",
-      //url: "api/administrator/announcement/erasure",
+      //url: "administrator/announcement/erasure",
+      url: "api/administrator/announcement/erasure",
       method: "DELETE",
       data: { announcement_id: announcementIdToDelete },
     })
