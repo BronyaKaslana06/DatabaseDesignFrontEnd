@@ -2,13 +2,15 @@
     <div>
         <div>
             <input v-model="keyword" type="text" class="search-bar" placeholder="请输入关键词" @keydown.enter="search" />
-            <button  v-wave="{  color: 'white',
-                    initialOpacity: 0.7,
-                    duration: 0.35,
-                    easing: 'ease-out'}" class="search-button" @click="search">查询</button>
+            <button v-wave="{
+                color: 'white',
+                initialOpacity: 0.7,
+                duration: 0.35,
+                easing: 'ease-out'
+            }" class="search-button" @click="search">查询</button>
         </div>
         <div v-infinite-scroll="load" style="overflow: auto" class="info-list" :infinite-scroll-disabled="loading"
-            infinite-scroll-distance="100">
+            infinite-scroll-distance="100" v-loading="loading">
             <div v-for="(item, index) in dataItem" :key="index" class="info-group">
                 <div v-wave="{
                     color: '#3FA89F',
@@ -95,7 +97,7 @@
                     <div class="spc-address">{{ specificDataItem.address }}</div>
                     <div id="station_map" style="width:100%;height:200px"></div>
                 </div>
-                <button type="button" @click="rsvFlag = true" class="reservation-button" v-wave="{
+                <button type="button" @click="rsvFlag = true, getMoreInfo()" class="reservation-button" v-wave="{
                     color: 'white',
                     initialOpacity: 0.5,
                     duration: 0.25,
@@ -131,8 +133,25 @@
             <div
                 style="display: flex;align-items: center;justify-content: space-around;width: 90%;position: relative;left:50%;transform:translateX(-50%);">
                 <el-radio-group v-model="switchType">
-                    <el-radio label="线下换电"></el-radio>
+                    <el-radio label="到店换电"></el-radio>
                     <el-radio label="上门换电"></el-radio>
+                </el-radio-group>
+            </div>
+            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%);margin:20px 0">待换电汽车
+            </div>
+            <div
+                style="display: flex;align-items: center;justify-content: space-around;width: 90%;position: relative;left:50%;transform:translateX(-50%);">
+                <el-select v-model="selectedCar" placeholder="Select" size="large">
+                    <el-option v-for="(item, index) in carGroup" :key="index" :label="item.plate_number" :value="index" />
+                </el-select>
+            </div>
+            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%);margin:20px 0">电池类型
+            </div>
+            <div
+                style="display: flex;align-items: center;justify-content: space-around;width: 90%;position: relative;left:50%;transform:translateX(-50%);">
+                <el-radio-group v-model="batteryType">
+                    <el-radio label="标准续航型"></el-radio>
+                    <el-radio label="长续航型"></el-radio>
                 </el-radio-group>
             </div>
             <div v-if="switchType === '上门换电'"
@@ -164,6 +183,9 @@ import cmRequest from '../../service/index.js';
 
 let curInfoIndex = 1;
 let curStationID = null;
+let user_lat = 0;
+let user_lng = 0;
+let carGroup = ref([]);
 const loading = ref(false);
 const dataItem = ref([]);
 const rsvFlag = ref(false);
@@ -173,7 +195,10 @@ const timeRadio = ref(null);
 const switchType = ref(null);
 const address = ref(null);
 const keyword = ref(null);
+const selectedCar = ref(null);
 const additionalInfo = ref(null);
+const batteryType = ref(null);
+
 const timeArray = ref([
     { label: "0:00-4:00", value: 0, disabled: false },
     { label: "4:00-8:00", value: 1, disabled: false },
@@ -185,12 +210,11 @@ const timeArray = ref([
 
 
 const timeArrayCheck = (selectedDate) => {
-    const currentDate = dateArray.value[0];    //当前系统的日期
+    const currentDate = dateArray.value[0];
 
     const date = new Date();
     const currentHour = date.getHours();
 
-    // 如果选中的日期是今天并且当前小时超过了选中的时间段的结束小时
     if (selectedDate === currentDate) {
         for (let i = 0; i < timeArray.value.length; i++) {
             if (currentHour >= (timeArray.value[i].value + 1) * 4)
@@ -207,14 +231,14 @@ const timeArrayCheck = (selectedDate) => {
 const search = () => {
     if (keyword.value == "") {
         dataItem.value = [];
-        curInfoIndex =1;
+        curInfoIndex = 1;
         pullData();
     }
     cmRequest.request({
         url: "api/owner/stations/keyword",
         method: 'GET',
         params: {
-            info_num: 15,
+            info_num: 9,
             info_index: 1,
             keyword: keyword.value
         }
@@ -240,6 +264,19 @@ const resetForm = () => {
     additionalInfo.value = null;
 }
 
+const getMoreInfo = () => {
+    let owner_id = localStorage.getItem("user_id");
+    cmRequest.request({
+        baseURL: 'https://mock.apifox.cn/m1/3058331-0-default',
+        url: 'owner/repair_reservation/own_query',
+        method: 'GET',
+        params: {
+            owner_id: owner_id
+        }
+    }).then((res) => {
+        carGroup.value = res.data;
+    })
+}
 
 const initDateArray = () => {
     const currentDate = new Date();
@@ -279,35 +316,33 @@ const specificDataItem = reactive({
 const drawer = ref()
 
 const submit = () => {
-    if (dateRadio.value == null || timeRadio.value == null || switchType.value == null || (switchType.value === "上门换电" && address.value == null)) {
+    if (dateRadio.value == null || timeRadio.value == null || switchType.value == null ||
+     (switchType.value === "上门换电" && address.value == null) || battery_type.value === null || selectedCar.value === null) {
         ElMessage({
             type: 'warning',
             message: '请填写完整的表单信息'
         });
         return;
     }
-    const currentDate = new Date();
 
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1; // 注意月份从0开始，所以要加1
-    const day = currentDate.getDate();
-    const hours = currentDate.getHours();
-    const minutes = currentDate.getMinutes();
-    const seconds = currentDate.getSeconds();
-
-    currrent_time = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
+    let owner_id = localStorage.getItem("user_id");
+    let vehicle_id = carGroup.value[selectedCar.value].vehicle_id;
+    console.log(vehicle_id);
     cmRequest.request({
-        url: 'api/owner/switch-reservation',
+        url: 'api/owner/switch_request',
         method: 'POST',
-        params: {
-            owner_id: localStorage.getItem("user_id"),
+        data: {
+            owner_id: owner_id,
             replace_type: switchType.value,
             owner_address: address.value,
-            additional_info: additionalInf.value,
+            additional_info: additionalInfo.value,
             date: dateRadio.value,
             period: timeRadio.value,
             station_id: curStationID,
-            create_time: currrent_time
+            longitude: user_lng,
+            latitude: user_lat,
+            battery_type: batteryType.value,
+            vehicle_id: vehicle_id
         }
     }).then((res) => {
         if (!res.code) {
@@ -331,9 +366,10 @@ const pullData = () => {
     geolocation.getCurrentPosition((r) => {
         if (geolocation.getStatus() == 0) {
             var userLocation = r.point;
-            var user_lat = userLocation.lat;
-            var user_lng = userLocation.lng;
+            user_lat = userLocation.lat;
+            user_lng = userLocation.lng;
             cmRequest.request({
+                // baseURL:'https://mock.apifox.cn/m1/3058331-0-default',
                 url: 'api/owner/stations',
                 method: 'GET',
                 params: {
@@ -343,13 +379,14 @@ const pullData = () => {
                     info_index: curInfoIndex
                 }
             }).then((res) => {
-                if (!res.code) {  
-                    if ( typeof dataItem.value === 'undefined' ||  dataItem.value.length === 0) {
+                if (!res.code) {
+                    if (typeof dataItem.value === 'undefined' || dataItem.value.length === 0) {
                         dataItem.value = res.data;
                     } else {
                         dataItem.value = [...dataItem.value, ...res.data];
                     }
                     loading.value = false;
+                    curInfoIndex++;
                 }
                 else {
                     ElMessage({
@@ -374,7 +411,6 @@ const pullData = () => {
 const load = () => {
     loading.value = true;
     pullData();
-    curInfoIndex++;
 }
 
 const assignment = (data) => {
@@ -448,6 +484,13 @@ const drawMap = () => {
 }
 </script>
 <style scoped>
+.history-btn {
+    height: 40px;
+    display: inline;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
 .reservation-button {
     transform: translateX(-50%);
     position: relative;
@@ -486,7 +529,7 @@ const drawMap = () => {
 .search-button {
     display: inline;
     margin-left: 20px;
-    width: 100px;
+    width: 10%;
     background-color: #4FD1C5;
     border-radius: 20px;
     border: solid 1px #4FD1C5;
@@ -679,12 +722,11 @@ const drawMap = () => {
 }
 
 .info-list {
-    height: 100vh;
+    height: 80vh;
     overflow-y: auto;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-
 }
 
 .info-block {

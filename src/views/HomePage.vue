@@ -118,7 +118,9 @@ const logout = () => {
   cursor: pointer;
   margin-left: 0.5em; 
 }
-
+.content{
+  margin-left: 40px;
+}
 .setting-icon:hover,
 .logout-icon:hover {
   color: #1a9cff;
@@ -154,7 +156,7 @@ const logout = () => {
   justify-content: space-between;
   align-items: center;
   padding: 1.2em 2em; /* 增加顶栏的上下内边距 */
-  height: 4.5em; /* 增加顶栏的高度 */
+  height: 10vh; /* 增加顶栏的高度 */
 }
 
 .logo img {
