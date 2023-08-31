@@ -72,6 +72,16 @@
                                         <el-input v-model="repairItem.title" placeholder="请输入维修内容" />
                                     </el-col>
                                 </el-row>
+                                <el-row :gutter="10" class="custom-row">
+                                    <el-col :span="4"><span :style="{ fontSize: '1.3em' }">预约时间：</span></el-col>
+                                    <el-col :span="20">
+                                      <el-date-picker
+                                        v-model="repairItem.appoint_time"
+                                        type="datetime"
+                                        placeholder="选择日期和时间"
+                                        />
+                                    </el-col>
+                                </el-row>
                             </div>
                             <el-divider />
                             <div style="padding: 0px 0px 20px 0px;">
@@ -103,7 +113,7 @@
                     <div class="date-picker-wrapper">
                         <el-date-picker v-model="timeValue" type="daterange" align="right" unlink-panels range-separator="至"
                             start-placeholder="开始日期" end-placeholder="结束日期" value-format="YYYY-MM-DD"
-                            format="YYYY 年 MM 月 DD 日" :shortcuts="shortcuts" @change="getDate">
+                            format="YYYY 年 MM 月 DD 日" :shortcuts="shortcuts" @clear="handleDateClear" @change="getDate">
                         </el-date-picker>
                     </div>
 
@@ -121,6 +131,18 @@
                                     }}</p>
                                 </div>
                                 <div class="list-item-button">
+                                  <template v-if="item.status === '1'">
+                                    <el-button type="primary" disabled>待接单</el-button>
+                                    </template>
+                                    <template v-if="item.status === '2'">
+                                    <el-button type="info" disabled>待完成</el-button>
+                                    </template>
+                                    <template v-if="item.status === '3'">
+                                    <el-button type="warning" disabled>待评分</el-button>
+                                    </template>
+                                    <template v-if="item.status === '4'">
+                                    <el-button type="success" disabled>已完成</el-button>
+                                    </template>
                                     <el-button text :icon="Document"
                                         @click="Detail(item.maintenance_item_id)">查看详情</el-button>
                                     <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" title="请确认是否删除"
@@ -287,17 +309,35 @@ const shortcuts = [
   },
 ]
 
-const getDate = ([startDate, endDate]) => {
-    console.log('开始日期:', startDate);
-    console.log('结束日期:', endDate);
-    infoForm.start_time = startDate;
-    infoForm.end_time = endDate;
+const handleDateClear= () => {
+      infoForm.start_time = '1000-01-01';
+      infoForm.end_time = '9999-12-31';
+      //写接口，进行搜索
+    rough_query();
+};
+
+const getDate = () => {
+    console.log('timevalue:', timeValue.value[0]);
+    console.log('startDate:', timeValue.value[0]);
+    console.log('endDate:', timeValue.value[1]);
+    /*
+    if (timeValue.value && timeValue.value[0] !== null && timeValue.value[1] !== null)
+    {
+      infoForm.start_time = timeValue.value[0];
+      infoForm.end_time = timeValue.value[1];
+    }
+    else
+    {
+      infoForm.start_time = '1000-01-01';
+      infoForm.end_time = '9999-12-31';
+  }*/
+    infoForm.start_time = timeValue.value[0];
+      infoForm.end_time = timeValue.value[1];
     //写接口，进行搜索
     rough_query();
 };
 
 const listdata = ref([]);
-
 
 const count = ref(4)
 const loading = ref(false)
@@ -365,8 +405,11 @@ const repairItem = reactive({
     license_number: '',
     maintenance_location: '',
     remarks: '',
-    order_status: '否',
+    order_status: '待接单',
     title: '',
+    appoint_time:'',
+    longitude:'',
+    latitude:''
 })
 const selectedValue2 = ref('');
 const updateSelected2 = () => {
@@ -385,7 +428,11 @@ const clearRepairItem = () => {
     //repairItem.vehicle_id = '';
     repairItem.maintenance_location = '';
     repairItem.remarks = '';
-    repairItem.order_status = '否';
+    repairItem.order_status = '待接单';
+    repairItem.appoint_time = '';
+    repairItem.longitude = repairLocation.lng;
+    repairItem.latitude = repairLocation.lat;
+
     repairLocation.lng = 121.21633041361302;
     repairLocation.lat = 31.268357562330195;
 }
@@ -409,6 +456,8 @@ const openHandin = () => {
             }
             repairLocation.lat = userLocation.lat;
             repairLocation.lng = userLocation.lng;
+            repairItem.longitude=repairLocation.lng;
+            repairItem.latitude=repairLocation.lat;
             loadMapButton.value = false;
         }
         else {
@@ -446,7 +495,15 @@ const mapOpen = () => {
         point.lat = e.point.lat;
         marker = new BMap.Marker(point);
         map.addOverlay(marker);
+        //lz
+        console.log("lng:",point.lng);
+        console.log("lat:",point.lat);
+        repairItem.longitude=point.lng;
+        repairItem.latitude=point.lat;
+        console.log("up lo:",repairItem.longitude);
+        console.log("up lo:",repairItem.latitude);
     });
+    
 }
 
 const handleCancel = () => {
@@ -477,9 +534,11 @@ const handleClose = () => {
                 vehicle_id: repairItem.vehicle_id,
                 maintenance_location: repairItem.maintenance_location,
                 remarks: repairItem.remarks,
-                order_status: repairItem.order_status,
                 plate_number: repairItem.license_number,
-                title: repairItem.title
+                title: repairItem.title,
+                appoint_time:repairItem.appoint_time,
+                longitude:repairItem.longitude,
+                latitude:repairItem.latitude
             }
         }).then((res) => {
             handinDialog.value = false;
