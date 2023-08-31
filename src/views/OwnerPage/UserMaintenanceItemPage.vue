@@ -131,16 +131,16 @@
                                     }}</p>
                                 </div>
                                 <div class="list-item-button">
-                                  <template v-if="item.status === '1'">
+                                  <template v-if="item.order_status === '待接单'">
                                     <el-button type="primary" disabled>待接单</el-button>
                                     </template>
-                                    <template v-if="item.status === '2'">
+                                    <template v-if="item.order_status === '待完成'">
                                     <el-button type="info" disabled>待完成</el-button>
                                     </template>
-                                    <template v-if="item.status === '3'">
+                                    <template v-if="item.order_status === '待评分'">
                                     <el-button type="warning" disabled>待评分</el-button>
                                     </template>
-                                    <template v-if="item.status === '4'">
+                                    <template v-if="item.order_status === '已完成'">
                                     <el-button type="success" disabled>已完成</el-button>
                                     </template>
                                     <el-button text :icon="Document"

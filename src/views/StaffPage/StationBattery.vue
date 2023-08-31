@@ -189,7 +189,10 @@ const pullData = () => {
         params: {
             station_id:'1',
             pageIndex: query.pageIndex,
-            pageSize: query.pageSize
+            pageSize: query.pageSize,
+            battery_id: '',
+            battery_type_id: '',
+            available_status: ''
         }
     }).then((res) => {
         if (!res.code) {
@@ -238,7 +241,10 @@ const changeView = () => {
         params: {
             station_id:'1',
             pageIndex: 1,
-            pageSize: query.pageSize
+            pageSize: query.pageSize,
+            battery_id: '',
+            battery_type_id: '',
+            available_status: ''
         }
     }).then((res) => {
         tableData.value = res.data;
