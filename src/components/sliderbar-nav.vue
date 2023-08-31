@@ -15,7 +15,7 @@
   
 <script setup lang="js">
 import { useRoute, onBeforeRouteUpdate } from "vue-router";
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 
 const selectedItem = ref(null);
 const activePath = ref(null);
@@ -74,6 +74,11 @@ const owner_items = [
     title: '维修服务'
   },
   {
+    name: '换电订单历史',
+    index: '/switch-history',
+    title: '换电订单历史'
+  },
+  {
     name: '个人信息',
     index: '/personal-information-page',
     title: '个人信息'
@@ -107,9 +112,14 @@ const staff_items = [
     title: '换电站管理'
   },
   {
-    name: '上门服务',
+    name: '换电管理',
     index: '/switchReservation',
-    title: '上门服务'
+    title: '换电管理'
+  },
+  {
+    name: '上门维修',
+    index: '/staffRepair',
+    title: '上门维修'
   },
   {
     name: '公告信息',
@@ -120,25 +130,29 @@ const staff_items = [
     name: '员工信息',
     index: '/staff-information-page',
     title: '员工信息'
-  }
+  },
+
 ]
 
 const user_type = localStorage.getItem("user_type");
 let items = [];
 if (user_type == 0) {
+  console.log("a");
   items = owner_items;
-  activePath.value = '/reservation';
-  selectedItem.value = '/reservation';
+    activePath.value = sessionStorage.getItem('previousPage');
+    selectedItem.value = sessionStorage.getItem('previousPage');
 }
 else if (user_type == 1) {
+  console.log("b");
   items = staff_items;
-  activePath.value = '/employee-dashboard-page';
-  selectedItem.value = '/employee-dashboard-page';
+  activePath.value = sessionStorage.getItem('previousPage');
+  selectedItem.value = sessionStorage.getItem('previousPage');
 }
 else {
+  console.log("c");
   items = admin_items;
-  activePath.value = '/admin-dashboard-page';
-  selectedItem.value = '/admin-dashboard-page';
+  activePath.value = sessionStorage.getItem('previousPage');
+  selectedItem.value = sessionStorage.getItem('previousPage');
 }
 const route = useRoute();
 onBeforeRouteUpdate((to) => {
@@ -159,14 +173,17 @@ const svgArray = [
   '换电站信息',
   '上门维修服务',
   '维修订单管理',
-  '员工信息'
+  '员工信息',
+  '换电订单历史'
 ]
+
 
 for (let name of svgArray) {
   const svgUrl = require('@/assets/'+name+'-active.svg');
   const img = new Image();
   img.src = svgUrl;
 }
+
 
 
 </script>
@@ -200,6 +217,10 @@ for (let name of svgArray) {
   height: 46px;
   margin-right: 20px;
   transition: margin-right 0.3s
+}
+
+.icon-换电订单历史::before{
+  content: url(../assets/换电订单历史.svg);
 }
 
 .icon-员工信息::before {
@@ -276,6 +297,10 @@ for (let name of svgArray) {
   content: url(../assets/上门维修服务-active.svg);
 }
 
+.icon-active-换电订单历史::before{
+  content: url(../assets/换电订单历史-active.svg);
+}
+
 .el-menu-item:hover {
   background-color: rgb(255, 255, 255) !important;
   border-radius: 19.412px;
@@ -292,4 +317,8 @@ for (let name of svgArray) {
 .el-menu-item {
   height: 75px !important;
   margin-bottom: 3px;
-}</style> 
+  
+}
+
+
+</style> 
