@@ -78,7 +78,7 @@
             <div>
               <span style="font-size: 16px;font-weight: bold;margin-bottom: 0.5em;">订单位置</span>
               <div style="margin-top: 0.3em;" v-if="!selectedOrNot">请选择一个订单,以查看该订单的地址</div>
-              <div style="margin-top: 0.3em;" v-else>地址：{{ switch_item_data.maintenance_location }}</div>
+              <div style="margin-top: 0.3em;" v-else>地址：{{ repair_item_data.maintenance_location }}</div>
             </div>
           </template>
           <div v-show="showMap">
@@ -108,7 +108,7 @@ const showMap = ref(false);
 const activeName = ref('1');
 const repair_data = ref([]); //维修订单列表
 const repair_item_data = ref({});   //维修订单详细信息
-const listLoading = ref(true);
+const listLoading = ref(false);
 
 const handleSwitchChange = () => {
   //show_status.value = newStatus;
@@ -131,20 +131,20 @@ const refreshRepair = (show_message) => {
   //repair_data.value = [];
   let state = activeName.value === '1' ? '待接单' : '待完成';
   cmRequest.request({
-    url: 'api/staff/maintanence/detail',
+    url: 'api/staff/maintanence/doortodoor',
     //url: 'https://mock.apifox.cn/m1/3058331-0-default/staff/switchrequest/doortodoor',
     method: 'GET',
     params: {
-      employee_id: '351', //TODO
+      employee_id: 1, //TODO
       order_status: state,
     }
   }).then((res) => {
-    if (!res.code && show_message) {
+    if (!res.code) {
       ElMessage({
         type: 'success',
         message: '获取維修订单列表成功',
       })
-      repair_data.value = res.switch_request_array;
+      repair_data.value = res.maintanence_item_array;
       listLoading.value = false;
     }
     else {
@@ -177,6 +177,7 @@ const get_repair_info = (id) => {
       // })
       repair_item_data.value = res.data;
       repair_item_loading.value = false;
+      repair_item_data.value.maintenance_item_id = id;
     }
     else {
       ElMessage({
@@ -217,6 +218,7 @@ const take_order = (item) => {
         message: '接单成功',
       })
       repair_data.value = res.data;
+      refreshRepair(false);
     }
     else {
       ElMessage({
