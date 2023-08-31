@@ -205,9 +205,9 @@ const refreshSwitch = () => {
       //url: 'https://mock.apifox.cn/m1/3058331-0-default/staff/switchrequest/doortodoor',
       method: 'GET',
       params: {
-        employee_id: '1', //TODO
+        employee_id: '351', //TODO
         request_status: state,
-        station_id: '1'  //TODO
+        station_id: '154'  //TODO
       }
     }).then((res) => {
       if (!res.code) {
@@ -234,7 +234,7 @@ const refreshSwitch = () => {
       method: 'GET',
       params: {
         request_status: '待完成',
-        station_id: '1'  //TODO
+        station_id: '154'  //TODO
       }
     }).then((res) => {
       if (!res.code) {
