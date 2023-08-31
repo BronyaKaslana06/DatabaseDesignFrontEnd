@@ -140,6 +140,11 @@ const router = createRouter({
                     name: 'staffSwitch',
                     component: ()=>import('../views/StaffPage/StaffSwitchMessage.vue')
                 },
+                {
+                    path: '/staffRepair',
+                    name: 'staffRepair',
+                    component: ()=>import('../views/StaffPage/StaffRepairPage.vue')
+                }
             ],
         },
         {

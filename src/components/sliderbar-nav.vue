@@ -107,9 +107,14 @@ const staff_items = [
     title: '换电站管理'
   },
   {
-    name: '上门服务',
+    name: '换电管理',
     index: '/switchReservation',
-    title: '上门服务'
+    title: '换电管理'
+  },
+  {
+    name: '上门维修',
+    index: '/staffRepair',
+    title: '上门维修'
   },
   {
     name: '公告信息',
@@ -120,7 +125,8 @@ const staff_items = [
     name: '员工信息',
     index: '/staff-information-page',
     title: '员工信息'
-  }
+  },
+
 ]
 
 const user_type = localStorage.getItem("user_type");
