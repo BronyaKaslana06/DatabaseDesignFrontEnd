@@ -107,9 +107,9 @@ const staff_items = [
     title: '换电站管理'
   },
   {
-    name: '上门维修服务',
+    name: '上门服务',
     index: '/switchReservation',
-    title: '上门维修服务'
+    title: '上门服务'
   },
   {
     name: '公告信息',
