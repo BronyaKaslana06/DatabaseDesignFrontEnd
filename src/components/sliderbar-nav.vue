@@ -83,7 +83,7 @@ const staff_items = [
   },
   {
     name: '上门维修服务',
-    index: '/staffDoorToDoor',
+    index: '/switchReservation',
     title: '上门维修服务'
   },
   {

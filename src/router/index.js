@@ -86,9 +86,9 @@ const router = createRouter({
                     component: ()=>import('../views/OwnerPage/DetailRepairInfoPage.vue')
                 },
                 {
-                    path: '/staffDoorToDoor',
-                    name: 'doorToDoorService',
-                    component: ()=>import('../views/StaffPage/StaffDoorToDoor.vue')
+                    path: '/switchReservation',
+                    name: 'switchReservation',
+                    component: ()=>import('../views/StaffPage/SwitchReservation.vue')
                 },
                 {
                     path: '/staffRepair/:val',
