@@ -88,9 +88,9 @@ const queryData = () => {
       method: "GET",
     })
     .then((res) => {
-      console.log(res);
-      if (res) {
-        const userData = res; // 假设响应数据就是用户信息
+      console.log(res.data);
+      if (!res.code) {
+        const userData = res.data; // 假设响应数据就是用户信息
         Object.assign(userInfo, userData); // 将获取的用户信息赋值给 userInfo
         console.log(res);
       } else {
@@ -130,7 +130,7 @@ const showEditDialog = (userInfo) => {
 const saveEditedInfo = () => {
   cmRequest
     .request({
-      url: "http://127.0.0.1:4523/m2/3058331-0-default/98567695",
+      url: "api/staff/my-info/edit/1",
       method: "PATCH",
       data: editedUserInfo, // 使用编辑后的用户信息作为请求数据
     })

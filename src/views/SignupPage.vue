@@ -16,8 +16,8 @@
                     管理员
                 </el-button>
             </div>
-            <el-form  label-width="70px" :rules="rules" :model="formData" ref="formInstance">
-                <el-form-item label="姓名" prop="username">
+            <el-form label-width="70px" :rules="rules" :model="formData" ref="formInstance">
+                <el-form-item v-if="selected === 'user' || selected === 'staff'" label="姓名" prop="username">
                     <el-input v-model="formData.username"> </el-input>
                 </el-form-item>
                 <el-form-item v-if="selected === 'user'" label="昵称" prop="nickname">
@@ -163,7 +163,7 @@ const rules = reactive({
     ]
 })
 
-const login = ()=>{
+const login = () => {
     router.push('/login')
 }
 
@@ -216,13 +216,18 @@ const submitForm = async () => {
                 if (!res.code) {
                     ElMessage({
                         type: 'success',
-                        message: '注册成功，您的ID为'+res.data.user_id
+                        message: '注册成功，您的ID为' + res.data.user_id
                     })
                     localStorage.setItem('user_type', selected.value);
-                    localStorage.setItem('user_id',res.data.user_id);
-                    router.push('/')
+                    localStorage.setItem('user_id', res.data.user_id);
+                    if (selected.value == 0)
+                        router.push('/reservation');
+                    else if (selected.value == 1)
+                        router.push('/employee-dashboard-page')
+                    else if (selected.value == 2)
+                        router.push('/admin-dashboard-page')
                 }
-                else{
+                else {
                     ElMessage({
                         type: 'error',
                         message: '注册失败'

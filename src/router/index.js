@@ -139,6 +139,10 @@ const router = createRouter({
                     //path: '/staffSwitch',
                     name: 'staffSwitch',
                     component: ()=>import('../views/StaffPage/StaffSwitchMessage.vue')
+                },{
+                    path:'/switch-history',
+                    name:'switch-history',
+                    component: ()=>import('../views/OwnerPage/SwitchHistoryPage.vue')
                 },
                 {
                     path: '/staffRepair',
@@ -162,11 +166,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    // Check authentication and perform redirection
     const role = localStorage.getItem('user_id');
     if (!role && to.path !== '/login') {
         next('/login');
     } else {
+        sessionStorage.setItem("previousPage", to.path);
         next();
     }
 })
