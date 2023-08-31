@@ -50,9 +50,6 @@
             <el-option key="2" value="女" label="女"> </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="职位">
-          <el-input v-model="editedUserInfo.positions"></el-input>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="saveEditedInfo">保存</el-button>
           <el-button @click="editDialogVisible = false">取消</el-button>
@@ -81,10 +78,12 @@ const userInfo = reactive({
   },
 });
 
+const storedUserInfo = JSON.parse(localStorage.getItem("user_id"));
+
 const queryData = () => {
   cmRequest
     .request({
-      url: "api/staff/my-info/1",
+      url: "api/staff/my-info/"+storedUserInfo,
       method: "GET",
     })
     .then((res) => {
@@ -114,14 +113,12 @@ const editDialogVisible = ref(false);
 
 const editedUserInfo = reactive({
   name: "",
-  positions: "",
   gender: "",
   phone_number: "",
 });
 
 const showEditDialog = (userInfo) => {
   editedUserInfo.name = userInfo.personalInfo.name;
-  editedUserInfo.positions = userInfo.personalInfo.positions;
   editedUserInfo.gender = userInfo.personalInfo.gender;
   editedUserInfo.phone_number = userInfo.personalInfo.phone_number;
   editDialogVisible.value = true;
@@ -130,7 +127,7 @@ const showEditDialog = (userInfo) => {
 const saveEditedInfo = () => {
   cmRequest
     .request({
-      url: "api/staff/my-info/edit/1",
+      url: "api/staff/my-info/"+storedUserInfo+"/edit",
       method: "PATCH",
       data: editedUserInfo, // 使用编辑后的用户信息作为请求数据
     })
