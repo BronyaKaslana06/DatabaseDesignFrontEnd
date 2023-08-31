@@ -148,6 +148,8 @@ const updateSelected = () => {
 
 /* 车辆组件区结束 */
 
+const storedUserInfo = JSON.parse(localStorage.getItem("user_id"));
+
 const userInfo = reactive({
   user_name: "",
   user_nickname: "",
@@ -159,9 +161,10 @@ const userInfo = reactive({
 });
 
 const queryData = () => {
+  console.log(storedUserInfo);
   cmRequest
     .request({
-      url: "api/owner/1/message",
+      url: "api/owner/"+storedUserInfo+"/message",
       method: "GET",
     })
     .then((res) => {
@@ -222,7 +225,7 @@ const saveEditedInfo = () => {
   editedUserInfo.birthday = formatDate(editedUserInfo.birthday);
   cmRequest
     .request({
-      url: "api/owner/1/information",
+      url: "api/owner/"+storedUserInfo+"/information",
       method: "PATCH",
       data: editedUserInfo, // 使用编辑后的用户信息作为请求数据
     })
