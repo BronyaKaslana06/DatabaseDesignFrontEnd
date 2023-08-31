@@ -1,5 +1,5 @@
 <template>
-  <el-container class="main-container">
+  <!-- <el-container class="main-container"> -->
     <el-header class="custom-header">
       <div class="logo-text-container">
         <div class="logo">
@@ -24,7 +24,7 @@
         </div>
       </el-main>
     </el-container>
-  </el-container>
+  <!-- </el-container> -->
   
 </template>
 

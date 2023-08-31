@@ -1,11 +1,11 @@
 <template>
   <div>
-    <el-page-header :icon="ArrowLeft">
+    <!-- <el-page-header :icon="ArrowLeft">
       <template #content>
         <span class="text-large font-600 mr-3"> 换电站管理 </span>
       </template>
-    </el-page-header>
-    <div class="block">
+    </el-page-header> -->
+    <div class="up-block">
       <div class="inner-block2">
         <el-form :inline="true">
           <el-row>
@@ -42,14 +42,14 @@
         </div>
       </div>
     </div>
-    <div class="block">
+    <div class="down-block">
       <div class="inner-block">
         <div class="button-wrapper">
           <el-button @click="addFlag = true" style="margin-bottom: 10px;">新增</el-button>
           <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
         </div>
         <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-          height="100vh">     
+        v-loading="loadTableData"  >     
           <el-table-column prop="station_name" min-width="10%" label="换电站名" align="center"></el-table-column>
           <el-table-column prop="station_id" min-width="10%" label="换电站ID" align="center"></el-table-column>
           <!-- <el-table-column prop="employee_id" label="管理员工ID" min-width="10%" align="center"></el-table-column> -->
@@ -105,14 +105,14 @@
       <el-form-item label="换电站名">
         <el-input v-model="editForm.station_name"></el-input>
       </el-form-item>
-      <el-form-item label="换电站ID">
+      <!-- <el-form-item label="换电站ID">
         <el-input v-model="editForm.station_id"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="换电站位置">
         <div id="myMapEdit"></div>
       </el-form-item>
       <el-form-item label="换电站地址">
-        <el-input v-model="addedData.station_address"></el-input>
+        <el-input v-model="editForm.station_address"></el-input>
       </el-form-item>
       <el-form-item label="可用状态">
         <el-select v-model="editForm.faliure_status">
@@ -146,12 +146,12 @@
       <el-form-item label="换电站名">
         <el-input v-model="addedData.station_name"></el-input>
       </el-form-item>
-      <el-form-item label="换电站ID">
+      <!-- <el-form-item label="换电站ID">
         <el-input v-model="addedData.station_id"></el-input>
       </el-form-item>
       <el-form-item label="管理员ID">
         <el-input v-model="addedData.employee_id"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="换电站位置">
         <div id="myMapAdd"></div>
       </el-form-item>
@@ -195,6 +195,7 @@ import { RefreshRight, Edit, Delete } from '@element-plus/icons-vue';
 const tableData = ref([]);
 const editFlag = ref(false);
 const addFlag = ref(false);
+const loadTableData = ref(false);
 
 const formData = reactive({
   station_name: '',
@@ -204,9 +205,9 @@ const formData = reactive({
 });
 
 const addedData = reactive({
-  station_id: '',
+  // station_id: '',
   station_name: '',
-  employee_id: '',
+  // employee_id: '',
   longtitude: '',
   latitude: '',
   faliure_status: '',
@@ -219,7 +220,7 @@ const addedData = reactive({
 
 const query = reactive({
   pageIndex: 1,
-  pageSize: 25,
+  pageSize: 7,
 });
 
 const stationLocation = reactive({
@@ -305,6 +306,7 @@ const openEdit = () =>{
 
 var pageTotal = 1;
 const pullData = () => {
+  loadTableData.value = true;
   cmRequest.request({
     url: 'api/administrator/stationInfo/query',
     method: 'GET',
@@ -320,12 +322,14 @@ const pullData = () => {
       })
       tableData.value = res.data;
       pageTotal = parseInt(res.pageTotal);
+      loadTableData.value = false;
     }
     else{
       ElMessage({
         type: 'error',
         message: '刷新成功',
       })
+      loadTableData.value = false;
     }
   })
 }
@@ -344,9 +348,9 @@ const resetFormData = () => {
 }
 
 const resetAddedData = () => {
-  addedData.station_id = '';
+  // addedData.station_id = '';
   addedData.station_name = '';
-  addedData.employee_id = '';
+  // addedData.employee_id = '';
   addedData.longtitude = '';
   addedData.latitude = '';
   addedData.faliure_status = '';
@@ -355,6 +359,7 @@ const resetAddedData = () => {
 }
 
 const queryData = () => {
+  loadTableData.value = true;
   //将空属性置为Null
   for (const key in formData) {
     if (formData.hasOwnProperty(key) && formData[key] === "" ) {
@@ -377,12 +382,14 @@ const queryData = () => {
     if(!res.code){
       tableData.value = res.data;
       pageTotal = parseInt(res.pageTotal);
+      loadTableData.value = false;
     }
     else{
       ElMessage({
         type: 'error',
         message: '未找到内容',
       });
+      loadTableData.value = false;
     }
     resetFormData();
   })
@@ -391,8 +398,8 @@ const queryData = () => {
 
 const handlePageChange = (val) => {
   query.pageIndex = val;
-  queryData();
-};
+  pullData();
+}
 
 
 const handleEdit = (row) => {
@@ -431,9 +438,9 @@ const addData = () => {
       //url: 'administrator/stationInfo',
       method: 'POST',
       data:{
-        station_id: addedData.station_id,
+        // station_id: addedData.station_id,
         station_name: addedData.station_name,
-        employee_id: addedData.employee_id,
+        // employee_id: addedData.employee_id,
         longtitude: addedData.longtitude,
         latitude: addedData.latitude,
         faliure_status: addedData.faliure_status,
@@ -451,7 +458,7 @@ const addData = () => {
       ElMessage({
         type: 'success',
         //message: '新建成功, 新换电站id为'+res.station_id,
-        message: '新建成功',
+        message: '新建成功，刷新后查看',
       })
     }
     else {
@@ -462,7 +469,7 @@ const addData = () => {
     }
     })
   }
-  pullData();
+  //pullData();
 }
 
 const deleteInfo = (val) => {
@@ -477,7 +484,7 @@ const deleteInfo = (val) => {
     if (!res.code) {
       ElMessage({
         type: 'success',
-        message: '删除成功',
+        message: '删除成功，刷新后查看',
       })
     }
     else {
@@ -487,7 +494,7 @@ const deleteInfo = (val) => {
       })
     }
   })
-  pullData();
+  //pullData();
 }
 
 const saveEdit = () => {
@@ -497,7 +504,7 @@ const saveEdit = () => {
     method: 'PATCH',
     data: {
       station_id: editForm.station_id,
-      employee_name: editForm.station_name,
+      station_name: editForm.station_name,
       //employee_id: editForm.employee_id,
       longitude: editForm.longtitude,
       latitude: editForm.latitude,
@@ -512,7 +519,7 @@ const saveEdit = () => {
     if (!res.code) {
       ElMessage({
         type: 'success',
-        message: '更新成功',
+        message: '更新成功，刷新后查看',
       })
     }
     else {
@@ -522,7 +529,7 @@ const saveEdit = () => {
       })
     }
   })
-  pullData();
+  //pullData();
 }
 </script>
 
@@ -540,15 +547,25 @@ const saveEdit = () => {
   font-size: 14px;
 }
 
-.block {
+.up-block {
   border: 1px white solid;
   border-radius: 10px;
   box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
-  overflow: auto;
+  overflow: hidden;
   background-color: white;
   margin: 30px 20px;
+  height: 22vh;
 }
 
+.down-block {
+  border: 1px white solid;
+  border-radius: 10px;
+  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
+  overflow: hidden;
+  background-color: white;
+  margin: 30px 20px;
+  height: 65vh;
+}
 .input-box {
   width: 100%;
 }

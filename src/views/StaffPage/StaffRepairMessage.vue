@@ -14,22 +14,25 @@
           </div>
         </template>
         <div class="order-field">
-          <span class="field-label">订单id</span> {{ repairInfo.maintenance_items_id }}
+          <span class="field-label">订单id</span> {{ val }}
         </div>
         <div class="order-field">
-          <span class="field-label">用户名:</span> {{ username }}
+          <span class="field-label">用户名:</span> {{ repair_item.username }}
         </div>
         <div class="order-field">
-          <span class="field-label">电话:</span> {{ phone_number }}
+          <span class="field-label">电话:</span> {{ repair_item.phone_number }}
         </div>
         <div class="order-field">
-          <span class="field-label">维修地点:</span> {{ maintenance_location }}
+          <span class="field-label">维修地点:</span> {{ repair_item.maintenance_location }}
         </div>
         <div class="order-field">
-          <span class="field-label">车型:</span> {{ vehicle_model }}
+          <span class="field-label">车型:</span> {{ repair_item.vehicle_model }}
         </div>
         <div class="order-field">
-          <span class="field-label">提交时间:</span> {{ order_submission_time }}
+          <span class="field-label">提交时间:</span> {{ repair_item.order_submission_time }}
+        </div>
+        <div class="order-field">
+          <span class="field-label">预约时间:</span> {{ repair_item.appoint_time }}
         </div>
       </el-card>
       <el-card class="card-block" :body-style="{ padding: '0px' }">
@@ -55,22 +58,6 @@
           <span class="field-label">{{ remarks }}</span> 
         </div>
       </el-card>
-      <!-- <el-card class="card-block">
-        <template #header>
-          <div class="section-title">
-            <span>订单状态</span>
-          </div>
-        </template>
-        <div class="order-field">
-          <span class="field-label"></span> 
-          <select v-model="order_status">
-          <option value="待处理">待处理</option>
-          <option value="已完成">已完成</option>
-          </select>
-          <span class="field-label">{{ order_status }}</span> 
-        </div>
-        <el-button @click="save" type="primary" class="save-button">保存</el-button>
-      </el-card> -->
       <el-card class="card-block">
         <template #header>
           <div class="section-title">
@@ -104,6 +91,8 @@ import { useRouter, useRoute } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
+const order_status = ref('否');
+const val = route.params.val;
 
 const repairLocation = reactive({
   lng: 121.21633041361302,
@@ -111,7 +100,7 @@ const repairLocation = reactive({
 });
 
 const repairInfo = reactive({
-  maintenance_items_id: route.params.val,
+  maintenance_items_id: val,
   username: "",
   phone_number: "",
   maintenance_location: "",
@@ -135,12 +124,6 @@ onMounted( () => {
   map.addOverlay(marker); // 将标记添加到地图上
 })
 
-const username= ref();
-const phone_number= ref();
-const maintenance_location= ref();
-const vehicle_model= ref();
-const order_submission_time= ref();
-const order_status = ref();
 const remarks = ref();
 const maintenance_items_id= ref();
 
@@ -148,14 +131,14 @@ const active = computed(() => {
   return order_status.value === '是' ? 2 : 1;
 });
 
+const repair_item = ref([]);  //维修项
 const queryData = () => {
   cmRequest.request({
   // url: 'api/staff/door_to_door_service/get_maintenance_item',
   url: 'https://mock.apifox.cn/m1/3058331-0-default/staff/door_to_door_service/get_maintenance_item',// 我的本地api地址
   method: 'GET',
   params: {
-    maintenance_item_id:route.params.val
-      // 传入输入的maintenance_item_id
+    maintenance_item_id:val
   }
   }).then((res) => {
   if(!res.code){
@@ -163,13 +146,14 @@ const queryData = () => {
       type: 'success',
       message: '刷新成功',
     })
-    username.value = res.data.username;
-    phone_number.value = res.data.phone_number;
-    maintenance_location.value = res.data.maintenance_location;
-    vehicle_model.value = res.data.vehicle_model;
-    order_submission_time.value = res.data.order_submission_time; 
-    order_status.value = res.data.order_status;
-    remarks.value = res.data.remarks;
+    // username.value = res.data.username;
+    // phone_number.value = res.data.phone_number;
+    // maintenance_location.value = res.data.maintenance_location;
+    // vehicle_model.value = res.data.vehicle_model;
+    // order_submission_time.value = res.data.order_submission_time; 
+    // order_status.value = res.data.order_status;
+    // remarks.value = res.data.remarks;
+    repair_item.value = res.data;
   }
   else{
     ElMessage({

@@ -59,6 +59,11 @@ const admin_items = [
 
 const owner_items = [
   {
+    name: '个人主页',
+    index: '/orderDashboard',
+    title: '个人主页'
+  },
+  {
     name: '换电预约',
     index: '/reservation',
     title: '换电预约'
@@ -77,6 +82,14 @@ const owner_items = [
     name: '换电订单历史',
     index: '/switch-history',
     title: '换电订单历史'
+    name: '公告信息',
+    index: '/owner-notice-page',
+    title: '公告信息'
+  },
+  {
+    name: '车辆信息',
+    index: '/car-page',
+    title: '车辆信息'
   }
 ]
 
@@ -87,15 +100,36 @@ const staff_items = [
     title: '员工仪表盘'
   },
   {
-    name: '上门维修服务',
-    index: '/staffDoorToDoor',
-    title: '上门维修服务'
+    name: '换电站电池管理',
+    index: '/station-battery-page',
+    title: '换电站电池管理'
+  },
+  {
+    name: '换电站管理',
+    index: '/station-info-page',
+    title: '换电站管理'
+  },
+  {
+    name: '换电管理',
+    index: '/switchReservation',
+    title: '换电管理'
+  },
+  {
+    name: '上门维修',
+    index: '/staffRepair',
+    title: '上门维修'
   },
   {
     name: '公告信息',
     index: '/employee-notice-page',
     title: '公告信息'
-  }
+  },
+  {
+    name: '员工信息',
+    index: '/staff-information-page',
+    title: '员工信息'
+  },
+
 ]
 
 const user_type = localStorage.getItem("user_type");

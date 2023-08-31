@@ -30,6 +30,10 @@
           <span>{{ repairItem.plate_number }}</span>
         </div>
         <div class="detail-item">
+          <span class="label">预约时间：</span>
+          <span>{{ repairItem.appoint_time }}</span>
+        </div>
+        <div class="detail-item">
           <span class="label">订单提交时间：</span>
           <span>{{ repairItem.order_submission_time }}</span>
         </div>
@@ -60,7 +64,8 @@
         
         <div class="button-container">
           <el-button type="primary" @click="submitComment" :disabled="disableInput">提交评价</el-button>
-          <el-button type="danger" @click="cancelItem" :disabled="!disableInput">取消订单</el-button>
+        <div class="button-space"></div> <!-- 添加一个用于间隔的空白元素 -->
+         <el-button type="danger" @click="cancelItem" :disabled="!disableInput">取消订单</el-button>
         </div>
       </div>
     </el-card>
@@ -95,6 +100,10 @@ const repairItem = reactive({
   name: 'ccr',
   phone_number: '1399999999',
   evaluations:'',
+  appoint_time:'',
+  maintenance_location:'',
+  longtitude:0,
+  latitude:0
 })
 
 const goBack = () => {
@@ -102,7 +111,7 @@ const goBack = () => {
 }
 
 const disableInput = computed(() => {
-  return repairItem.order_status === '否' ? true : false;
+  return repairItem.order_status == '否' ?  true: false;
 })
 
 const getDetailedData = () => {
@@ -114,10 +123,8 @@ const getDetailedData = () => {
       }
     }).then((res) => {
       if(!res.code){
-        getItem.value = res.data;
-        for(const key in getItem){
-          repairItem[key] = getItem[key];
-        }
+        //进行赋值操作
+
       }
       else{
         ElMessage({
@@ -128,7 +135,7 @@ const getDetailedData = () => {
     })
     loading.value = false;
   }
-getDetailedData();
+//getDetailedData();
 
 const cancelItem = () => {
   ElMessageBox.confirm(
@@ -230,7 +237,14 @@ const submitComment = () => {
 }
 
 .button-container {
-  margin-top: 20px;
+  margin-bottom: 5em;
+  display: flex;
+  
+}
+
+/* 用于间隔按钮的空白元素样式 */
+.button-space {
+  width: 60px; /* 调整间隔宽度 */
 }
 
 .phone-number {
