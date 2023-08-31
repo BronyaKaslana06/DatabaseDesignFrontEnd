@@ -74,14 +74,16 @@ const owner_items = [
     title: '维修服务'
   },
   {
+    name: '换电订单历史',
+    index: '/switch-history',
+    title: '换电订单历史'
+  },
+  {
     name: '个人信息',
     index: '/personal-information-page',
     title: '个人信息'
   },
   {
-    name: '换电订单历史',
-    index: '/switch-history',
-    title: '换电订单历史'
     name: '公告信息',
     index: '/owner-notice-page',
     title: '公告信息'
