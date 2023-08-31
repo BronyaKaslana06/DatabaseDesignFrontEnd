@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="staff_type === '1'">
     <div class="flex-container">
       <el-card class="left-card-block">
         <template #header>
@@ -91,6 +91,14 @@
       </div>
     </div>
   </div>
+  <div v-else style="display: flex; justify-content: center;">  
+    <div style="display: flex; align-items: center;  flex-direction: column;">  
+      <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">  
+        您不是换电站管理员，不可以查看换电订单  
+      </div>  
+      <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">  
+    </div>  
+  </div>
   <el-dialog v-model="show_switch_log" title="订单完成情况" width="30%" @open="open_switch_log" draggable>
     <div class='window'>
       <el-row :gutter="10" class="custom-row">
@@ -156,7 +164,6 @@ import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-
 const userAvatar = ref(localStorage.getItem('userAvatar'));
 const user_id = ref(localStorage.getItem('user_id'));
 const user_name = ref(localStorage.getItem('user_name'));
-const staff_type = ref('换电站管理员');
 const defaultAvatar = '../../assets/defaultAvatar.jpg'; // 设置默认头像路径
 // const show_status = ref(false);
 const selectedOrNot = ref(false);
@@ -164,20 +171,9 @@ const showMap = ref(false);
 const activeName = ref('1');
 const switch_data = ref([]); //换电订单列表
 const listLoading = ref(true);
+const staff_type = ref(localStorage.getItem('staff_type'));
 
-const switch_item_data = ref({
-  switch_request_id: "1",
-  phone_number: "67",
-  username: "邱军",
-  position: "上海市某街道",
-  longitude: "123.456",
-  latitude: "34.567",
-  vehicle_model: "commodo sit minim",
-  plate_number: "13",
-  remarks: "culpa sint",
-  order_status: "1",
-  request_time: "2020-04-25 09:57:34"
-});   //换电订单详细信息
+const switch_item_data = ref({});   //换电订单详细信息
 
 const handleSwitchChange = () => {
   //show_status.value = newStatus;
@@ -196,6 +192,8 @@ const switch_detail_loading = ref(false);
 
 //根据switch决定的show_status当的状态，决定获取哪些状态的订单
 const refreshSwitch = () => {
+  if (staff_type.value != '1')
+    return;
   listLoading.value = true;
   //switch_data.value = [];
   if (activeName.value != '3') {
@@ -205,9 +203,9 @@ const refreshSwitch = () => {
       //url: 'https://mock.apifox.cn/m1/3058331-0-default/staff/switchrequest/doortodoor',
       method: 'GET',
       params: {
-        employee_id: '351', //TODO
+        employee_id: localStorage.getItem('user_id'), //TODO
         request_status: state,
-        station_id: '154'  //TODO
+        station_id: localStorage.getItem("station_id")  //TODO
       }
     }).then((res) => {
       if (!res.code) {
@@ -234,7 +232,7 @@ const refreshSwitch = () => {
       method: 'GET',
       params: {
         request_status: '待完成',
-        station_id: '154'  //TODO
+        station_id: localStorage.getItem("station_id")  //TODO
       }
     }).then((res) => {
       if (!res.code) {
@@ -306,7 +304,7 @@ const take_order = (item) => {
     method: 'POST',
     data: {
       switch_request_id: item.switch_request_id,
-      employee_id: '1'
+      employee_id: localStorage.getItem('user_id')
     }
   }).then((res) => {
     if (!res.code) {

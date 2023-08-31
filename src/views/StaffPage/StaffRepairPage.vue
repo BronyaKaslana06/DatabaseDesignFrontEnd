@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="staff_type === '2'">
     <div class="flex-container">
       <el-card class="left-card-block">
         <template #header>
@@ -60,7 +60,7 @@
                 </div>
               </div>
               <div class="steps-part" style="height: 10em">
-                <el-steps direction="vertical" :active="show_status ? 2 : 1">
+                <el-steps direction="vertical" :active="activeName==='1' ? 1 : 2">
                   <el-step title="待接单" />
                   <el-step title="待完成" />
                   <el-step title="待评分" />
@@ -88,6 +88,14 @@
       </div>
     </div>
   </div>
+  <div v-else style="display: flex; justify-content: center;">  
+    <div style="display: flex; align-items: center;  flex-direction: column;">  
+      <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">  
+        您不是维修员工，不可以查看维修项表  
+      </div>  
+      <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">  
+    </div>  
+  </div>
 </template>
 
 <script setup lang="js">
@@ -100,7 +108,6 @@ import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-
 const userAvatar = ref(localStorage.getItem('userAvatar'));
 const user_id = ref(localStorage.getItem('user_id'));
 const user_name = ref(localStorage.getItem('user_name'));
-const staff_type = ref('换电站管理员');
 const defaultAvatar = '../../assets/defaultAvatar.jpg'; // 设置默认头像路径
 // const show_status = ref(false);
 const selectedOrNot = ref(false);
@@ -108,7 +115,8 @@ const showMap = ref(false);
 const activeName = ref('1');
 const repair_data = ref([]); //维修订单列表
 const repair_item_data = ref({});   //维修订单详细信息
-const listLoading = ref(false);
+const listLoading = ref(true);
+const staff_type = ref(localStorage.getItem('staff_type'));
 
 const handleSwitchChange = () => {
   //show_status.value = newStatus;
@@ -127,6 +135,9 @@ const repair_item_loading = ref(false);
 
 //根据switch决定的show_status当的状态，决定获取哪些状态的订单
 const refreshRepair = (show_message) => {
+  if (staff_type.value != '2')
+    return;
+  console.log("call refresh");
   listLoading.value = true;
   //repair_data.value = [];
   let state = activeName.value === '1' ? '待接单' : '待完成';
@@ -135,7 +146,7 @@ const refreshRepair = (show_message) => {
     //url: 'https://mock.apifox.cn/m1/3058331-0-default/staff/switchrequest/doortodoor',
     method: 'GET',
     params: {
-      employee_id: 1, //TODO
+      employee_id: parseInt(user_id.value), //TODO
       order_status: state,
     }
   }).then((res) => {
@@ -176,8 +187,8 @@ const get_repair_info = (id) => {
       //   message: '获取維修订单成功',
       // })
       repair_item_data.value = res.data;
-      repair_item_loading.value = false;
       repair_item_data.value.maintenance_item_id = id;
+      repair_item_loading.value = false;
     }
     else {
       ElMessage({
@@ -208,11 +219,10 @@ const take_order = (item) => {
     method: 'POST',
     data: {
       maintenance_item_id: item.maintenance_item_id,
-      employee_id: '1'
+      employee_id: user_id.value
     }
   }).then((res) => {
     if (!res.code) {
-      refreshRepair(false);
       ElMessage({
         type: 'success',
         message: '接单成功',

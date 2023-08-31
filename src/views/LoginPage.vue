@@ -79,10 +79,14 @@ const submitForm = () => {
             identity = msg.data.user_type;
             localStorage.setItem('user_type', identity);
             localStorage.setItem('user_id',msg.data.user_id);
+            localStorage.setItem('username',msg.data.username);
             if(identity == 0)
             router.push('/reservation');
-            else if(identity == 1)
-            router.push('/employee-dashboard-page')
+            else if(identity == 1){
+                router.push('/employee-dashboard-page');
+                localStorage.setItem('staff_type', msg.data.position);
+                localStorage.setItem('station_id',msg.data.station_id);
+            }
             else if(identity == 2)
             router.push('/admin-dashboard-page')
         }
