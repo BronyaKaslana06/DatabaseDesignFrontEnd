@@ -414,7 +414,6 @@ const assignment = (data) => {
 
 const getSpecificInfo = (id) => {
     cmRequest.request({
-        // baseURL: "https://a9ccf582-e1ef-4d00-891a-4e40f24c2459.mock.pstmn.io",
         url: "api/owner/stations/detailed-infos",
         method: "GET",
         params: {

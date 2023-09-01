@@ -59,7 +59,7 @@ const router = createRouter({
                 {
                     path: '/personal-information-page',
                     name: 'personal-information-page',
-                    component: ()=>import('../views/StaffPage/PersonalInformationPage.vue')
+                    component: ()=>import('../views/OwnerPage/PersonalInformationPage.vue')
         
                 },
                 {

@@ -2,7 +2,7 @@
     <div>
         <el-page-header  @back="goBack">
             <template #content>
-              <span class="text-large font-600 mr-3 custom-text"> 上门服务 </span>
+              <span class="text-large font-600 mr-3 custom-text"> 上门维修服务 </span>
             </template>
         </el-page-header>
 
@@ -211,7 +211,7 @@ const maintenance_data = [
 ];
 
 const getInitialData = (type) => {
-  console.log(type);
+  //console.log(type);
   if (type === '换电站管理员') {
     return switch_data;
   } 
@@ -240,7 +240,7 @@ const count = ref(4);
 const loading = ref(false)
 //const noMore = computed(() => count.value >= switch_data.value.length)
 const load = () => {
-  console.log("Scroll event triggered");
+  //console.log("Scroll event triggered");
   loading.value = true
   setTimeout(() => {
     count.value += 2
@@ -256,11 +256,20 @@ const showDetail = (item) => {
 };
 
 const toDetail = (id) => {
-  console.log(id);
-  router.push({
-    name: 'staffRepair',
-    params: { val: id }
-  });
+  //console.log(id);
+  
+  if (staff_type.value === '换电站管理员'){
+    router.push({
+      name: 'staffSwitch',
+      params: { val: id }
+    });
+  }
+  else if (staff_type.value === '维修工'){
+    router.push({
+      name: 'staffRepair',
+      params: { val: id }
+    });
+  }
 }
 const getSwitchData = () => {
   cmRequest.request({
@@ -494,4 +503,6 @@ getData();
     width: 100%;
     height: 30em;
 }
+
+
 </style>
