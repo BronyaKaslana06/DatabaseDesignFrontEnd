@@ -50,9 +50,6 @@
             <el-option key="2" value="女" label="女"> </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="职位">
-          <el-input v-model="editedUserInfo.positions"></el-input>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="saveEditedInfo">保存</el-button>
           <el-button @click="editDialogVisible = false">取消</el-button>
@@ -81,16 +78,18 @@ const userInfo = reactive({
   },
 });
 
+const storedUserInfo = JSON.parse(localStorage.getItem("user_id"));
+
 const queryData = () => {
   cmRequest
     .request({
-      url: "api/staff/my-info/1",
+      url: "api/staff/my-info/"+storedUserInfo,
       method: "GET",
     })
     .then((res) => {
-      console.log(res);
-      if (res) {
-        const userData = res; // 假设响应数据就是用户信息
+      console.log(res.data);
+      if (!res.code) {
+        const userData = res.data; // 假设响应数据就是用户信息
         Object.assign(userInfo, userData); // 将获取的用户信息赋值给 userInfo
         console.log(res);
       } else {
@@ -114,14 +113,12 @@ const editDialogVisible = ref(false);
 
 const editedUserInfo = reactive({
   name: "",
-  positions: "",
   gender: "",
   phone_number: "",
 });
 
 const showEditDialog = (userInfo) => {
   editedUserInfo.name = userInfo.personalInfo.name;
-  editedUserInfo.positions = userInfo.personalInfo.positions;
   editedUserInfo.gender = userInfo.personalInfo.gender;
   editedUserInfo.phone_number = userInfo.personalInfo.phone_number;
   editDialogVisible.value = true;
@@ -130,7 +127,7 @@ const showEditDialog = (userInfo) => {
 const saveEditedInfo = () => {
   cmRequest
     .request({
-      url: "http://127.0.0.1:4523/m2/3058331-0-default/98567695",
+      url: "api/staff/my-info/"+storedUserInfo+"/edit",
       method: "PATCH",
       data: editedUserInfo, // 使用编辑后的用户信息作为请求数据
     })

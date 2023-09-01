@@ -311,6 +311,7 @@ const saveEdit = () => {
     publisher: editFormData.publisher,
   };
   console.log(editFormData);
+  console.log(editFormData.announcement_id);
   cmRequest
     .request({
       //url: "administrator/announcement",
@@ -360,11 +361,13 @@ const saveCreate = () => {
   const currentDate = new Date();
   const dateString = currentDate.toISOString().substr(0, 10);// 当前日期
 
+  const storedUserInfo = JSON.parse(localStorage.getItem("user_id"));
+
   const postData = {
     title: createFormdata.title,
     publish_pos: createFormdata.publish_pos,
     contents: createFormdata.contents,
-    publisher: "管理员", // 默认值
+    publisher: storedUserInfo, // 默认值
     publish_time: dateString, // 通过new Date()获取日期
   };
 
@@ -378,7 +381,6 @@ const saveCreate = () => {
     .then((res) => {
       console.log(postData);
       console.log(res);
-      console.log(res.code);
       if (!res.code) {
         // 保存成功，处理相关逻辑
         ElMessage({
@@ -404,12 +406,15 @@ const saveCreate = () => {
 };
 
 const deleteAnnouncement = () => {
-  const announcementIdToDelete = editFormData.announcement_id;
+  const patchData = {
+    announcement_id: editFormData.announcement_id,
+  };
+  const announcementIdToDelete = patchData.announcement_id;
 
   cmRequest
     .request({
       //url: "administrator/announcement/erasure",
-      url: "api/administrator/announcement/erasure",
+      url: "api/administrator/announcement",
       method: "DELETE",
       data: { announcement_id: announcementIdToDelete },
     })
