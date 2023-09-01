@@ -28,9 +28,9 @@
                     </el-form-item>
                 </el-form>
             </div>
-                <div class="map-section">
-                    <div id="myMap" class="map-container"></div>
-                </div>
+
+                    <div id="myMap" style="width:50%;height:200px"></div>
+
             </div>
         </div>
     </div>
@@ -43,7 +43,18 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElButton, ElSelect, ElOption, ElCard } from 'element-plus';
 import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-vue';
 
-const stationInfo = ref({});
+
+const stationInfo = reactive(
+{
+    station_id: "38",
+    station_name: "好内那",
+    faliure_status: true,
+    battery_capacity: 88,
+    available_battery_count: 14,
+    longitude: 121.21633041361302,
+    latitude: 31.268357562330195
+})
+//const stationInfo = reactive({})
 
 const pullData = () => {
     cmRequest.request({
@@ -59,6 +70,7 @@ const pullData = () => {
                 message: '刷新成功',
             })
             stationInfo.value = res.data;
+
         }
         else {
             ElMessage({
@@ -68,29 +80,18 @@ const pullData = () => {
         }
     })
 };
-pullData();
-stationInfo.value =
-{
-    "station_id": "38",
-    "station_name": "好内那",
-    "faliure_status": true,
-    "battery_capacity": 88,
-    "available_battery_count": 14,
-    "longitude": 121.21633041361302,
-    "latitude": 31.268357562330195
-};
+//pullData();
 
 const mapOpen = () => {
     const BMap = window.BMap;
     var map = new BMap.Map("myMap");
-    console.log("map open");
     var point = new BMap.Point(stationInfo.longitude, stationInfo.latitude);
-    map.centerAndZoom(point, 6);
-    map.enableScrollWheelZoom(false);
+    map.centerAndZoom(new BMap.Point(stationInfo.longitude, stationInfo.latitude), 100);
+    map.enableScrollWheelZoom(true);
     var marker = new BMap.Marker(point);
     map.addOverlay(marker);
 }
-//mapOpen();
+mapOpen();
 
 </script>
 
@@ -127,9 +128,4 @@ const mapOpen = () => {
     padding-left: 20px; /* Add some spacing between text and map */
 }
 
-.map-container {
-    width: 400px; /* Adjust the width as needed */
-    height: 400px; /* Adjust the height as needed */
-    border: 1px solid #ddd;
-}
 </style>
