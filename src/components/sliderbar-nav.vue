@@ -4,7 +4,8 @@
       unique-opened router class="slider-bar" @select="onMenuSelect">
       <template v-for="item in items" :key="item.index">
         <el-menu-item :index="item.index">
-          <div :class="['icon-placeholder', item.index == selectedItem ? 'icon-active-' + item.title : 'icon-' + item.title]">
+          <div
+            :class="['icon-placeholder', item.index == selectedItem ? 'icon-active-' + item.title : 'icon-' + item.title]">
           </div>
           <template #title>{{ item.title }}</template>
         </el-menu-item>
@@ -132,6 +133,16 @@ const staff_items = [
     title: '员工信息'
   },
 
+  {
+    name: '维修订单',
+    index: '/staffMaintenanceItem',
+    title: '维修订单'
+  },
+  {
+    name: '换电订单',
+    index: '/staffSwitch',
+    title: '换电订单'
+  }
 ]
 
 const user_type = localStorage.getItem("user_type");
@@ -139,8 +150,8 @@ let items = [];
 if (user_type == 0) {
   console.log("a");
   items = owner_items;
-    activePath.value = sessionStorage.getItem('previousPage');
-    selectedItem.value = sessionStorage.getItem('previousPage');
+  activePath.value = sessionStorage.getItem('previousPage');
+  selectedItem.value = sessionStorage.getItem('previousPage');
 }
 else if (user_type == 1) {
   console.log("b");
@@ -180,7 +191,7 @@ const svgArray = [
 
 
 for (let name of svgArray) {
-  const svgUrl = require('@/assets/'+name+'-active.svg');
+  const svgUrl = require('@/assets/' + name + '-active.svg');
   const img = new Image();
   img.src = svgUrl;
 }
@@ -220,7 +231,7 @@ for (let name of svgArray) {
   transition: margin-right 0.3s
 }
 
-.icon-换电订单历史::before{
+.icon-换电订单历史::before {
   content: url(../assets/换电订单历史.svg);
 }
 
@@ -282,10 +293,12 @@ for (let name of svgArray) {
   content: url(../assets/公告管理-active.svg);
 }
 
+
 .icon-维修订单管理::before {
   content: url(../assets/维修订单管理.svg);
 }
 
+.icon-active-维修订单::before,
 .icon-active-维修订单管理::before {
   content: url(../assets/维修订单管理-active.svg);
 }
@@ -302,7 +315,7 @@ for (let name of svgArray) {
   content: url(../assets/上门维修服务-active.svg);
 }
 
-.icon-active-换电订单历史::before{
+.icon-active-换电订单历史::before {
   content: url(../assets/换电订单历史-active.svg);
 }
 
@@ -330,8 +343,6 @@ for (let name of svgArray) {
 .el-menu-item {
   height: 75px !important;
   margin-bottom: 3px;
-  
+
 }
-
-
 </style> 

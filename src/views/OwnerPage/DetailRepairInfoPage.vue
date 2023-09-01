@@ -1,13 +1,13 @@
 <template>
   <div class="page-container">
-    <el-page-header  @back="goBack">
+    <el-page-header @back="goBack">
       <template #content>
         <span class="text-large font-600 mr-3 custom-text"> 维修服务 </span>
       </template>
     </el-page-header>
   </div>
 
-  <div class="card-container" v-loading="loading"> 
+  <div class="card-container" v-loading="loading">
     <el-card shadow="always">
       <template #header>
         <div class="card-header">
@@ -30,49 +30,119 @@
           <span>{{ repairItem.plate_number }}</span>
         </div>
         <div class="detail-item">
-          <span class="label">预约时间：</span>
-          <span>{{ repairItem.appoint_time }}</span>
+          <template v-if="isEditing">
+            <el-col :span="4"><span :style="{ fontSize: '1.3em' }">预约地点</span></el-col>
+            <el-col :span="16">
+              <el-input v-model="repairItem.maintenance_location"
+                :placeholder="loadMapButton ? '获取您的位置中...' : '请输入您的位置'" />
+            </el-col>
+            <el-col :span="4">
+              <el-button type="primary" :loading="loadMapButton" @click="openMapDia = true">
+                {{ loadMapButton ? '加载中' : '地图选点' }}</el-button>
+            </el-col>
+          </template>
+
+          <template v-else>
+             <span class="label">预约地点：</span>
+            <span>{{ repairItem.maintenance_location }}</span>
+          </template>
         </div>
+
+        <div class="detail-item">
+          <template v-if="isEditing">
+            <el-col :span="4"><span :style="{ fontSize: '1.3em' }">预约时间：</span></el-col>
+            <el-col :span="20">
+              <el-date-picker v-model="repairItem.appoint_time" type="datetime" placeholder="选择日期和时间" />
+            </el-col>
+          </template>
+          <template v-else>
+            <span class="label">预约时间：</span>
+            <span>{{ repairItem.appoint_time }}</span>
+          </template>
+        </div>
+
         <div class="detail-item">
           <span class="label">订单提交时间：</span>
           <span>{{ repairItem.order_submission_time }}</span>
         </div>
+
         <div class="detail-item">
           <span class="label">服务时间：</span>
           <span>{{ repairItem.service_time }}</span>
         </div>
+
         <div class="detail-item">
           <span class="label">完成状态：</span>
-          <span>{{ repairItem.order_status }}</span>
+          <template v-if="repairItem.order_status === '待接单'">
+            <el-button type="primary" disabled>待接单</el-button>
+          </template>
+          <template v-if="repairItem.order_status === '待完成'">
+            <el-button type="info" disabled>待完成</el-button>
+          </template>
+          <template v-if="repairItem.order_status === '待评分'">
+            <el-button type="warning" disabled>待评分</el-button>
+          </template>
+          <template v-if="repairItem.order_status === '已完成'">
+            <el-button type="success" disabled>已完成</el-button>
+          </template>
         </div>
+
         <div class="detail-item">
           <span class="label">订单备注：</span>
           <span>{{ repairItem.remarks }}</span>
         </div>
+
         <div class="detail-item">
           <span class="label">服务员工：</span>
           <span>{{ repairItem.name }}</span>
           <span class="phone-number">{{ repairItem.phone_number }}</span>
         </div>
-  
-        <!-- 评价框 -->
+
         <div class="detail-item">
+          <template v-if="disableShow">
+            <el-rate v-model="repairItem.score" disabled show-score text-color="#ff9900"
+              score-template="{repairItem.score} points" />
+          </template>
+          <template v-else>
+            <el-rate v-model="repairItem.score" allow-half />
+          </template>
+        </div>
+
+        <!-- 评价框 -->
+        <template v-if="disableShow">
           <div class="label">评价：</div>
-          <el-input v-model="repairItem.evaluations" type="textarea" rows="4" 
-          :placeholder="disableInput ? '订单未完成，不可评价':'请输入您的评价'" :disabled="disableInput" />
-        </div>
-        
+          <div class="readonly-evaluation">{{ repairItem.evaluations }}</div>
+        </template>
+        <template v-else>
+          <div class="label">评价：</div>
+          <el-input v-model="repairItem.evaluations" type="textarea" rows="4"
+            :placeholder="disableInput ? '订单未完成，不可评价' : '请输入您的评价'" :disabled="disableInput" />
+        </template>
+
         <div class="button-container">
-          <el-button type="primary" @click="submitComment" :disabled="disableInput">提交评价</el-button>
-        <div class="button-space"></div> <!-- 添加一个用于间隔的空白元素 -->
-         <el-button type="danger" @click="cancelItem" :disabled="!disableInput">取消订单</el-button>
+          <el-button v-if="disableInput3" type="primary" @click="submitComment" :disabled="disableInput">提交评价</el-button>
+          <el-button v-else type="primary" @click="handleChange">{{ isEditing ? '完成修改' : '修改订单' }}</el-button>
+          <div class="button-space"></div> <!-- 添加一个用于间隔的空白元素 -->
+          <el-button type="danger" @click="cancelItem" :disabled="disableInput2">取消订单</el-button>
         </div>
+
+
+        <!-- 地图选点 -->
+        <el-dialog v-model="openMapDia" title="地图选点" width="40%" @open="mapOpen" draggable>
+
+          <div class="map-wrapper">
+            <div id="myMap"></div>
+          </div>
+          <div class="address">
+            {{ "当前地址：" + repairItem.maintenance_location }}
+          </div>
+          <div class="button-wrapper">
+            <el-button type="primary" @click="openMapDia = false">确定</el-button>
+          </div>
+        </el-dialog>
       </div>
     </el-card>
   </div>
-  
-
-  
 </template>
 
 <script setup lang="js">
@@ -82,8 +152,10 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 // import { RefreshRight, Edit, Delete } from '@element-plus/icons-vue';
 
-const getItem = reactive({})
-const loading = ref(false)
+const openMapDia = ref(false);
+const loadMapButton = ref(true);
+const loading = ref(false);
+const isEditing = ref(false);
 
 const router = useRouter();
 const route = useRoute();
@@ -99,11 +171,12 @@ const repairItem = reactive({
   remarks: '芝士备注',
   name: 'ccr',
   phone_number: '1399999999',
-  evaluations:'',
-  appoint_time:'',
-  maintenance_location:'',
-  longtitude:0,
-  latitude:0
+  score: 0,
+  evaluations: '',
+  appoint_time: '',
+  maintenance_location: '',
+  longtitude: 0,
+  latitude: 0
 })
 
 const goBack = () => {
@@ -111,30 +184,117 @@ const goBack = () => {
 }
 
 const disableInput = computed(() => {
-  return repairItem.order_status == '否' ?  true: false;
+  return repairItem.order_status === '待评分' ? true : false;
+})
+const disableInput2 = computed(() => {
+  return repairItem.order_status === '待接单' ? false : true;
+})
+const disableInput3 = computed(() => {
+  return repairItem.order_status === '待评分' ? true : false;
+})
+const disableShow = computed(() => {
+  return repairItem.order_status === '已完成' ? true : false;
 })
 
-const getDetailedData = () => {
-    cmRequest.request({
-      url: 'api/owner/vehicle_maintenance_info/query',
-      method: 'GET',
-      params: {
-        maintenance_item_id: repairItem.maintenance_item_id
-      }
-    }).then((res) => {
-      if(!res.code){
-        //进行赋值操作
+const handleChange = () => {
+  isEditing = !isEditing;
+  if (!isEditing) {
+    // 在点击“完成修改”按钮后执行的逻辑
+    //待补充
+  }
+}
 
+const openHandin = () => {
+  const BMap = window.BMap;
+  var geolocation = new BMap.Geolocation();
+  geolocation.getCurrentPosition((r) => {
+    if (geolocation.getStatus() == 0) {
+      var userLocation = r.point; // 用户当前位置的坐标
+      var userAddress = r.address; // 用户当前位置的地址信息
+      for (const key in userAddress) {
+        if (userAddress[key] != '') {
+          if (key == 'province') {
+            repairItem.maintenance_location = userAddress[key] + repairItem.maintenance_location;
+          }
+          else {
+            repairItem.maintenance_location += userAddress[key];
+          }
+        }
       }
-      else{
-        ElMessage({
+      repairLocation.lat = userLocation.lat;
+      repairLocation.lng = userLocation.lng;
+      repairItem.longitude = repairLocation.lng;
+      repairItem.latitude = repairLocation.lat;
+      loadMapButton.value = false;
+    }
+    else {
+      ElMessage({
+        type: 'warning',
+        message: '获取用户位置失败',
+      })
+      console.log("获取用户位置失败");
+      loadMapButton.value = false;
+    }
+  });
+
+}
+openHandin();
+
+const mapOpen = () => {
+  const BMap = window.BMap;
+  var map = new BMap.Map("myMap");
+  console.log("map open");
+  var point = new BMap.Point(repairLocation.lng, repairLocation.lat)
+  map.centerAndZoom(new BMap.Point(repairLocation.lng, repairLocation.lat), 12);
+  map.enableScrollWheelZoom(true);
+  var geoc = new BMap.Geocoder();
+  var marker = new BMap.Marker(point);
+  map.addOverlay(marker);
+
+  map.addEventListener("click", (e) => {
+    var pt = e.point;
+    geoc.getLocation(pt, (rs) => {
+      repairItem.maintenance_location = rs.address
+      console.log(rs.address);
+    });
+    map.removeOverlay(marker);
+    marker = null;
+    point.lng = e.point.lng;
+    point.lat = e.point.lat;
+    marker = new BMap.Marker(point);
+    map.addOverlay(marker);
+    //lz
+    console.log("lng:", point.lng);
+    console.log("lat:", point.lat);
+    repairItem.longitude = point.lng;
+    repairItem.latitude = point.lat;
+    console.log("up lo:", repairItem.longitude);
+    console.log("up lo:", repairItem.latitude);
+  });
+
+}
+
+const getDetailedData = () => {
+  cmRequest.request({
+    url: 'api/owner/vehicle_maintenance_info/query',
+    method: 'GET',
+    params: {
+      maintenance_item_id: repairItem.maintenance_item_id
+    }
+  }).then((res) => {
+    if (!res.code) {
+      //进行赋值操作
+
+    }
+    else {
+      ElMessage({
         type: 'error',
         message: '获取维修项失败'
       })
-      }
-    })
-    loading.value = false;
-  }
+    }
+  })
+  loading.value = false;
+}
 //getDetailedData();
 
 const cancelItem = () => {
@@ -147,29 +307,29 @@ const cancelItem = () => {
       type: 'warning',
     }
   ).then(() => {
-      cmRequest.request({
+    cmRequest.request({
       url: 'api/owner/reparir_reservation/delete',
       method: 'DELETE',
       params: {
         maintenance_item_id: repairItem.maintenance_item_id
       }
     })
-    .then((res) => {
-      if (!res.code) {
-        ElMessage({
-          type: 'success',
-          message: '删除成功',
-        })
-        goBack();
-      }
-      else {
-        ElMessage({
-          type: 'error',
-          message: '删除失败',
-        })
-      }
-    })
-    })
+      .then((res) => {
+        if (!res.code) {
+          ElMessage({
+            type: 'success',
+            message: '删除成功',
+          })
+          goBack();
+        }
+        else {
+          ElMessage({
+            type: 'error',
+            message: '删除失败',
+          })
+        }
+      })
+  })
     .catch(() => {
       ElMessage({
         type: 'info',
@@ -180,49 +340,57 @@ const cancelItem = () => {
 
 const submitComment = () => {
   cmRequest.request({
-        url: 'api/owner/repair_reservation/submit_evaluations',
-        method: 'POST',
-        data:{
-          maintenance_item_id: repairItem.maintenance_item_id,
-          evaluations: repairItem.evaluations
-        }
-      }).then((res)=>{
-        if (!res.code) {
-          ElMessage({
-            type: 'success',
-            message: '评价添加成功',
-          })
-        }
-        else {
-          ElMessage({
-            type: 'error',
-            message: '评价添加失败',
-          })
-        }
+    url: 'api/owner/repair_reservation/submit_evaluations',
+    method: 'POST',
+    data: {
+      maintenance_item_id: repairItem.maintenance_item_id,
+      evaluations: repairItem.evaluations
+    }
+  }).then((res) => {
+    if (!res.code) {
+      ElMessage({
+        type: 'success',
+        message: '评价添加成功',
       })
+    }
+    else {
+      ElMessage({
+        type: 'error',
+        message: '评价添加失败',
+      })
+    }
+  })
 }
 
 </script>
 
 <style scoped>
 .custom-text {
-  font-size: 1.5em; /* 调整字体大小 */
+  font-size: 1.5em;
+  /* 调整字体大小 */
 }
+
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .header-name {
   font-size: 1.6em;
   margin-bottom: 7px;
 }
+
 .page-container {
-  margin-top: 20px; /* 控制整体上边距 */
+  margin-top: 20px;
+  /* 控制整体上边距 */
 }
+
 .card-container {
-  margin-top: 20px; /* 控制卡片容器上边距 */
+  margin-top: 20px;
+  /* 控制卡片容器上边距 */
 }
+
 .card-content {
   padding: 15px;
 }
@@ -239,42 +407,28 @@ const submitComment = () => {
 .button-container {
   margin-bottom: 5em;
   display: flex;
-  
+
 }
 
 /* 用于间隔按钮的空白元素样式 */
 .button-space {
-  width: 60px; /* 调整间隔宽度 */
+  width: 60px;
+  /* 调整间隔宽度 */
 }
 
 .phone-number {
-  margin-left: 10px; /* 添加姓名和电话之间的间隔 */
-}
-.inner-block {
-  padding: 20px 20px 60px 20px;
+  margin-left: 10px;
+  /* 添加姓名和电话之间的间隔 */
 }
 
-.inner-block2 {
-  padding: 20px 20px 30px 20px;
-}
-
-.table {
-  width: 100%;
-  font-size: 14px;
-}
-
-.block {
-  border: 1px white solid;
-  border-radius: 10px;
-  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
-  overflow: auto;
-  background-color: white;
-  margin: 30px 20px;
-}
-
-.input-box {
-  width: 100%;
-}
+.readonly-evaluation {
+    /* 样式用于只读的文本内容 */
+    /* 可以添加样式来适配你的设计 */
+    color: #333;
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    background-color: #f5f5f5;
+  }
 
 .button-wrapper {
   display: flex;

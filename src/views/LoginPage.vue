@@ -43,18 +43,58 @@ const formData = reactive({
 const router = useRouter();
 
 const submitForm = () => {
-        localStorage.setItem('user_type', parseInt(formData.user_id));
-        localStorage.setItem('user_id',formData.user_id+'000001');
-        const user_type = localStorage.getItem('user_type');
-        if(user_type == 0)
-            router.push('/reservation');
-        else if(user_type == 1){
-            router.push('/employee-dashboard-page');
-            localStorage.setItem('staff_type','换电站管理员');
+    // localStorage.setItem('user_type', parseInt(formData.user_id));
+    // localStorage.setItem('user_id',formData.user_id+'000001');
+    // const user_type = localStorage.getItem('user_type');
+    // if(user_type == 0)
+    //     router.push('/reservation');
+    // else if(user_type == 1){
+    //     router.push('/employee-dashboard-page');
+    //     localStorage.setItem('staff_type','换电站管理员');
+    // }
+
+    // else if(user_type == 2)
+    //     router.push('/admin-dashboard-page');
+
+    if (!formData)
+        return;
+    if (formData.user_id === '' || formData.password === '') {
+        ElMessage({
+            type: 'error',
+            message: "请输入用户ID和密码"
+        })
+        return;
+    }
+    cmrequest.request({
+        url: 'api/login',
+        method: "POST",
+        data: {
+            user_id: formData.user_id,
+            password: formData.password
+        }
+    }).then((msg) => {
+        console.log(msg);
+        console.log(msg.code);
+        if (!msg.code) {
+            var identity;
+            identity = msg.data.user_type;
+            localStorage.setItem('user_type', identity);
+            localStorage.setItem('user_id', msg.data.user_id);
+            localStorage.setItem('username', msg.data.username);
+            if (identity == 0)
+                router.push('/reservation');
+            else if (identity == 1) {
+                router.push('/employee-dashboard-page');
+                localStorage.setItem('staff_type', msg.data.position);
+                localStorage.setItem('station_id', msg.data.station_id);
+            }
+            else if (identity == 2)
+                router.push('/admin-dashboard-page')
         }
 
         else if(user_type == 2)
             router.push('/admin-dashboard-page');
+    })
     // if (!formData)
     //     return;
     // if(formData.user_id === ''||formData.password === ''){
@@ -99,7 +139,7 @@ const submitForm = () => {
     //     }
     // })
 }
-const signup = () =>{
+const signup = () => {
     router.push('/sign-up')
 }
 
@@ -117,7 +157,7 @@ const signup = () =>{
     background: var(--black-amp-white-white, #FFF);
     box-shadow: 0px 7px 23px 0px rgba(0, 0, 0, 0.05);
     overflow: auto;
-    padding:20px 51.5px;
+    padding: 20px 51.5px;
 }
 
 .button-style {
@@ -148,6 +188,7 @@ const signup = () =>{
     display: blcok;
     text-align: center;
 }
+
 .word-box {
     position: absolute;
     left: 50%;
@@ -155,7 +196,6 @@ const signup = () =>{
     transform: translateX(-50%);
     width: 30vw;
 }
-
 </style>
 
 

@@ -9,7 +9,7 @@
       </div>
       <div class="user-info">
         <el-avatar :src="userAvatar || defaultAvatar" size="default"></el-avatar>
-        <span class="welcome-text">欢迎，{{ user_id }}</span>
+        <span class="welcome-text">欢迎，{{ user_name }}</span>
         <el-icon class="setting-icon" size="1.5em" @click="goToSettings"><Setting /></el-icon>
         <el-icon class="logout-icon" size="1.5em" @click="logout"><CloseBold /></el-icon>
       </div>
@@ -62,7 +62,8 @@ router.beforeEach((to, from, next) => {
 
 
 const userAvatar = ref('');
-const user_id = ref('');
+const user_id = ref(localStorage.getItem('user_id'));
+const user_name = ref(localStorage.getItem('username'));
 const defaultAvatar = '@/assets/defaultAvatar.jpg'; // 设置默认头像路径
 
 // localStorage.setItem('user_type', '0');
@@ -70,9 +71,9 @@ const defaultAvatar = '@/assets/defaultAvatar.jpg'; // 设置默认头像路径
 onMounted(() => {
   // 从localStorage中获取用户头像和用户名
   userAvatar.value = localStorage.getItem('userAvatar');
-  console.log(localStorage.getItem('user_type'));
-  user_id.value = localStorage.getItem('user_id');
-});
+  console.log(localStorage.getItem('staff_type'));
+  console.log(localStorage.getItem('username'));
+})
 
 const goToSettings = () => {
   // 处理设置按钮点击事件
@@ -80,8 +81,13 @@ const goToSettings = () => {
 };
 
 const cleanLocalStorage = () =>{
+  if(localStorage.getItem('user_type') == 1){
+    localStorage.removeItem("staff_type");
+    localStorage.removeItem("station_id");
+  }
   localStorage.removeItem("user_type");
   localStorage.removeItem("user_id");
+  localStorage.removeItem("username");
 }
 
 const logout = () => {
@@ -105,7 +111,6 @@ const logout = () => {
       // })
     })
 }
-
 </script>
 
 <style scoped>

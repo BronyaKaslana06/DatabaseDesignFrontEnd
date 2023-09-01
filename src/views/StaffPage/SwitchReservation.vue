@@ -1,4 +1,5 @@
 <template>
+  <!-- <div v-if="staff_type === '1'"> -->
   <div>
     <div class="flex-container">
       <el-card class="left-card-block" :body-style="{height: '85%'}">
@@ -8,9 +9,6 @@
           </div>
           <div>
             <div class="switch-button">
-              <!-- <el-switch v-model="show_status" class="mb-2"
-                style="--el-switch-on-color: #13ce66; --el-switch-off-color:#33b3f8" active-text="待完成订单"
-                inactive-text="待接单订单" @change="handleSwitchChange(show_status)"/> -->
               <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleSwitchChange">
                 <el-tab-pane label="待接单订单" name="1"></el-tab-pane>
                 <el-tab-pane label="待完成订单" name="2"></el-tab-pane>
@@ -67,7 +65,7 @@
                 </div>
               </div>
               <div class="steps-part" style="height: 50%;position: relative;top: 50%;transform: translateY(-50%);">
-                <el-steps direction="vertical" :active="show_status ? 2 : 1">
+                <el-steps direction="vertical" :active="activeName !='1' ? 2 : 1">
                   <el-step title="待接单" />
                   <el-step title="待完成" />
                   <el-step title="待评分" />
@@ -95,13 +93,21 @@
       </div>
     </div>
   </div>
+  <!-- <div v-else style="display: flex; justify-content: center;">  
+    <div style="display: flex; align-items: center;  flex-direction: column;">  
+      <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">  
+        您不是换电站管理员，不可以查看换电订单  
+      </div>  
+      <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">  
+    </div>  
+  </div> -->
   <el-dialog v-model="show_switch_log" title="订单完成情况" width="30%" @open="open_switch_log" draggable>
     <div class='window'>
       <el-row :gutter="10" class="custom-row">
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">换电请求id</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.SwitchRequestId }}
+            {{ switch_log.switch_request_id }}
           </span>
         </el-col>
       </el-row>
@@ -109,7 +115,7 @@
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">换下电池id</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.batteryOffBatteryId }}
+            {{ switch_log.batteryOffId }}
           </span>
         </el-col>
       </el-row>
@@ -117,15 +123,7 @@
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">换上电池id</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.batteryOnBatteryId }}
-          </span>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" class="custom-row">
-        <el-col :span="8"><span :style="{ fontSize: '1.3em' }">换下电池id</span></el-col>
-        <el-col :span="16">
-          <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.batteryOffBatteryId }}
+            {{ switch_log.batteryOnId  }}
           </span>
         </el-col>
       </el-row>
@@ -133,7 +131,7 @@
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">评价</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.Evaluation ? switch_log.Evaluation : "暂无评价" }}
+            {{ switch_log.evaluation ? switch_log.evaluation  : "暂无评价" }}
           </span>
         </el-col>
       </el-row>
@@ -142,7 +140,7 @@
           <span :style="{ fontSize: '1.3em' }">评分</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.Score ? switch_log.Score : "暂无评分" }}
+            {{ switch_log.score === -1  ?  "暂无评分" : switch_log.score }}
           </span>
         </el-col>
       </el-row>
@@ -160,7 +158,6 @@ import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-
 const userAvatar = ref(localStorage.getItem('userAvatar'));
 const user_id = ref(localStorage.getItem('user_id'));
 const user_name = ref(localStorage.getItem('user_name'));
-const staff_type = ref('换电站管理员');
 const defaultAvatar = '../../assets/defaultAvatar.jpg'; // 设置默认头像路径
 // const show_status = ref(false);
 const selectedOrNot = ref(false);
@@ -168,21 +165,9 @@ const showMap = ref(false);
 const activeName = ref('1');
 const switch_data = ref([]); //换电订单列表
 const listLoading = ref(true);
+const staff_type = ref(localStorage.getItem('staff_type'));
 
-const switch_item_data = ref({
-  switch_request_id: "1",
-  phone_number: "67",
-  username: "邱军",
-  position: "上海市某街道",
-  longitude: "123.456",
-  latitude: "34.567",
-  vehicle_model: "commodo sit minim",
-  plate_number: "13",
-  remarks: "culpa sint",
-  order_status: "1",
-  request_time: "2020-04-25 09:57:34",
-  battery_type_id: "标准续航型"
-});   //换电订单详细信息
+const switch_item_data = ref({});   //换电订单详细信息
 
 const handleSwitchChange = () => {
   //show_status.value = newStatus;
@@ -201,13 +186,14 @@ const switch_detail_loading = ref(false);
 
 //根据switch决定的show_status当的状态，决定获取哪些状态的订单
 const refreshSwitch = () => {
+  // if (staff_type.value != '1')
+  //   return;
   listLoading.value = true;
   //switch_data.value = [];
   if (activeName.value != '3') {
     let state = activeName.value==='1' ? '待接单': '待完成';
     cmRequest.request({
       url: 'api/staff/switchrequest/doortodoor',
-      //url: 'https://mock.apifox.cn/m1/3058331-0-default/staff/switchrequest/doortodoor',
       method: 'GET',
       params: {
         employee_id: '1', //TODO
@@ -231,11 +217,11 @@ const refreshSwitch = () => {
   else{
     cmRequest.request({
       url: 'api/staff/switchrequest/reservation',
-      //url: 'https://mock.apifox.cn/m1/3058331-0-default/staff/switchrequest/doortodoor',
       method: 'GET',
       params: {
         request_status: '待完成',
-        station_id: '154'  //TODO
+        //station_id: localStorage.getItem("station_id")  //TODO
+        station_id: '244'
       }
     }).then((res) => {
       if (!res.code) {
@@ -260,7 +246,6 @@ const get_switch_info = (id) => {
   switch_item_data.value = {};
   cmRequest.request({
     url: 'api/staff/switchrequest/detail',
-    //url: '/staff/switchrequest/detail',
     method: 'GET',
     params: {
       switch_request_id: id.toString()
@@ -297,11 +282,10 @@ const take_order = (item) => {
   console.log(item.switch_request_id + "接单");
   cmRequest.request({
     url: 'api/staff/switchrequest/receive',
-    //url: '/staff/switchrequest/doortodoor/receive',
     method: 'POST',
     data: {
       switch_request_id: item.switch_request_id,
-      employee_id: '1'
+      employee_id: localStorage.getItem('user_id')
     }
   }).then((res) => {
     if (!res.code) {
@@ -321,13 +305,7 @@ const take_order = (item) => {
   })
 }
 
-const switch_log = ref({
-  SwitchRequestId: '1',
-  batteryOffBatteryId: 'batteryOff',
-  batteryOnBatteryId: 'batteryOn',
-  Evaluation: '',
-  Score: ''
-});
+const switch_log = ref({});
 
 const show_switch_log = ref(false);
 const finish_order = (item) => {
@@ -347,7 +325,7 @@ const finish_order = (item) => {
         type: 'success',
         message: '订单完成',
       })
-      switch_log.value = res.data;
+      switch_log.value = res.switch_log;
       open_switch_log();
     }
     else {
@@ -414,6 +392,19 @@ const open_switch_log = () => {
   height: 50%;
 }
 
+.right-map-block {
+  border: 1px white solid;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: white;
+  box-sizing: border-box;
+  flex: 1;
+  margin-right: 2em;
+  margin-top: 1em;
+  height: 50%;
+}
+
+
 .container-vertical {
   display: flex;
   flex-direction: row;
@@ -472,10 +463,6 @@ const open_switch_log = () => {
 .infinite-list-wrapper .list-item:hover{
   background-color: rgba(218, 218, 218, 0.516);
   transition: all  0.4s ease;
-}
-
-
-.infinite-list-wrapper .list-item+.list-item {
 }
 
 .infinite-list-wrapper .list-item-content {
