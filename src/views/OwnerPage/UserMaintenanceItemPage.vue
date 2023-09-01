@@ -7,7 +7,9 @@
         </el-page-header>
         <div class="block">
             <div class="inner-block">
-                <el-form label-width="100px" class="form-item-margin">
+              <div class="content">
+                <div class="form-content">
+                <el-form label-width="100px" class="form-item-margin" v-loading="loadData">
                     <el-form-item label="当前车辆">
                         <el-select v-model="selectedValue" filterable placeholder="请选择" @change="updateSelected">
                             <el-option v-for="item in options" :key="item.vehicle_id" :label="item.plate_number" :value="item.vehicle_id">
@@ -24,8 +26,12 @@
                         <div class="value">{{ infoForm.current_capacity }}</div>
                     </el-form-item>
                 </el-form>
-                <img :src="infoForm.snip" class="right-image" alt="Right Image">
+              </div>
+              <div class="image-content">
+                <img :src="base64Image || ''" alt="" class="right-aligned-image" />
+              </div>
             </div>
+          </div>
         </div>
         <div class="block">
             <div class="inner-block2">
@@ -51,7 +57,7 @@
                                     <el-col :span="20">
                                         <el-select v-model="selectedValue2" placeholder="请选择" @change="updateSelected2">
                                             <el-option v-for="item in options" :key="item.vehicle_id" :label="item.plate_number"
-                                                :value="item.value" />
+                                                :value="item.vehicle_id" />
                                         </el-select>
                                     </el-col>
                                 </el-row>
@@ -79,6 +85,7 @@
                                         v-model="repairItem.appoint_time"
                                         type="datetime"
                                         placeholder="选择日期和时间"
+                                        value-format="YYYY-MM-DD HH:mm:ss"
                                         />
                                     </el-col>
                                 </el-row>
@@ -119,7 +126,7 @@
 
                 </div>
                 <div class="infinite-list-wrapper" style="overflow:auto">
-                    <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
+                    <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled" v-loading="loadData2">
                         <li v-for="item in listdata" :key="item.maintenance_item_id" class="list-item">
                             <div class="list-item-content">
                                 <div class="list-item-image">
@@ -148,9 +155,16 @@
                                     <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" title="请确认是否删除"
                                         @confirm="deleteInfo(item.maintenance_item_id)">
                                         <template #reference>
+                                          <template v-if="item.order_status === '待接单'||item.order_status === '待完成'">
                                             <el-button style="color: red;" text :icon="Delete">
                                                 删除
                                             </el-button>
+                                          </template>
+                                          <template v-else>
+                                            <el-button style="color: red;" text :icon="Delete" disabled>
+                                                删除
+                                            </el-button>
+                                          </template>
                                         </template>
                                     </el-popconfirm>
                                 </div>
@@ -173,7 +187,11 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElButton, ElSelect, ElOption } from 'element-plus';
 import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-vue';
 
+const loadData = ref(false);
+const loadData2 = ref(false);
 const options =  ref([]);
+const base64Image = ref('')
+const showImage = ref(false)
 
 const getOptions = () => {
     cmRequest.request({
@@ -205,7 +223,7 @@ getOptions();
 const selectedValue = ref('');
 
 const infoForm = reactive({
-    vehicle_id: '',
+    vehicle_id: 0,
     vehicle_model: '',
     purchase_date: '',
     current_capacity: '',
@@ -215,6 +233,7 @@ const infoForm = reactive({
 });
 
 const rough_query=()=>{
+    loadData2.value = true;
     cmRequest.request({
       url: 'api/owner/repair_reservation/rough_query',
       //url: '/owner/repair_reservation/rough_query',      
@@ -231,6 +250,7 @@ const rough_query=()=>{
           message: '刷新成功',
         })
         listdata.value=res.data;
+        //listdata.value = 
       }
       else{
         ElMessage({
@@ -238,12 +258,15 @@ const rough_query=()=>{
           message: '刷新失败',
         })
       }
+      loadData2.value=false;
     })
 };
 
 const updateSelected = () => {
+    loadData.value = true;
+    showImage.value = true;
     // 根据选择器的选择更新相关变量的值
-    infoForm.vehicle_id = selectedValue;
+    infoForm.vehicle_id = selectedValue.value;
     cmRequest.request({
       url: 'api/owner/repair_reservation/info_query',
       //url: '/owner/repair_reservation/info_query',      
@@ -262,6 +285,7 @@ const updateSelected = () => {
         infoForm.current_capacity = res.data[0].current_capacity;
         //更新图片信息
         infoForm.snip = res.data[0].snip;
+        base64Image.value = 'data:image/png;base64,'+ infoForm.snip;
       }
       else{
         ElMessage({
@@ -269,6 +293,8 @@ const updateSelected = () => {
           message: '刷新失败',
         })
       }
+      loadData.value = false;
+      showImage.value = false;
     })
 
     //获取当前的维修订单的接口
@@ -402,21 +428,23 @@ const loadMapButton = ref(true);
 //用户需要填写的维修项表
 const repairItem = reactive({
     vehicle_id: '',
-    license_number: '',
+    plate_number: '',
     maintenance_location: '',
     remarks: '',
-    order_status: '待接单',
     title: '',
     appoint_time:'',
     longitude:'',
     latitude:''
 })
 const selectedValue2 = ref('');
+
 const updateSelected2 = () => {
     // 根据选择器的选择更新相关变量的值 
     //对于一个变量没有意义写这个函数，但是防止后续新增的绑定关系，在这里用这个函数来写
-    repairItem.vehicle_id = selectedValue2;
+    repairItem.vehicle_id = selectedValue2.value;
+    repairItem.plate_number = selectedValue2.label;
     console.log("id:", repairItem.vehicle_id);
+    console.log("plate number:", repairItem.plate_number);
 };
 
 const repairLocation = reactive({
@@ -428,7 +456,6 @@ const clearRepairItem = () => {
     //repairItem.vehicle_id = '';
     repairItem.maintenance_location = '';
     repairItem.remarks = '';
-    repairItem.order_status = '待接单';
     repairItem.appoint_time = '';
     repairItem.longitude = repairLocation.lng;
     repairItem.latitude = repairLocation.lat;
@@ -531,10 +558,10 @@ const handleClose = () => {
             //url: 'owner/repair_reservation/submit',
             method: 'POST',
             data: {
-                vehicle_id: repairItem.vehicle_id,
+                vehicle_id: (repairItem.vehicle_id).toString(),
                 maintenance_location: repairItem.maintenance_location,
                 remarks: repairItem.remarks,
-                plate_number: repairItem.license_number,
+                plate_number: repairItem.plate_number,
                 title: repairItem.title,
                 appoint_time:repairItem.appoint_time,
                 longitude:repairItem.longitude,
@@ -576,7 +603,20 @@ const handleClose = () => {
 .inner-block {
     padding: 20px 20px 30px 20px;
 }
+.content {
+  display: flex; /* 创建水平布局 */
+  align-items: center; /* 垂直居中对齐 */
+}
 
+.form-content {
+  flex: 1; /* 让表单内容占据剩余的空间 */
+}
+.right-aligned-image {
+  float: right; /* 靠右显示 */
+  width: 600px; /* 设置图片的宽度，根据需要调整大小 */
+  height: auto; /* 让高度自动适应宽度的变化 */
+  margin-left: 20px; /* 添加一些左边距，以防止文字与图片过于接近 */
+}
 .inner-block2 {
     padding: 20px 20px 60px 20px;
 }
@@ -586,10 +626,7 @@ const handleClose = () => {
     font-weight: bold;
     margin-bottom: 10px;
 }
-.right-image {
-    float: right;
-    margin-left: 10px; /* 添加一些间距，可根据需要进行调整 */
-}
+
 .date-picker-wrapper {
 
     text-align: right;

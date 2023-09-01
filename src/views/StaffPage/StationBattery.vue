@@ -10,11 +10,6 @@
                 <el-form :inline="true">
                     <el-row>
                         <el-col :span="8">
-                            <el-form-item label="电池ID">
-                                <el-input v-model="formData.battery_id" class="input-box"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="8">
                             <el-form-item label="电池型号">
                                 <el-input v-model="formData.battery_type_id" class="input-box"></el-input>
                             </el-form-item>
@@ -190,7 +185,6 @@ const pullData = () => {
             station_id:'1',
             pageIndex: query.pageIndex,
             pageSize: query.pageSize,
-            battery_id: '',
             battery_type_id: '',
             available_status: ''
         }
@@ -242,7 +236,6 @@ const changeView = () => {
             station_id:'1',
             pageIndex: 1,
             pageSize: query.pageSize,
-            battery_id: '',
             battery_type_id: '',
             available_status: ''
         }
@@ -278,7 +271,6 @@ const queryData = () => {
             station_id:'1',
             pageIndex: query.pageIndex,
             pageSize: query.pageSize,
-            battery_id: formData.battery_id,
             battery_type_id: formData.battery_type_id,
             available_status: formData.available_status
         }

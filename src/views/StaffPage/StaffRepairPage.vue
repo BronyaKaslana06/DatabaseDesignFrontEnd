@@ -2,7 +2,7 @@
   <!-- <div v-if="staff_type === '2'"> -->
   <div>
     <div class="flex-container">
-      <el-card class="left-card-block">
+      <el-card class="left-card-block" :body-style="{height: '85%'}">
         <template #header>
           <div class="maintenance-title">
             <span>待处理维修项</span>
@@ -26,14 +26,24 @@
               style="cursor: pointer;">
               <div class="list-item-content">
                 <div class="list-item-text">
-                  <p style="font-weight: bold; margin-top = 0em; margin-bottom =0em">{{ item.title }}</p>
-                  <span style="font-size: 14px;color: #999;   margin-right: 1em;">车牌号：{{ item.plate_number }}</span>
-                  <span style="font-size: 14px;color: #999;">车型：{{ item.vehicle_model }}</span>
+                  <div style="display: flex;margin-bottom: 5px;">
+                    <div
+                      style="font-weight: bold; margin-top = 0em; margin-bottom =0em;width: fit-content;margin-right: 20px;">
+                      {{ item.title }}</div>
+                  </div>
+                  <div style="margin-top: 10px;">
+                    <span
+                      style="font-size: 14px;background-color: #4fd1c4e7;border-radius: 10px;border: solid 1px #4fd1c4; color: white;padding: 2px 10px;margin-right: 20px;">{{
+                        item.vehicle_model }}</span>
+                    <span
+                      style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px;border: solid 1px #f5a74d; color: white;padding: 2px 10px;margin-right: 20px;">{{
+                        item.plate_number }}</span>
+                  </div>
                 </div>
                 <div class="list-item-button">
                   <el-button v-if="activeName === '1'" :icon="Document" type="primary"
-                    @click="take_order(item)">接单</el-button>
-                  <el-button v-else :icon="Document" type="success" @click="finish_order(item)">完成订单</el-button>
+                    @click="take_order(item)" style="background-color: #9dd8ff58;border: solid 2px #2d79dd;color:#2d79dd;font-weight:bolder;margin-right: 20px;">接单</el-button>
+                  <el-button v-else :icon="Document" type="success" @click="finish_order(item)" style="background-color: rgb(240, 249, 235);border: solid 2px rgb(61 169 87);color:rgb(61 169 87);font-weight:bolder;margin-right: 20px;">完成</el-button>
                 </div>
               </div>
             </li>
@@ -41,27 +51,26 @@
         </div>
       </el-card>
       <div class="card-container-vertical">
-        <el-card class="right-card-block">
+        <el-card class="right-card-block" :body-style="{height:'83%'}">
           <template #header>
             <div class="maintenance-title">
               <span>订单信息</span>
             </div>
           </template>
-          <div v-if="selectedOrNot">
-            <div class="container-vertical" v-loading="repair_item_loading">
+          <div v-if="selectedOrNot" style="height: 100%;">
+            <div class="container-vertical" v-loading="repair_item_loading" style="height: 100%;">
               <div class="right-info-part">
-                <div class="detail-info">
-                  <p>订单编号：{{ repair_item_data.maintenance_item_id }}</p>
-                  <p>车牌号：{{ repair_item_data.plate_number }}</p>
-                  <p>用户姓名：{{ repair_item_data.username }}</p>
-                  <p>用户电话：{{ repair_item_data.phone_number }}</p>
-                  <p>车型：{{ repair_item_data.vehicle_model }}</p>
-                  <p>预约时间：{{ repair_item_data.appoint_time }}</p>
-                  <p>备注：{{ repair_item_data.remarks }}</p>
+                <div class="detail-info" style="height: 100%;padding-top: 10px;padding-left: 20px;">
+                  <el-form-item label="订单编号">{{ repair_item_data.maintenance_item_id }}</el-form-item>
+                  <el-form-item label="车牌号">{{ repair_item_data.plate_number }}</el-form-item>
+                  <el-form-item label="用户姓名">{{ repair_item_data.username }}</el-form-item>
+                  <el-form-item label="用户电话">{{ repair_item_data.phone_number }}</el-form-item>
+                  <el-form-item label="车型">{{ repair_item_data.vehicle_model }}</el-form-item>
+                  <el-form-item label="备注">{{ repair_item_data.remarks }}</el-form-item>
                 </div>
               </div>
-              <div class="steps-part" style="height: 10em">
-                <el-steps direction="vertical" :active="activeName==='1' ? 1 : 2">
+              <div class="steps-part" style="height: 50%;position: relative;top: 50%;transform: translateY(-50%);">
+                <el-steps direction="vertical" :active="activeName === '1' ? 1 : 2">
                   <el-step title="待接单" />
                   <el-step title="待完成" />
                   <el-step title="待评分" />
@@ -74,7 +83,7 @@
             <p class="no-selection-text">请选择一个订单,以查看该订单的信息</p>
           </div>
         </el-card>
-        <el-card class="right-map-block">
+        <el-card class="right-card-block" style="margin-top: 2em;">
           <template #header>
             <div>
               <span style="font-size: 16px;font-weight: bold;margin-bottom: 0.5em;">订单位置</span>
@@ -83,7 +92,7 @@
             </div>
           </template>
           <div v-show="showMap">
-            <div id="map-container" style="width:100%;height:200px"></div>
+            <div id="map-container" style="width:100%;height:240px"></div>
           </div>
         </el-card>
       </div>
@@ -277,6 +286,7 @@ const finish_order = (item) => {
   width: 100%;
   height: 100%;
   align-items: stretch;
+  margin-top: 2vh;
   /* 默认值，保持两侧高度一致 */
 }
 
@@ -299,26 +309,21 @@ const finish_order = (item) => {
 .left-card-block {
   border: 1px white solid;
   border-radius: 10px;
-  overflow: auto;
   background-color: white;
   box-sizing: border-box;
-  /* 防止边框影响宽度 */
   flex: 1;
   margin-right: 1em;
   margin-left: 1em;
-  margin-top: 1em;
   height: 85vh;
 }
 
 .right-card-block {
   border: 1px white solid;
   border-radius: 10px;
-  overflow: auto;
   background-color: white;
   box-sizing: border-box;
   flex: 1;
   margin-right: 2em;
-  margin-top: 1em;
   height: 50%;
 }
 
@@ -386,11 +391,17 @@ const finish_order = (item) => {
   justify-content: center;
   height: 5em;
   border-bottom: 1px solid #ddd;
+  padding: 5px 0;
 }
 
-.infinite-list-wrapper .list-item+.list-item {
-  margin-top: 10px;
+.infinite-list-wrapper .list-item:hover{
+  background-color: rgba(218, 218, 218, 0.516);
+  transition: all  0.4s ease;
 }
+
+/*.infinite-list-wrapper .list-item+.list-item {
+  margin-top: 10px;
+}*/
 
 .infinite-list-wrapper .list-item-content {
   display: flex;
@@ -409,10 +420,12 @@ const finish_order = (item) => {
   height: 30em;
 }
 
-.window {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-  /* 调整行间距 */
+:deep(.el-form-item__content){
+  font-weight:500;
+  color: black;
+}
+
+:deep(.el-card__body){
+    padding: 0;
 }
 </style>

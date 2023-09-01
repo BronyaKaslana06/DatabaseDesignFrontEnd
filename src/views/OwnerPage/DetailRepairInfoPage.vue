@@ -22,10 +22,6 @@
           <span>{{ repairItem.maintenance_item_id }}</span>
         </div>
         <div class="detail-item">
-          <span class="label">维修车辆id：</span>
-          <span>{{ repairItem.vehicle_id }}</span>
-        </div>
-        <div class="detail-item">
           <span class="label">车牌号：</span>
           <span>{{ repairItem.plate_number }}</span>
         </div>
@@ -34,11 +30,11 @@
             <el-col :span="4"><span :style="{ fontSize: '1.3em' }">预约地点</span></el-col>
             <el-col :span="16">
               <el-input v-model="repairItem.maintenance_location"
-                :placeholder="loadMapButton ? '获取您的位置中...' : '请输入您的位置'" />
+                />
             </el-col>
             <el-col :span="4">
-              <el-button type="primary" :loading="loadMapButton" @click="openMapDia = true">
-                {{ loadMapButton ? '加载中' : '地图选点' }}</el-button>
+              <el-button type="primary"  @click="openMapDia = true">
+                {{ '地图选点' }}</el-button>
             </el-col>
           </template>
 
@@ -89,7 +85,13 @@
 
         <div class="detail-item">
           <span class="label">订单备注：</span>
-          <span>{{ repairItem.remarks }}</span>
+          <template v-if="isEditing">
+            <el-input v-model="repairItem.remarks" :rows="4" type="textarea" placeholder="repairItem.remarks" />
+          </template>
+
+          <template v-else>  
+            <span>{{ repairItem.remarks }}</span>
+          </template>
         </div>
 
         <div class="detail-item">
@@ -99,12 +101,13 @@
         </div>
 
         <div class="detail-item">
+          <div class="label">评分：</div>
           <template v-if="disableShow">
-            <el-rate v-model="repairItem.score" disabled show-score text-color="#ff9900"
-              score-template="{repairItem.score} points" />
+            <el-rate v-model="repairItem.score" disabled :show-score="true" text-color="#ff9900"
+               />
           </template>
           <template v-else>
-            <el-rate v-model="repairItem.score" allow-half />
+            <el-rate v-model="repairItem.score" :disabled="disableInput" allow-half />
           </template>
         </div>
 
@@ -131,7 +134,7 @@
         <el-dialog v-model="openMapDia" title="地图选点" width="40%" @open="mapOpen" draggable>
 
           <div class="map-wrapper">
-            <div id="myMap"></div>
+            <div id="myMap" style="width:100%;height:300px"></div>
           </div>
           <div class="address">
             {{ "当前地址：" + repairItem.maintenance_location }}
@@ -159,18 +162,36 @@ const isEditing = ref(false);
 
 const router = useRouter();
 const route = useRoute();
-
+/*
 const repairItem = reactive({
   maintenance_item_id: route.params.val,
-  vehicle_id: '123456',
   plate_number: '沪E6666',
   title: '补胎',
-  order_submission_time: '',
+  order_submission_time: '2000-02-06',
   service_time: '',
-  order_status: '否',
+  order_status: '待接单',
   remarks: '芝士备注',
   name: 'ccr',
   phone_number: '1399999999',
+  score: 4.0,
+  evaluations: '哈哈哈啊哈',
+  appoint_time: '2000-02-06',
+  maintenance_location: '这是地点',
+  longtitude: 121.21633041361302,
+  latitude: 31.268357562330195
+})*/
+
+
+const repairItem = reactive({
+  maintenance_item_id: route.params.val,
+  plate_number: '',
+  title: '',
+  order_submission_time: '',
+  service_time: '',
+  order_status: '',
+  remarks: '',
+  name: '',
+  phone_number: '',
   score: 0,
   evaluations: '',
   appoint_time: '',
@@ -184,26 +205,26 @@ const goBack = () => {
 }
 
 const disableInput = computed(() => {
-  return repairItem.order_status === '待评分' ? true : false;
+  return repairItem.order_status === '待评分' ? false : true;
 })
 const disableInput2 = computed(() => {
   return repairItem.order_status === '待接单' ? false : true;
 })
 const disableInput3 = computed(() => {
-  return repairItem.order_status === '待评分' ? true : false;
+  return repairItem.order_status === '待评分'||repairItem.order_status === '已完成' ? true : false;
 })
 const disableShow = computed(() => {
   return repairItem.order_status === '已完成' ? true : false;
 })
 
 const handleChange = () => {
-  isEditing = !isEditing;
-  if (!isEditing) {
+  isEditing.value = !isEditing.value;
+  if (!isEditing.value) {
     // 在点击“完成修改”按钮后执行的逻辑
-    //待补充
+    submitChange();
   }
 }
-
+/*
 const openHandin = () => {
   const BMap = window.BMap;
   var geolocation = new BMap.Geolocation();
@@ -221,10 +242,8 @@ const openHandin = () => {
           }
         }
       }
-      repairLocation.lat = userLocation.lat;
-      repairLocation.lng = userLocation.lng;
-      repairItem.longitude = repairLocation.lng;
-      repairItem.latitude = repairLocation.lat;
+      repairItem.longtitude = userLocation.lng;
+      repairItem.latitude = userLocation.lat;
       loadMapButton.value = false;
     }
     else {
@@ -238,14 +257,14 @@ const openHandin = () => {
   });
 
 }
-openHandin();
+openHandin();*/
 
 const mapOpen = () => {
   const BMap = window.BMap;
   var map = new BMap.Map("myMap");
   console.log("map open");
-  var point = new BMap.Point(repairLocation.lng, repairLocation.lat)
-  map.centerAndZoom(new BMap.Point(repairLocation.lng, repairLocation.lat), 12);
+  var point = new BMap.Point(repairItem.longtitude, repairItem.latitude)
+  map.centerAndZoom(new BMap.Point(repairItem.longtitude, repairItem.latitude), 12);
   map.enableScrollWheelZoom(true);
   var geoc = new BMap.Geocoder();
   var marker = new BMap.Marker(point);
@@ -266,25 +285,43 @@ const mapOpen = () => {
     //lz
     console.log("lng:", point.lng);
     console.log("lat:", point.lat);
-    repairItem.longitude = point.lng;
+    repairItem.longtitude = point.lng;
     repairItem.latitude = point.lat;
-    console.log("up lo:", repairItem.longitude);
+    console.log("up lo:", repairItem.longtitude);
     console.log("up lo:", repairItem.latitude);
   });
 
 }
 
 const getDetailedData = () => {
+  loading.value = true;
   cmRequest.request({
-    url: 'api/owner/vehicle_maintenance_info/query',
+    url: 'api/owner/repair_reservation/query',
     method: 'GET',
     params: {
       maintenance_item_id: repairItem.maintenance_item_id
     }
   }).then((res) => {
     if (!res.code) {
+      ElMessage({
+        type: 'success',
+        message: '获取维修项成功'
+      })
       //进行赋值操作
-
+      repairItem.plate_number = res.data.plate_number;
+      repairItem.title = res.data.title;
+      repairItem.order_submission_time = res.data.order_submission_time;
+      repairItem.service_time = res.data.service_time;
+      repairItem.order_status = res.data.order_status;
+      repairItem.remarks = res.data.remarks;
+      repairItem.name = res.data.name;
+      repairItem.phone_number = res.data.phone_number;
+      repairItem.score = res.data.score;
+      repairItem.evaluations = res.data.evaluations;
+      repairItem.appoint_time = res.data.appoint_time;
+      repairItem.maintenance_location = res.data.maintenance_location;
+      repairItem.longtitude = res.data.longtitude;
+      repairItem.latitude = res.data.latitude;
     }
     else {
       ElMessage({
@@ -292,10 +329,39 @@ const getDetailedData = () => {
         message: '获取维修项失败'
       })
     }
+    loading.value = false;
   })
-  loading.value = false;
+  
 }
-//getDetailedData();
+getDetailedData();
+
+const submitChange=()=>{
+  cmRequest.request({
+    url: 'api/owner/repair_reservation/update',
+    method: 'POST',
+    data: {
+      maintenance_item_id: repairItem.maintenance_item_id,
+      remarks : repairItem.remarks,
+      appoint_time : repairItem.appoint_time,
+      maintenance_location : repairItem.maintenance_location,
+      longtitude : repairItem.longtitude,
+      latitude : repairItem.latitude
+    }
+  }).then((res) => {
+    if (!res.code) {
+      ElMessage({
+          type: 'success',
+          message: '修改订单成功',
+        })
+    }
+    else {
+      ElMessage({
+        type: 'error',
+        message: '修改订单失败'
+      })
+    }
+  })
+}
 
 const cancelItem = () => {
   ElMessageBox.confirm(
@@ -340,11 +406,12 @@ const cancelItem = () => {
 
 const submitComment = () => {
   cmRequest.request({
-    url: 'api/owner/repair_reservation/submit_evaluations',
+    url: 'api/owner/repair_reservation/update',
     method: 'POST',
     data: {
       maintenance_item_id: repairItem.maintenance_item_id,
-      evaluations: repairItem.evaluations
+      evaluations: repairItem.evaluations,
+      score:repairItem.score
     }
   }).then((res) => {
     if (!res.code) {
