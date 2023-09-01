@@ -134,14 +134,14 @@ const staff_items = [
   },
 
   {
-    name: '维修订单',
+    name: '维修历史',
     index: '/staffMaintenanceItem',
-    title: '维修订单'
+    title: '维修历史'
   },
   {
-    name: '换电订单',
+    name: '换电历史',
     index: '/staffSwitch',
-    title: '换电订单'
+    title: '换电历史'
   }
 ]
 

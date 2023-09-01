@@ -21,7 +21,7 @@
             </div>
           </div>
         </template>
-        <div class="infinite-list-wrapper" style="overflow:auto" v-loading="listLoading" >
+        <div class="infinite-list-wrapper" style="overflow:auto" v-loading="listLoading">
           <ul class="list">
             <li v-for="item in switch_data" :key="item.switch_request_id" class="list-item" @click="showDetail(item)"
               style="cursor: pointer;">
@@ -32,7 +32,8 @@
                   <span style="font-size: 14px;color: #999;">车型：{{ item.vehicle_model }}</span>
                 </div>
                 <div class="list-item-button">
-                  <el-button v-if="activeName==='1'" :icon="Document" type="primary" @click="take_order(item)">接单</el-button>
+                  <el-button v-if="activeName === '1'" :icon="Document" type="primary"
+                    @click="take_order(item)">接单</el-button>
                   <el-button v-else :icon="Document" type="success" @click="finish_order(item)">完成订单</el-button>
                 </div>
               </div>
@@ -61,7 +62,7 @@
                 </div>
               </div>
               <div class="steps-part" style="height: 10em">
-                <el-steps direction="vertical" :active="activeName !='1' ? 2 : 1">
+                <el-steps direction="vertical" :active="activeName != '1' ? 2 : 1">
                   <el-step title="待接单" />
                   <el-step title="待完成" />
                   <el-step title="待评分" />
@@ -119,7 +120,7 @@
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">换上电池id</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.batteryOnId  }}
+            {{ switch_log.batteryOnId }}
           </span>
         </el-col>
       </el-row>
@@ -127,7 +128,7 @@
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">评价</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.evaluation ? switch_log.evaluation  : "暂无评价" }}
+            {{ switch_log.evaluation ? switch_log.evaluation : "暂无评价" }}
           </span>
         </el-col>
       </el-row>
@@ -136,7 +137,7 @@
           <span :style="{ fontSize: '1.3em' }">评分</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.score === -1  ?  "暂无评分" : switch_log.score }}
+            {{ switch_log.score === -1 ? "暂无评分" : switch_log.score }}
           </span>
         </el-col>
       </el-row>
@@ -187,7 +188,7 @@ const refreshSwitch = () => {
   listLoading.value = true;
   //switch_data.value = [];
   if (activeName.value != '3') {
-    let state = activeName.value==='1' ? '待接单': '待完成';
+    let state = activeName.value === '1' ? '待接单' : '待完成';
     cmRequest.request({
       url: 'api/staff/switchrequest/doortodoor',
       method: 'GET',
@@ -205,18 +206,18 @@ const refreshSwitch = () => {
           message: '获取上门换电订单列表成功',
         })
         switch_data.value = res.switch_request_array;
-        listLoading.value=false;
+        listLoading.value = false;
       }
       else {
         ElMessage({
           type: 'error',
           message: '获取上门换电订单列表失败',
         })
-        listLoading.value=false;
+        listLoading.value = false;
       }
     })
   }
-  else{
+  else {
     cmRequest.request({
       url: 'api/staff/switchrequest/reservation',
       method: 'GET',
@@ -232,18 +233,19 @@ const refreshSwitch = () => {
           message: '获取换电站订单列表成功',
         })
         switch_data.value = res.switch_request_array;
-        listLoading.value=false;
+        listLoading.value = false;
       }
       else {
         ElMessage({
           type: 'error',
           message: '获取换电站订单列表失败',
         })
-        listLoading.value=false;
+        listLoading.value = false;
       }
     })
   }
 }
+
 refreshSwitch();
 
 //获取某个换电订单的详细信息
@@ -343,6 +345,7 @@ const finish_order = (item) => {
       })
     }
   })
+  selectedOrNot.value = false;
 }
 
 const open_switch_log = () => {

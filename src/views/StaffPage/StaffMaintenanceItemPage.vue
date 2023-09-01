@@ -1,18 +1,19 @@
 <template>
   <div>
-    <el-page-header @back="goBack">
+    <!-- <el-page-header @back="goBack">
       <template #content>
-        <span class="text-large font-600 mr-3 custom-text"> 维修服务 </span>
+        <span class="text-large font-600 mr-3 custom-text"> 维修历史 </span>
       </template>
-    </el-page-header>
+    </el-page-header> -->
 
-    <div class="block">
-      <div class="inner-block2">
+    <div class="upper-block">
+      <div class="inner-block">
         <el-form :inline="true">
           <el-row>
             <el-col :span="8">
               <el-form-item label="订单状态">
                 <el-select v-model="infoForm.order_status">
+                  <el-option key="0" value="" label="所有状态"> </el-option>
                   <el-option key="1" value="待完成" label="待完成"> </el-option>
                   <el-option key="2" value="待评分" label="待评分"> </el-option>
                   <el-option key="3" value="已完成" label="已完成"> </el-option>
@@ -27,12 +28,15 @@
       </div>
     </div>
 
-    <div class="block">
+    <div class="down-block">
       <div class="inner-block2">
         <div class="top-right">
           <div class="maintenance-title">
-            维修记录
+            维修历史记录
           </div>
+          <!-- <div class="button-wrapper2">
+            <el-button @click="queryData" :icon="RefreshRight">刷新</el-button>
+          </div> -->
           <!-- 日期选择 -->
           <div class="date-picker-wrapper">
             <el-date-picker v-model="timeValue" type="daterange" align="right" unlink-panels range-separator="至"
@@ -41,7 +45,7 @@
             </el-date-picker>
           </div>
         </div>
-        <div class="infinite-list-wrapper" style="overflow:auto">
+        <div class="infinite-list-wrapper" style="overflow:auto flex:1;">
           <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
             <li v-for="item in listdata" :key="item.maintenance_items_id" class="list-item">
               <div class="list-item-content">
@@ -135,6 +139,7 @@ const queryData = () => {
     }
   })
 };
+queryData();
 
 
 const timeValue = ref('');
@@ -277,22 +282,33 @@ const get_maintenance_info = (id) => {
   font-size: 1.5em;
   /* 调整字体大小 */
 }
+.upper-block {
+  border: 1px white solid;
+  border-radius: 10px;
+  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
+  overflow: hidden;
+  background-color: white;
+  margin: 1em 1em;
+  height: 15vh;
+}
 
-.block {
+.down-block {
   border: 1px white solid;
   border-radius: 10px;
   box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
   overflow: auto;
   background-color: white;
-  margin: 30px 20px;
+  margin: 1em 1em;
+  height: 65vh;
+  display: flex; /* 使用Flex布局 */
+  flex-direction: column; /* 纵向排列 */
 }
-
 .inner-block {
-  padding: 20px 20px 30px 20px;
+  padding: 1em 1em 1em 1em;
 }
-
 .inner-block2 {
-  padding: 20px 20px 60px 20px;
+  padding: 1em 1em 1em 1em;
+  flex: 1;
 }
 
 .maintenance-title {
@@ -302,13 +318,12 @@ const get_maintenance_info = (id) => {
 }
 
 .date-picker-wrapper {
-
   text-align: right;
 }
 
 
 .infinite-list-wrapper {
-  height: 300px;
+  /*height: 300px;*/
 }
 
 .infinite-list-wrapper .list {
@@ -393,11 +408,11 @@ const get_maintenance_info = (id) => {
 .button-wrapper {
   display: flex;
   justify-content: flex-end;
-  margin-top: 10px;
 }
 
-.custom-row {
-  margin-bottom: 20px;
+.button-wrapper2 {
+  display: flex;
+  justify-content: flex-start;
 }
 
 #myMap {
