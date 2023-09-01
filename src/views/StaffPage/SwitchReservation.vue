@@ -1,5 +1,6 @@
 <template>
-  <div v-if="staff_type === '1'">
+  <!-- <div v-if="staff_type === '1'"> -->
+  <div>
     <div class="flex-container">
       <el-card class="left-card-block">
         <template #header>
@@ -8,9 +9,6 @@
           </div>
           <div>
             <div class="switch-button">
-              <!-- <el-switch v-model="show_status" class="mb-2"
-                style="--el-switch-on-color: #13ce66; --el-switch-off-color:#33b3f8" active-text="待完成订单"
-                inactive-text="待接单订单" @change="handleSwitchChange(show_status)"/> -->
               <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleSwitchChange">
                 <el-tab-pane label="待接单订单" name="1"></el-tab-pane>
                 <el-tab-pane label="待完成订单" name="2"></el-tab-pane>
@@ -63,7 +61,7 @@
                 </div>
               </div>
               <div class="steps-part" style="height: 10em">
-                <el-steps direction="vertical" :active="show_status ? 2 : 1">
+                <el-steps direction="vertical" :active="activeName !='1' ? 2 : 1">
                   <el-step title="待接单" />
                   <el-step title="待完成" />
                   <el-step title="待评分" />
@@ -76,7 +74,7 @@
             <p class="no-selection-text">请选择一个订单,以查看该订单的信息</p>
           </div>
         </el-card>
-        <el-card class="right-card-block">
+        <el-card class="right-map-block">
           <template #header>
             <div>
               <span style="font-size: 16px;font-weight: bold;margin-bottom: 0.5em;">订单位置</span>
@@ -91,21 +89,21 @@
       </div>
     </div>
   </div>
-  <div v-else style="display: flex; justify-content: center;">  
+  <!-- <div v-else style="display: flex; justify-content: center;">  
     <div style="display: flex; align-items: center;  flex-direction: column;">  
       <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">  
         您不是换电站管理员，不可以查看换电订单  
       </div>  
       <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">  
     </div>  
-  </div>
+  </div> -->
   <el-dialog v-model="show_switch_log" title="订单完成情况" width="30%" @open="open_switch_log" draggable>
     <div class='window'>
       <el-row :gutter="10" class="custom-row">
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">换电请求id</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.SwitchRequestId }}
+            {{ switch_log.switch_request_id }}
           </span>
         </el-col>
       </el-row>
@@ -113,7 +111,7 @@
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">换下电池id</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.batteryOffBatteryId }}
+            {{ switch_log.batteryOffId }}
           </span>
         </el-col>
       </el-row>
@@ -121,15 +119,7 @@
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">换上电池id</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.batteryOnBatteryId }}
-          </span>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10" class="custom-row">
-        <el-col :span="8"><span :style="{ fontSize: '1.3em' }">换下电池id</span></el-col>
-        <el-col :span="16">
-          <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.batteryOffBatteryId }}
+            {{ switch_log.batteryOnId  }}
           </span>
         </el-col>
       </el-row>
@@ -137,7 +127,7 @@
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">评价</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.Evaluation ? switch_log.Evaluation : "暂无评价" }}
+            {{ switch_log.evaluation ? switch_log.evaluation  : "暂无评价" }}
           </span>
         </el-col>
       </el-row>
@@ -146,7 +136,7 @@
           <span :style="{ fontSize: '1.3em' }">评分</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.Score ? switch_log.Score : "暂无评分" }}
+            {{ switch_log.score === -1  ?  "暂无评分" : switch_log.score }}
           </span>
         </el-col>
       </el-row>
@@ -192,20 +182,21 @@ const switch_detail_loading = ref(false);
 
 //根据switch决定的show_status当的状态，决定获取哪些状态的订单
 const refreshSwitch = () => {
-  if (staff_type.value != '1')
-    return;
+  // if (staff_type.value != '1')
+  //   return;
   listLoading.value = true;
   //switch_data.value = [];
   if (activeName.value != '3') {
     let state = activeName.value==='1' ? '待接单': '待完成';
     cmRequest.request({
       url: 'api/staff/switchrequest/doortodoor',
-      //url: 'https://mock.apifox.cn/m1/3058331-0-default/staff/switchrequest/doortodoor',
       method: 'GET',
       params: {
-        employee_id: localStorage.getItem('user_id'), //TODO
+        //employee_id: localStorage.getItem('user_id'), //TODO
+        employee_id: '306',
         request_status: state,
-        station_id: localStorage.getItem("station_id")  //TODO
+        //station_id: localStorage.getItem("station_id")  //TODO
+        station_id: '244'
       }
     }).then((res) => {
       if (!res.code) {
@@ -228,11 +219,11 @@ const refreshSwitch = () => {
   else{
     cmRequest.request({
       url: 'api/staff/switchrequest/reservation',
-      //url: 'https://mock.apifox.cn/m1/3058331-0-default/staff/switchrequest/doortodoor',
       method: 'GET',
       params: {
         request_status: '待完成',
-        station_id: localStorage.getItem("station_id")  //TODO
+        //station_id: localStorage.getItem("station_id")  //TODO
+        station_id: '244'
       }
     }).then((res) => {
       if (!res.code) {
@@ -261,7 +252,6 @@ const get_switch_info = (id) => {
   switch_item_data.value = {};
   cmRequest.request({
     url: 'api/staff/switchrequest/detail',
-    //url: '/staff/switchrequest/detail',
     method: 'GET',
     params: {
       switch_request_id: id.toString()
@@ -300,7 +290,6 @@ const take_order = (item) => {
   console.log(item.switch_request_id + "接单");
   cmRequest.request({
     url: 'api/staff/switchrequest/receive',
-    //url: '/staff/switchrequest/doortodoor/receive',
     method: 'POST',
     data: {
       switch_request_id: item.switch_request_id,
@@ -324,13 +313,7 @@ const take_order = (item) => {
   })
 }
 
-const switch_log = ref({
-  SwitchRequestId: '1',
-  batteryOffBatteryId: 'batteryOff',
-  batteryOnBatteryId: 'batteryOn',
-  Evaluation: '',
-  Score: ''
-});
+const switch_log = ref({});
 
 const show_switch_log = ref(false);
 const finish_order = (item) => {
@@ -350,7 +333,7 @@ const finish_order = (item) => {
         type: 'success',
         message: '订单完成',
       })
-      switch_log.value = res.data;
+      switch_log.value = res.switch_log;
       open_switch_log();
     }
     else {
@@ -420,6 +403,19 @@ const open_switch_log = () => {
   margin-top: 1em;
   height: 50%;
 }
+
+.right-map-block {
+  border: 1px white solid;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: white;
+  box-sizing: border-box;
+  flex: 1;
+  margin-right: 2em;
+  margin-top: 1em;
+  height: 50%;
+}
+
 
 .container-vertical {
   display: flex;

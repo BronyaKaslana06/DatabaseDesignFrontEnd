@@ -1,5 +1,6 @@
 <template>
-  <div v-if="staff_type === '2'">
+  <!-- <div v-if="staff_type === '2'"> -->
+  <div>
     <div class="flex-container">
       <el-card class="left-card-block">
         <template #header>
@@ -73,7 +74,7 @@
             <p class="no-selection-text">请选择一个订单,以查看该订单的信息</p>
           </div>
         </el-card>
-        <el-card class="right-card-block">
+        <el-card class="right-map-block">
           <template #header>
             <div>
               <span style="font-size: 16px;font-weight: bold;margin-bottom: 0.5em;">订单位置</span>
@@ -88,14 +89,14 @@
       </div>
     </div>
   </div>
-  <div v-else style="display: flex; justify-content: center;">  
+  <!-- <div v-else style="display: flex; justify-content: center;">  
     <div style="display: flex; align-items: center;  flex-direction: column;">  
       <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">  
         您不是维修员工，不可以查看维修项表  
       </div>  
       <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">  
     </div>  
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="js">
@@ -135,8 +136,8 @@ const repair_item_loading = ref(false);
 
 //根据switch决定的show_status当的状态，决定获取哪些状态的订单
 const refreshRepair = (show_message) => {
-  if (staff_type.value != '2')
-    return;
+  // if (staff_type.value != '2')
+  //   return;
   console.log("call refresh");
   listLoading.value = true;
   //repair_data.value = [];
@@ -167,7 +168,7 @@ const refreshRepair = (show_message) => {
     }
   })
 }
-refreshRepair(false);
+refreshRepair();
 
 //获取某个换电订单的详细信息
 const get_repair_info = (id) => {
@@ -215,7 +216,6 @@ const take_order = (item) => {
   console.log(item.maintenance_item_id + "接单");
   cmRequest.request({
     url: 'api/staff/maintanence/receive',
-    //url: '/staff/switchrequest/doortodoor/receive',
     method: 'POST',
     data: {
       maintenance_item_id: item.maintenance_item_id,
@@ -314,6 +314,18 @@ const finish_order = (item) => {
   border: 1px white solid;
   border-radius: 10px;
   overflow: auto;
+  background-color: white;
+  box-sizing: border-box;
+  flex: 1;
+  margin-right: 2em;
+  margin-top: 1em;
+  height: 50%;
+}
+
+.right-map-block {
+  border: 1px white solid;
+  border-radius: 10px;
+  overflow: hidden;
   background-color: white;
   box-sizing: border-box;
   flex: 1;
