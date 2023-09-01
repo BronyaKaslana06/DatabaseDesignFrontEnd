@@ -174,7 +174,8 @@ const svgArray = [
   '上门维修服务',
   '维修订单管理',
   '员工信息',
-  '换电订单历史'
+  '换电订单历史',
+  '换电站电池管理'
 ]
 
 
@@ -190,7 +191,7 @@ for (let name of svgArray) {
   
 <style scoped>
 .slider-bar {
-  height: 100vh;
+  height: 90vh;
   left: 0%;
   width: 100%;
 }
@@ -252,20 +253,22 @@ for (let name of svgArray) {
 }
 
 .icon-active-换电申请信息::before,
-.icon-active-换电预约::before {
+.icon-active-换电预约::before,
+.icon-active-换电管理::before {
   content: url(../assets/换电申请信息-active.svg);
 }
 
 .icon-换电申请信息::before,
-.icon-换电预约::before {
+.icon-换电预约::before,
+.icon-换电管理::before {
   content: url(../assets/换电申请信息.svg);
 }
 
-.icon-换电站信息::before {
+.icon-换电站信息::before, .icon-换电站管理::before {
   content: url(../assets/换电站信息.svg);
 }
 
-.icon-active-换电站信息::before {
+.icon-active-换电站信息::before, .icon-active-换电站管理::before {
   content: url(../assets/换电站信息-active.svg);
 }
 
@@ -288,17 +291,27 @@ for (let name of svgArray) {
 }
 
 .icon-上门维修服务::before,
-.icon-维修服务::before {
+.icon-维修服务::before,
+.icon-上门维修::before {
   content: url(../assets/上门维修服务.svg);
 }
 
 .icon-active-上门维修服务::before,
-.icon-active-维修服务::before {
+.icon-active-维修服务::before,
+.icon-active-上门维修::before {
   content: url(../assets/上门维修服务-active.svg);
 }
 
 .icon-active-换电订单历史::before{
   content: url(../assets/换电订单历史-active.svg);
+}
+
+.icon-换电站电池管理::before{
+  content: url(../assets/换电站电池管理.svg)
+}
+
+.icon-active-换电站电池管理::before{
+  content: url(../assets/换电站电池管理-active.svg)
 }
 
 .el-menu-item:hover {

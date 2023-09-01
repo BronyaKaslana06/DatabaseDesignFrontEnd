@@ -84,7 +84,10 @@ const userInfo = reactive({
 const queryData = () => {
   cmRequest
     .request({
-      url: "api/staff/my-info/1",
+      url: "api/staff/my-info",
+      params:{
+        staff_id: localStorage.getItem("user_id")
+      },
       method: "GET",
     })
     .then((res) => {

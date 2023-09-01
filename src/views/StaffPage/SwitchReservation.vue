@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex-container">
-      <el-card class="left-card-block">
+      <el-card class="left-card-block" :body-style="{height: '85%'}">
         <template #header>
           <div class="maintenance-title">
             <span>待处理订单</span>
@@ -25,17 +25,21 @@
         </template>
         <div class="infinite-list-wrapper" style="overflow:auto" v-loading="listLoading" >
           <ul class="list">
-            <li v-for="item in switch_data" :key="item.switch_request_id" class="list-item" @click="showDetail(item)"
-              style="cursor: pointer;">
+            <li v-for="item in switch_data" :key="item.switch_request_id" class="list-item" @click="showDetail(item)">
               <div class="list-item-content">
                 <div class="list-item-text">
-                  <p style="font-weight: bold; margin-top = 0em; margin-bottom =0em">订单ID：{{ item.switch_request_id }}</p>
-                  <span style="font-size: 14px;color: #999;   margin-right: 1em;">车牌号：{{ item.plate_number }}</span>
-                  <span style="font-size: 14px;color: #999;">车型：{{ item.vehicle_model }}</span>
+                  <div style="display: flex;margin-bottom: 5px;">
+                  <div style="font-weight: bold; margin-top = 0em; margin-bottom =0em;width: fit-content;margin-right: 20px;" >订单ID</div>
+                  <div style="width: fit-content;">{{ item.switch_request_id }}</div></div>
+                  <div style="margin-top: 10px;">
+                  <span style="font-size: 14px;background-color: #4fd1c4e7;border-radius: 10px;border: solid 1px #4fd1c4; color: white;padding: 2px 10px;margin-right: 20px;">{{ item.vehicle_model }}</span>
+                  <span style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px;border: solid 1px #f5a74d; color: white;padding: 2px 10px;margin-right: 20px;">{{ item.request_time }}</span>
+                  <span style="font-size: 14px;background-color: #729cff;border-radius: 10px;border: solid 1px #729cff; color: white;padding: 2px 10px;">{{ item.battery_type_id }}</span>
+                    </div>
                 </div>
                 <div class="list-item-button">
-                  <el-button v-if="activeName==='1'" :icon="Document" type="primary" @click="take_order(item)">接单</el-button>
-                  <el-button v-else :icon="Document" type="success" @click="finish_order(item)">完成订单</el-button>
+                  <el-button v-if="activeName==='1'" :icon="Document" @click="take_order(item)" style="background-color: #9dd8ff58;border: solid 2px #2d79dd;color:#2d79dd;font-weight:bolder;margin-right: 20px;">接单</el-button>
+                  <el-button v-else :icon="Document" type="success" @click="finish_order(item)" style="background-color: rgb(240, 249, 235);border: solid 2px rgb(61 169 87);color:rgb(61 169 87);font-weight:bolder;margin-right: 20px;">完成</el-button>
                 </div>
               </div>
             </li>
@@ -43,26 +47,26 @@
         </div>
       </el-card>
       <div class="card-container-vertical">
-        <el-card class="right-card-block">
+        <el-card class="right-card-block"  :body-style="{height:'83%'}">
           <template #header>
             <div class="maintenance-title">
               <span>订单信息</span>
             </div>
           </template>
-          <div v-if="selectedOrNot">
-            <div class="container-vertical" v-loading="switch_detail_loading">
-              <div class="right-info-part">
-                <div class="detail-info">
-                  <p>订单编号：{{ switch_item_data.switch_request_id }}</p>
-                  <p>车牌号：{{ switch_item_data.plate_number }}</p>
-                  <p>用户姓名：{{ switch_item_data.username }}</p>
-                  <p>电话：{{ switch_item_data.phone_number }}</p>
-                  <p>车型：{{ switch_item_data.vehicle_model }}</p>
-                  <p>预约时间：{{ switch_item_data.request_time }}</p>
-                  <p>备注：{{ switch_item_data.remarks }}</p>
+          <div v-if="selectedOrNot" style="height: 100%;">
+            <div class="container-vertical" v-loading="switch_detail_loading" style="height: 100%;">
+              <div class="right-info-part" style="overflow: auto;">
+                <div class="detail-info" style="height: 100%;padding-top: 10px;padding-left: 20px;">
+                  <el-form-item label="订单编号">{{ switch_item_data.switch_request_id }}</el-form-item>
+                  <el-form-item label="用户姓名">{{ switch_item_data.username }}</el-form-item>
+                  <el-form-item label="电池类型">{{ switch_item_data.battery_type_id }}</el-form-item>
+                  <el-form-item label="预约时间">{{ switch_item_data.request_time }}</el-form-item>
+                  <el-form-item label="电话">{{ switch_item_data.phone_number }}</el-form-item>
+                  <el-form-item label="车型">{{ switch_item_data.vehicle_model }}</el-form-item>
+                  <el-form-item label="备注">{{ switch_item_data.remarks }}</el-form-item>
                 </div>
               </div>
-              <div class="steps-part" style="height: 10em">
+              <div class="steps-part" style="height: 50%;position: relative;top: 50%;transform: translateY(-50%);">
                 <el-steps direction="vertical" :active="show_status ? 2 : 1">
                   <el-step title="待接单" />
                   <el-step title="待完成" />
@@ -76,7 +80,7 @@
             <p class="no-selection-text">请选择一个订单,以查看该订单的信息</p>
           </div>
         </el-card>
-        <el-card class="right-card-block">
+        <el-card v-if="activeName === '1'|| activeName === '2'" class="right-card-block" style="margin-top: 2em;">
           <template #header>
             <div>
               <span style="font-size: 16px;font-weight: bold;margin-bottom: 0.5em;">订单位置</span>
@@ -85,7 +89,7 @@
             </div>
           </template>
           <div v-show="showMap">
-            <div id="map-container" style="width:100%;height:200px"></div>
+            <div id="map-container" style="width:100%;height:240px"></div>
           </div>
         </el-card>
       </div>
@@ -176,7 +180,8 @@ const switch_item_data = ref({
   plate_number: "13",
   remarks: "culpa sint",
   order_status: "1",
-  request_time: "2020-04-25 09:57:34"
+  request_time: "2020-04-25 09:57:34",
+  battery_type_id: "标准续航型"
 });   //换电订单详细信息
 
 const handleSwitchChange = () => {
@@ -205,16 +210,12 @@ const refreshSwitch = () => {
       //url: 'https://mock.apifox.cn/m1/3058331-0-default/staff/switchrequest/doortodoor',
       method: 'GET',
       params: {
-        employee_id: '351', //TODO
+        employee_id: '1', //TODO
         request_status: state,
-        station_id: '154'  //TODO
+
       }
     }).then((res) => {
       if (!res.code) {
-        ElMessage({
-          type: 'success',
-          message: '获取上门换电订单列表成功',
-        })
         switch_data.value = res.switch_request_array;
         listLoading.value=false;
       }
@@ -238,10 +239,6 @@ const refreshSwitch = () => {
       }
     }).then((res) => {
       if (!res.code) {
-        ElMessage({
-          type: 'success',
-          message: '获取换电站订单列表成功',
-        })
         switch_data.value = res.switch_request_array;
         listLoading.value=false;
       }
@@ -270,10 +267,6 @@ const get_switch_info = (id) => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '获取上门换电订单成功',
-      })
       switch_item_data.value = res.data.switch_request;
       switch_detail_loading.value = false;
     }
@@ -289,6 +282,8 @@ const get_switch_info = (id) => {
 //get_switch_info();
 
 const showLocation = (item) => {
+  if(activeName.value == 3)
+    return;
   const BMap = window.BMap;
   const map = new BMap.Map('map-container'); // 创建地图实例
   const location = new BMap.Point(item.longitude, item.latitude); // 替换为你的坐标经度和纬度
@@ -378,6 +373,7 @@ const open_switch_log = () => {
   width: 100%;
   height: 100%;
   align-items: stretch;
+  margin-top: 2vh;
   /* 默认值，保持两侧高度一致 */
 }
 
@@ -400,26 +396,21 @@ const open_switch_log = () => {
 .left-card-block {
   border: 1px white solid;
   border-radius: 10px;
-  overflow: auto;
   background-color: white;
   box-sizing: border-box;
-  /* 防止边框影响宽度 */
   flex: 1;
   margin-right: 1em;
   margin-left: 1em;
-  margin-top: 1em;
   height: 85vh;
 }
 
 .right-card-block {
   border: 1px white solid;
   border-radius: 10px;
-  overflow: auto;
   background-color: white;
   box-sizing: border-box;
   flex: 1;
   margin-right: 2em;
-  margin-top: 1em;
   height: 50%;
 }
 
@@ -475,10 +466,16 @@ const open_switch_log = () => {
   justify-content: center;
   height: 5em;
   border-bottom: 1px solid #ddd;
+  padding: 5px 0;
 }
 
+.infinite-list-wrapper .list-item:hover{
+  background-color: rgba(218, 218, 218, 0.516);
+  transition: all  0.4s ease;
+}
+
+
 .infinite-list-wrapper .list-item+.list-item {
-  margin-top: 10px;
 }
 
 .infinite-list-wrapper .list-item-content {
@@ -490,7 +487,7 @@ const open_switch_log = () => {
 .infinite-list-wrapper .list-item-text {
   /*display: flex;*/
   flex: 1;
-  margin-left: 10px;
+  margin-left: 20px;
 }
 
 #myMap {
@@ -503,5 +500,19 @@ const open_switch_log = () => {
   flex-direction: column;
   gap: 1em;
   /* 调整行间距 */
+}
+
+.el-form-item{
+  font-weight: bolder;
+  color:#797979;
+}
+
+:deep(.el-form-item__content){
+  font-weight:500;
+  color: black;
+}
+
+:deep(.el-card__body){
+    padding: 0;
 }
 </style>

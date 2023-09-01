@@ -141,13 +141,13 @@ const logout = () => {
 }
 
 .el-aside {
+  height: 90vh;
   width: 15%;
   background-color: #f5f5f5; /* 较浅的灰色 */
 }
 
 .el-main {
-  height: 100vh;
-  max-height: 100vh;
+  height: 90vh;
   padding: 0;
 }
 
@@ -169,5 +169,9 @@ const logout = () => {
 .welcome-text {
   margin-left: 10px;
   margin-right: 1.8em; 
+}
+
+.el-container{
+  height: 90vh;
 }
 </style>
