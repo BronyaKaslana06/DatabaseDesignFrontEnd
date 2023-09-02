@@ -108,9 +108,9 @@ const staff_items = [
     title: '员工仪表盘'
   },
   {
-    name: '换电站电池管理',
+    name: '电池管理',
     index: '/station-battery-page',
-    title: '换电站电池管理'
+    title: '电池管理'
   },
   {
     name: '换电站管理',

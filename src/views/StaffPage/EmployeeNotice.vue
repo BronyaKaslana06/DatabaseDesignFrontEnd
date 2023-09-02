@@ -118,12 +118,18 @@ const searchFormData = reactive({
 });
 
 const queryData = () => {
+  const queryParams = {
+    title: "",
+    publisher: "",
+    publish_pos: "",
+    contents: "",
+    publish_time:""
+  };
   cmRequest
     .request({
-      url: "api/administrator/announcement/message",
-      //url: "administrator/announcement/message",
+      url: "api/administrator/announcement/query",
       method: "GET",
-      // 如果需要发送其他参数，请在params中添加
+      params: queryParams, // 将搜索参数作为查询参数传递
     })
     .then((res) => {
       if (!res.code) {

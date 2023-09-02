@@ -111,7 +111,8 @@ const router = createRouter({
 
                 },
                 {
-                    path: '/detailRepairInfo/:val',
+                    //path: '/detailRepairInfo/:val',
+                    path: '/detailRepairInfo',
                     name: 'detailRepairInfo',
                     component: () => import('../views/OwnerPage/DetailRepairInfoPage.vue')
                 },

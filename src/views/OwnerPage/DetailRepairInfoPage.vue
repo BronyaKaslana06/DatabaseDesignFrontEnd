@@ -2,7 +2,7 @@
   <div class="page-container">
     <el-page-header @back="goBack">
       <template #content>
-        <span class="text-large font-600 mr-3 custom-text"> 维修服务 </span>
+        <span class="text-large font-600 mr-3 custom-text"> 维修订单详情 </span>
       </template>
     </el-page-header>
   </div>
@@ -150,9 +150,11 @@
 
 <script setup lang="js">
 import cmRequest from '../../service/index.js'
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
+import { useStore } from 'vuex';
+
 // import { RefreshRight, Edit, Delete } from '@element-plus/icons-vue';
 
 const openMapDia = ref(false);
@@ -162,6 +164,7 @@ const isEditing = ref(false);
 
 const router = useRouter();
 const route = useRoute();
+const store = useStore();
 /*
 const repairItem = reactive({
   maintenance_item_id: route.params.val,
@@ -181,9 +184,15 @@ const repairItem = reactive({
   latitude: 31.268357562330195
 })*/
 
-
+onMounted(() => {
+  window.addEventListener('unload', saveState);
+});
+const saveState = () => {
+  sessionStorage.setItem('state', store.state.maintenanceItemId);
+}
 const repairItem = reactive({
-  maintenance_item_id: route.params.val,
+  // maintenance_item_id: route.params.val,
+  maintenance_item_id: store.state.maintenanceItemId,
   plate_number: '',
   title: '',
   order_submission_time: '',
@@ -261,6 +270,7 @@ const mapOpen = () => {
 
 const getDetailedData = () => {
   loading.value = true;
+  console.log(repairItem.maintenance_item_id)
   cmRequest.request({
     url: 'api/owner/repair_reservation/query',
     method: 'GET',
@@ -399,7 +409,7 @@ const submitComment = () => {
 
 <style scoped>
 .custom-text {
-  font-size: 1.5em;
+  font-size: 1em;
   /* 调整字体大小 */
 }
 

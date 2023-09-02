@@ -186,12 +186,14 @@ import { useRouter } from 'vue-router';
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElButton, ElSelect, ElOption } from 'element-plus';
 import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-vue';
+import { useStore } from 'vuex';
 
 const loadData = ref(false);
 const loadData2 = ref(false);
 const options =  ref([]);
-const base64Image = ref('')
-const showImage = ref(false)
+const base64Image = ref('');
+const showImage = ref(false);
+const store = useStore();
 
 const getOptions = () => {
     cmRequest.request({
@@ -389,9 +391,10 @@ const router = useRouter();
 const Detail = (maintenanceItemId) => {
     // Perform the desired action using the maintenanceItemId parameter
     console.log('Editing item with ID:', maintenanceItemId);
+    store.commit('setMaintenanceItemId', maintenanceItemId);
     router.push({
         name: 'detailRepairInfo',
-        params: { val: maintenanceItemId }
+        //params: { val: maintenanceItemId }
     });
 };
 
