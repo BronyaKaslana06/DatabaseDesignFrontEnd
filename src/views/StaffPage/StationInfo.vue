@@ -1,34 +1,34 @@
 <template>
     <div>
-        <!-- <el-page-header @back="goBack">
-            <template #content>
-                <span class="text-large font-600 mr-3 custom-text"> 换电站管理 </span>
-            </template>
-        </el-page-header> -->
-
         <div class="block">
             <div class="inner-block">
-                <div class="text-section">
+                <div class="title-and-left">
                     <div class="mytitle">
                         <span>我的换电站</span>
                     </div>
+                    <div class="left-section">
 
-                    <el-form label-width="170px">
-                        <el-form-item label="换电站名字 :">
-                            {{ stationInfo.station_name }}
-                        </el-form-item>
-                        <el-form-item label="换电站ID :">
-                            {{ stationInfo.station_id }}
-                        </el-form-item>
-                        <el-form-item label="换电站地址 :">
-                            {{ stationInfo.station_name }}
-                        </el-form-item>
-                        <el-form-item label="可用电池数/电池容量 :">
-                            {{ stationInfo.available_battery_count }} / {{ stationInfo.battery_capacity }}
-                        </el-form-item>
-                    </el-form>
+                        <div class="text-section">
+                            <el-form label-width="170px">
+                                <el-form-item label="换电站名字 :" style="font-weight: bold;">
+                                    {{ stationInfo.station_name }}
+                                </el-form-item>
+                                <el-form-item label="换电站ID :" style="font-weight: bold;">
+                                    {{stationInfo.station_id }}
+                                </el-form-item>
+                                <el-form-item label="换电站地址 :" style="font-weight: bold;">
+                                    {{stationInfo.station_name }}
+                                </el-form-item>
+                                <el-form-item label="可用电池数/电池容量 :" style="font-weight: bold;">
+                                    {{ stationInfo.available_battery_count }} / {{ stationInfo.battery_capacity }}
+                                </el-form-item>
+                            </el-form>
+                        </div>
+                    </div>
                 </div>
-                <div id="myMap" style="width:50%;height:200px"></div>
+                <div class="right-section">
+                    <div id="myMap" style="width:100%;height:260px"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -39,27 +39,17 @@ import cmRequest from '@/service/index.js'
 import { useRouter, useRoute } from 'vue-router';
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElButton, ElSelect, ElOption, ElCard } from 'element-plus';
-import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-vue';
 
 
-const stationInfo = reactive(
-    {
-        station_id: "38",
-        station_name: "好内那",
-        faliure_status: true,
-        battery_capacity: 88,
-        available_battery_count: 14,
-        longitude: 121.21633041361302,
-        latitude: 31.268357562330195
-    })
-//const stationInfo = reactive({})
+
+const stationInfo = ref({})
 
 const pullData = () => {
     cmRequest.request({
         url: 'api/staff/switchstation/station_info',
         method: 'GET',
         params: {
-            employee_id: localStorage.getItem('user_id')
+            employee_id: localStorage.getItem('user_id').toString()
         }
     }).then((res) => {
         if (!res.code) {
@@ -78,7 +68,7 @@ const pullData = () => {
         }
     })
 };
-//pullData();
+pullData();
 
 const mapOpen = () => {
     const BMap = window.BMap;
@@ -105,15 +95,6 @@ onMounted(() => {
     margin: 30px 20px;
 }
 
-.inner-block {
-    display: flex;
-    align-items: flex-start;
-    padding: 20px 20px 60px 20px;
-}
-
-.text-section {
-    flex: 1;
-}
 
 .mytitle {
     font-size: 27px;
@@ -121,12 +102,56 @@ onMounted(() => {
     margin-bottom: 1em;
 }
 
-.map-section {
-    flex: 1;
+.text-section {
     display: flex;
-    justify-content: flex-end;
     align-items: flex-start;
-    padding-left: 20px;
-    /* Add some spacing between text and map */
+    /* label 内容顶部对齐 */
+    justify-content: flex-start;
+    /* 左对齐 */
+    border: 2px solid transparent;
+    /* 透明边框，确保阴影显示 */
+    box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.1);
+    /* 上下阴影 */
+    padding: 5px;
+    /* 调整内边距 */
+    border-radius: 20px;
+    /* 圆角 */
+    padding-right: 40px;
+    /* 调整距离 */
 }
-</style>
+
+.text-section .el-form-item {
+    text-align: right;
+    border-bottom: 2px solid #ddd;
+    /* 底部横线分隔线 */
+    margin-bottom: 20px;
+    /* 控制间距 */
+    padding-bottom: 10px;
+    /* 控制底部内边距 */
+}
+
+.text-section .el-form-item:last-child {
+    border-bottom: none;
+    /* 移除最后一个元素的底部边框 */
+}
+.inner-block {
+    display: flex;
+    align-items: flex-start;
+    padding: 20px 20px 60px 20px;
+}
+.left-section {
+    flex: 1;
+    margin-right: 70px;
+    margin-left: 50px;
+}
+
+.right-section {
+    width: 60%;
+    margin-top: 75px;
+    margin-right: 50px;
+}
+
+.title-and-left {
+    display: flex;
+    flex-direction: column;
+}</style>

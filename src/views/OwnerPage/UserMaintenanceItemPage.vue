@@ -7,23 +7,23 @@
         </el-page-header> -->
         <div class="block">
             <div class="inner-block">
-              <div class="content">
+              <div class="content" v-loading="loadData">
                 <div class="form-content">
-                <el-form label-width="100px" class="form-item-margin" v-loading="loadData">
-                    <el-form-item label="当前车辆">
+                <el-form label-width="100px" class="form-item-margin">
+                    <el-form-item label="当前车辆" style="font-weight: bold;">
                         <el-select v-model="selectedValue" filterable placeholder="请选择" @change="updateSelected">
                             <el-option v-for="item in options" :key="item.vehicle_id" :label="item.plate_number" :value="item.vehicle_id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="车型:">
+                    <el-form-item label="车型:" style="font-weight: bold;">
                         <div class="value">{{ infoForm.vehicle_model }}</div>
                     </el-form-item>
-                    <el-form-item label="购车时间:">
+                    <el-form-item label="购车时间:" style="font-weight: bold;">
                         <div class="value">{{ infoForm.purchase_date }}</div>
                     </el-form-item>
-                    <el-form-item label="当前电池电量:">
-                        <div class="value">{{ infoForm.current_capacity }}</div>
+                    <el-form-item label="当前电池电量:" style="font-weight: bold;">
+                        <div class="value">{{ infoForm.current_capacity }}%</div>
                     </el-form-item>
                 </el-form>
               </div>
@@ -208,6 +208,8 @@ const getOptions = () => {
           message: '刷新成功',
         })
         options.value = res.data;
+        selectedValue.value = res.data[0].vehicle_id;
+        updateSelected();
       }
       else{
         ElMessage({
@@ -715,4 +717,7 @@ const handleClose = () => {
     width: 100%;
     height: 30em;
 }
+
+
+
 </style>

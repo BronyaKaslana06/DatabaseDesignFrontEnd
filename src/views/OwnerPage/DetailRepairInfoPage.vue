@@ -27,7 +27,7 @@
         </div>
         <div class="detail-item">
           <template v-if="isEditing">
-            <el-col :span="4"><span :style="{ fontSize: '1.3em' }">预约地点</span></el-col>
+            <el-col :span="4"><span :style="{ fontSize: '1.3em' }">预约地点:</span></el-col>
             <el-col :span="16">
               <el-input v-model="repairItem.maintenance_location"
                 />
@@ -39,7 +39,7 @@
           </template>
 
           <template v-else>
-             <span class="label">预约地点：</span>
+            <span class="label">预约地点：</span>
             <span>{{ repairItem.maintenance_location }}</span>
           </template>
         </div>
@@ -224,40 +224,6 @@ const handleChange = () => {
     submitChange();
   }
 }
-/*
-const openHandin = () => {
-  const BMap = window.BMap;
-  var geolocation = new BMap.Geolocation();
-  geolocation.getCurrentPosition((r) => {
-    if (geolocation.getStatus() == 0) {
-      var userLocation = r.point; // 用户当前位置的坐标
-      var userAddress = r.address; // 用户当前位置的地址信息
-      for (const key in userAddress) {
-        if (userAddress[key] != '') {
-          if (key == 'province') {
-            repairItem.maintenance_location = userAddress[key] + repairItem.maintenance_location;
-          }
-          else {
-            repairItem.maintenance_location += userAddress[key];
-          }
-        }
-      }
-      repairItem.longtitude = userLocation.lng;
-      repairItem.latitude = userLocation.lat;
-      loadMapButton.value = false;
-    }
-    else {
-      ElMessage({
-        type: 'warning',
-        message: '获取用户位置失败',
-      })
-      console.log("获取用户位置失败");
-      loadMapButton.value = false;
-    }
-  });
-
-}
-openHandin();*/
 
 const mapOpen = () => {
   const BMap = window.BMap;
@@ -474,7 +440,7 @@ const submitComment = () => {
 .button-container {
   margin-bottom: 5em;
   display: flex;
-
+  margin-top: 30px;
 }
 
 /* 用于间隔按钮的空白元素样式 */
