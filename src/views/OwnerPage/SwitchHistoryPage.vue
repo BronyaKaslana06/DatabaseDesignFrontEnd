@@ -317,7 +317,7 @@ const load = () => {
         params: {
             pageIndex: curInfoIndex,
             pageSize: 10,
-            owner_id: 81,
+            owner_id: localStorage.getItem("user_id"),
             order_status: order_status.value
         }
     }).then((res) => {
@@ -376,7 +376,7 @@ const deleteInfo = (val) => {
         method: 'DELETE',
         params: {
             switch_request_id: val.switch_request_id,
-            owner_id: 81
+            owner_id: localStorage.getItem("user_id")
         }
     }).then((res) => {
         if (!res.code) {
