@@ -80,8 +80,8 @@ const userInfo = reactive({
   },
 });
 
-const storedUserInfo = JSON.parse(localStorage.getItem("user_id"));
-const user_name = JSON.parse(localStorage.getItem("username")); //获取用户名
+const storedUserInfo = JSON.parse(localStorage.getItem("user_id")); //获取用户ID
+const user_name = ref(localStorage.getItem('username'));
 
 const queryData = () => {
   cmRequest
@@ -239,3 +239,4 @@ queryData(); // 在组件加载时获取用户信息
   height: 80px; /* 设置更大的高度 */
 }
 </style>
+
