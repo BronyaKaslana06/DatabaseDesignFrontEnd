@@ -47,6 +47,11 @@ const admin_items = [
     title: '换电站信息'
   },
   {
+    name: '电池管理',
+    index: '/battery-info-page',
+    title: '电池管理'
+  },
+  {
     path: '公告管理',
     index: '/notice-info-page',
     title: '公告管理'

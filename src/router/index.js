@@ -105,6 +105,12 @@ const router = createRouter({
 
                 },
                 {
+                    path: '/battery-info-page',
+                    name: 'battery-info-page',
+                    component: () => import('../views/AdminstratorPage/BatteryInfo.vue')
+
+                },
+                {
                     path: '/detailRepairInfo/:val',
                     name: 'detailRepairInfo',
                     component: () => import('../views/OwnerPage/DetailRepairInfoPage.vue')
