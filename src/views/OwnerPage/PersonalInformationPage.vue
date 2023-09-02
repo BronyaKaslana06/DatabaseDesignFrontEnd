@@ -136,7 +136,7 @@ import cmRequest from "../../service/index.js";
 import { ElMessage } from "element-plus";
 
 const storedUserInfo = JSON.parse(localStorage.getItem("user_id")); //获取用户ID
-const user_name = JSON.parse(localStorage.getItem("username"));//获取用户名
+const user_name = ref(localStorage.getItem('username'));
 
 const userInfo = reactive({
   user_name: "",
@@ -380,7 +380,7 @@ queryData(); // 在组件加载时获取用户信息
   font-size:15px;
   color: #fff; /* 设置文本颜色为蓝色 */
   margin-left:60px ;
-  margin-top:45px ;
+  margin-top:40px ;
 }
 
 .information-item-container {
