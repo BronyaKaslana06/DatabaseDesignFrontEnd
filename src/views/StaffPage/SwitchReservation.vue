@@ -10,9 +10,9 @@
           <div>
             <div class="switch-button">
               <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleSwitchChange">
-                <el-tab-pane label="待接单订单" name="1"></el-tab-pane>
-                <el-tab-pane label="待完成订单" name="2"></el-tab-pane>
-                <el-tab-pane label="换电站订单" name="3"></el-tab-pane>
+                <el-tab-pane label="待接单订单" name="1" :disabled="listLoading"></el-tab-pane>
+                <el-tab-pane label="待完成订单" name="2" :disabled="listLoading"></el-tab-pane>
+                <el-tab-pane label="换电站订单" name="3" :disabled="listLoading"></el-tab-pane>
               </el-tabs>
               <div>
                 <el-button @click="refreshSwitch" :icon="RefreshRight">
@@ -21,7 +21,7 @@
             </div>
           </div>
         </template>
-        <div class="infinite-list-wrapper" style="overflow:auto" v-loading="listLoading" >
+        <div class="infinite-list-wrapper" style="overflow:auto" v-loading="listLoading">
           <ul class="list">
             <li v-for="item in switch_data" :key="item.switch_request_id" class="list-item" @click="showDetail(item)">
               <div class="list-item-content">
@@ -33,7 +33,7 @@
                   <span style="font-size: 14px;background-color: #4fd1c4e7;border-radius: 10px;border: solid 1px #4fd1c4; color: white;padding: 2px 10px;margin-right: 20px;">{{ item.vehicle_model }}</span>
                   <span style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px;border: solid 1px #f5a74d; color: white;padding: 2px 10px;margin-right: 20px;">{{ item.request_time }}</span>
                   <span style="font-size: 14px;background-color: #729cff;border-radius: 10px;border: solid 1px #729cff; color: white;padding: 2px 10px;">{{ item.battery_type_id }}</span>
-                    </div>
+                  </div>
                 </div>
                 <div class="list-item-button">
                   <el-button v-if="activeName==='1'" :icon="Document" @click="take_order(item)" style="background-color: #9dd8ff58;border: solid 2px #2d79dd;color:#2d79dd;font-weight:bolder;margin-right: 20px;">接单</el-button>
@@ -123,7 +123,7 @@
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">换上电池id</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.batteryOnId  }}
+            {{ switch_log.batteryOnId }}
           </span>
         </el-col>
       </el-row>
@@ -131,7 +131,7 @@
         <el-col :span="8"><span :style="{ fontSize: '1.3em' }">评价</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.evaluation ? switch_log.evaluation  : "暂无评价" }}
+            {{ switch_log.evaluation ? switch_log.evaluation : "暂无评价" }}
           </span>
         </el-col>
       </el-row>
@@ -140,7 +140,7 @@
           <span :style="{ fontSize: '1.3em' }">评分</span></el-col>
         <el-col :span="16">
           <span :style="{ fontSize: '1.3em' }">
-            {{ switch_log.score === -1  ?  "暂无评分" : switch_log.score }}
+            {{ switch_log.score === -1 ? "暂无评分" : switch_log.score }}
           </span>
         </el-col>
       </el-row>
@@ -164,7 +164,7 @@ const selectedOrNot = ref(false);
 const showMap = ref(false);
 const activeName = ref('1');
 const switch_data = ref([]); //换电订单列表
-const listLoading = ref(true);
+const listLoading = ref(false);
 const staff_type = ref(localStorage.getItem('staff_type'));
 
 const switch_item_data = ref({});   //换电订单详细信息
@@ -191,7 +191,7 @@ const refreshSwitch = () => {
   listLoading.value = true;
   //switch_data.value = [];
   if (activeName.value != '3') {
-    let state = activeName.value==='1' ? '待接单': '待完成';
+    let state = activeName.value === '1' ? '待接单' : '待完成';
     cmRequest.request({
       url: 'api/staff/switchrequest/doortodoor',
       method: 'GET',
@@ -203,18 +203,18 @@ const refreshSwitch = () => {
     }).then((res) => {
       if (!res.code) {
         switch_data.value = res.switch_request_array;
-        listLoading.value=false;
+        listLoading.value = false;
       }
       else {
         ElMessage({
           type: 'error',
           message: '获取上门换电订单列表失败',
         })
-        listLoading.value=false;
+        listLoading.value = false;
       }
     })
   }
-  else{
+  else {
     cmRequest.request({
       url: 'api/staff/switchrequest/reservation',
       method: 'GET',
@@ -226,18 +226,19 @@ const refreshSwitch = () => {
     }).then((res) => {
       if (!res.code) {
         switch_data.value = res.switch_request_array;
-        listLoading.value=false;
+        listLoading.value = false;
       }
       else {
         ElMessage({
           type: 'error',
           message: '获取换电站订单列表失败',
         })
-        listLoading.value=false;
+        listLoading.value = false;
       }
     })
   }
 }
+
 refreshSwitch();
 
 //获取某个换电订单的详细信息
@@ -335,6 +336,7 @@ const finish_order = (item) => {
       })
     }
   })
+  selectedOrNot.value = false;
 }
 
 const open_switch_log = () => {

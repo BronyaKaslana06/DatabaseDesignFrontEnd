@@ -2,7 +2,7 @@
   <div class="page-container">
     <el-page-header @back="goBack">
       <template #content>
-        <span class="text-large font-600 mr-3 custom-text"> 维修服务 </span>
+        <span class="text-large font-600 mr-3 custom-text"> 维修订单详情 </span>
       </template>
     </el-page-header>
   </div>
@@ -27,7 +27,7 @@
         </div>
         <div class="detail-item">
           <template v-if="isEditing">
-            <el-col :span="4"><span :style="{ fontSize: '1.3em' }">预约地点</span></el-col>
+            <el-col :span="4"><span :style="{ fontSize: '1.3em' }">预约地点:</span></el-col>
             <el-col :span="16">
               <el-input v-model="repairItem.maintenance_location"
                 />
@@ -39,7 +39,7 @@
           </template>
 
           <template v-else>
-             <span class="label">预约地点：</span>
+            <span class="label">预约地点：</span>
             <span>{{ repairItem.maintenance_location }}</span>
           </template>
         </div>
@@ -150,9 +150,11 @@
 
 <script setup lang="js">
 import cmRequest from '../../service/index.js'
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
+import { useStore } from 'vuex';
+
 // import { RefreshRight, Edit, Delete } from '@element-plus/icons-vue';
 
 const openMapDia = ref(false);
@@ -162,6 +164,7 @@ const isEditing = ref(false);
 
 const router = useRouter();
 const route = useRoute();
+const store = useStore();
 /*
 const repairItem = reactive({
   maintenance_item_id: route.params.val,
@@ -181,9 +184,15 @@ const repairItem = reactive({
   latitude: 31.268357562330195
 })*/
 
-
+onMounted(() => {
+  window.addEventListener('unload', saveState);
+});
+const saveState = () => {
+  sessionStorage.setItem('state', store.state.maintenanceItemId);
+}
 const repairItem = reactive({
-  maintenance_item_id: route.params.val,
+  // maintenance_item_id: route.params.val,
+  maintenance_item_id: store.state.maintenanceItemId,
   plate_number: '',
   title: '',
   order_submission_time: '',
@@ -224,40 +233,6 @@ const handleChange = () => {
     submitChange();
   }
 }
-/*
-const openHandin = () => {
-  const BMap = window.BMap;
-  var geolocation = new BMap.Geolocation();
-  geolocation.getCurrentPosition((r) => {
-    if (geolocation.getStatus() == 0) {
-      var userLocation = r.point; // 用户当前位置的坐标
-      var userAddress = r.address; // 用户当前位置的地址信息
-      for (const key in userAddress) {
-        if (userAddress[key] != '') {
-          if (key == 'province') {
-            repairItem.maintenance_location = userAddress[key] + repairItem.maintenance_location;
-          }
-          else {
-            repairItem.maintenance_location += userAddress[key];
-          }
-        }
-      }
-      repairItem.longtitude = userLocation.lng;
-      repairItem.latitude = userLocation.lat;
-      loadMapButton.value = false;
-    }
-    else {
-      ElMessage({
-        type: 'warning',
-        message: '获取用户位置失败',
-      })
-      console.log("获取用户位置失败");
-      loadMapButton.value = false;
-    }
-  });
-
-}
-openHandin();*/
 
 const mapOpen = () => {
   const BMap = window.BMap;
@@ -295,6 +270,7 @@ const mapOpen = () => {
 
 const getDetailedData = () => {
   loading.value = true;
+  console.log(repairItem.maintenance_item_id)
   cmRequest.request({
     url: 'api/owner/repair_reservation/query',
     method: 'GET',
@@ -433,7 +409,7 @@ const submitComment = () => {
 
 <style scoped>
 .custom-text {
-  font-size: 1.5em;
+  font-size: 1em;
   /* 调整字体大小 */
 }
 
@@ -474,7 +450,7 @@ const submitComment = () => {
 .button-container {
   margin-bottom: 5em;
   display: flex;
-
+  margin-top: 30px;
 }
 
 /* 用于间隔按钮的空白元素样式 */

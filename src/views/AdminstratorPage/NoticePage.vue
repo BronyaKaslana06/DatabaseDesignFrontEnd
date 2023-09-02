@@ -35,6 +35,16 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="50">
+            <el-form-item label="发布内容">
+              <el-input
+                v-model="searchFormData.contents"
+                class="input-box"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <div class="button-wrapper">
           <el-button @click="searchData">搜索</el-button>
           <el-button @click="showCreatePopup = true">新建</el-button>
@@ -55,11 +65,10 @@
         <div class="meta-info">
           <span>发布者：{{ announcement.publisher }}</span>
           <span>发布对象：{{ announcement.publish_pos }}</span>
-          <span>发布时间：{{ announcement.publish_time }}</span>
+          <span>发布时间：{{ deletetime(announcement.publish_time) }}</span>
         </div>
         <p class="announcement-content">
-          {{ announcement.contents.slice(0, 80)
-          }}{{ announcement.contents.length > 80 ? "..." : "" }}
+          {{ somecontents(announcement.contents) }}......
         </p>
       </div>
       <!-- 在右侧显示按钮容器 -->
@@ -89,7 +98,7 @@
       <div class="popup-item">
         <div class="popup-item">发布者：{{ popupNotice.publisher }}</div>
         <div class="popup-item">发布对象：{{ popupNotice.publish_pos }}</div>
-        <span>发布时间：{{ popupNotice.publish_time }}</span>
+        <span>发布时间：{{ deletetime(popupNotice.publish_time) }}</span>
       </div>
     </div>
     <!-- 公告的完整内容 -->
@@ -166,6 +175,7 @@ const searchFormData = reactive({
   publisher: "",
   publish_time: "",
   publish_pos: "",
+  contents: "",
 });
 
 const queryData = () => {
@@ -214,12 +224,32 @@ const formatDate = (dateString) => {
   return `${year}-${month}-${day}`;
 };
 
+const somecontents = (dateString) => {
+  console.log(dateString);
+  if (dateString === null) {
+    return "";
+  }
+  return dateString.slice(0, 80);
+};
+
+const deletetime = (dateString) => {
+  console.log(dateString);
+  if (dateString === "") {
+    return "";
+  }
+  if (dateString === null) {
+    return "";
+  }
+  return dateString.slice(0,10);
+};
+
 const searchData = () => {
   // 根据输入的数据准备搜索参数
   const searchParams = {
     title: searchFormData.title,
     publisher: searchFormData.publisher,
     publish_pos: searchFormData.publish_pos,
+    contents: searchFormData.contents,
     publish_time: formatDate(searchFormData.publish_time), // 转换日期格式
   };
   console.log(searchParams);
@@ -327,6 +357,7 @@ const saveEdit = () => {
           message: "编辑公告成功",
         });
         closeEditPopup(); // 关闭弹窗
+        window.location.reload(true);
       } else {
         // 保存失败，显示错误消息
         ElMessage({
@@ -388,6 +419,7 @@ const saveCreate = () => {
           message: "新建公告成功",
         });
         closeCreatePopup(); // 关闭弹窗
+        window.location.reload(true);
       } else {
         // 保存失败，显示错误消息
         ElMessage({
@@ -428,6 +460,7 @@ const deleteAnnouncement = () => {
           message: "删除公告成功",
         });
         closeEditPopup(); // 关闭编辑弹窗
+        window.location.reload(true);
       } else {
         // 删除失败，显示错误消息
         ElMessage({

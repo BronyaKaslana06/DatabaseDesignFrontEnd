@@ -1,29 +1,29 @@
 <template>
     <div>
-        <el-page-header  @back="goBack">
+        <!-- <el-page-header  @back="goBack">
             <template #content>
               <span class="text-large font-600 mr-3 custom-text"> 维修服务 </span>
             </template>
-        </el-page-header>
+        </el-page-header> -->
         <div class="block">
             <div class="inner-block">
-              <div class="content">
+              <div class="content" v-loading="loadData">
                 <div class="form-content">
-                <el-form label-width="100px" class="form-item-margin" v-loading="loadData">
-                    <el-form-item label="当前车辆">
+                <el-form label-width="100px" class="form-item-margin">
+                    <el-form-item label="当前车辆" style="font-weight: bold;">
                         <el-select v-model="selectedValue" filterable placeholder="请选择" @change="updateSelected">
                             <el-option v-for="item in options" :key="item.vehicle_id" :label="item.plate_number" :value="item.vehicle_id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="车型:">
+                    <el-form-item label="车型:" style="font-weight: bold;">
                         <div class="value">{{ infoForm.vehicle_model }}</div>
                     </el-form-item>
-                    <el-form-item label="购车时间:">
+                    <el-form-item label="购车时间:" style="font-weight: bold;">
                         <div class="value">{{ infoForm.purchase_date }}</div>
                     </el-form-item>
-                    <el-form-item label="当前电池电量:">
-                        <div class="value">{{ infoForm.current_capacity }}</div>
+                    <el-form-item label="当前电池电量:" style="font-weight: bold;">
+                        <div class="value">{{ infoForm.current_capacity }}%</div>
                     </el-form-item>
                 </el-form>
               </div>
@@ -47,11 +47,11 @@
                             </el-text>
                             <el-divider />
                             <div class="form">
-                                <el-row :gutter="10" class="custom-row">
+                                <!-- <el-row :gutter="10" class="custom-row">
                                     <el-col :span="4"><span :style="{ fontSize: '1.3em' }">维修车辆id</span></el-col>
                                     <el-col :span="20"><span :style="{ fontSize: '1.3em' }">{{ repairItem.vehicle_id
                                     }}</span></el-col>
-                                </el-row>
+                                </el-row> -->
                                 <el-row :gutter="10" class="custom-row">
                                     <el-col :span="4"><span :style="{ fontSize: '1.3em' }">车牌号</span></el-col>
                                     <el-col :span="20">
@@ -186,12 +186,14 @@ import { useRouter } from 'vue-router';
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElButton, ElSelect, ElOption } from 'element-plus';
 import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-vue';
+import { useStore } from 'vuex';
 
 const loadData = ref(false);
 const loadData2 = ref(false);
 const options =  ref([]);
-const base64Image = ref('')
-const showImage = ref(false)
+const base64Image = ref('');
+const showImage = ref(false);
+const store = useStore();
 
 const getOptions = () => {
     cmRequest.request({
@@ -208,6 +210,8 @@ const getOptions = () => {
           message: '刷新成功',
         })
         options.value = res.data;
+        selectedValue.value = res.data[0].vehicle_id;
+        updateSelected();
       }
       else{
         ElMessage({
@@ -387,9 +391,10 @@ const router = useRouter();
 const Detail = (maintenanceItemId) => {
     // Perform the desired action using the maintenanceItemId parameter
     console.log('Editing item with ID:', maintenanceItemId);
+    store.commit('setMaintenanceItemId', maintenanceItemId);
     router.push({
         name: 'detailRepairInfo',
-        params: { val: maintenanceItemId }
+        //params: { val: maintenanceItemId }
     });
 };
 
@@ -601,7 +606,7 @@ const handleClose = () => {
 }
 
 .inner-block {
-    padding: 20px 20px 30px 20px;
+    padding: 1em;
 }
 .content {
   display: flex; /* 创建水平布局 */
@@ -688,9 +693,9 @@ const handleClose = () => {
 
 
 .form-item-margin {
-    margin-top: 40px;
+    margin-top: 1em;
     /* 添加上边框间距 */
-    margin-left: 30px;
+    margin-left: 2em;
     /* 添加左边框间距 */
 }
 
@@ -715,4 +720,7 @@ const handleClose = () => {
     width: 100%;
     height: 30em;
 }
+
+
+
 </style>

@@ -1,36 +1,38 @@
 <template>
   <div>
+    <div class="information_background">
+      <div class="username-container">
+        <el-avatar
+          class="extra-large-avatar"
+          :src="userAvatar || defaultAvatar"
+        ></el-avatar>
+        <p class="username">欢迎,{{ user_name }}</p>
+        <p class="userid">id:{{ storedUserInfo }}</p>
+      </div>
+    </div>
     <div class="information-item-container">
-      <el-page-header :icon="ArrowLeft">
-        <template #content>
-          <span class="text-large font-600 mr-3"> 个人信息 </span>
-        </template>
-      </el-page-header>
       <div class="information-item">
         <div class="information-item-left">
           <h2>个人资料</h2>
           <div class="information-item-line">
             <p>姓名：{{ userInfo.personalInfo.name }}</p>
             <p>联系方式：{{ userInfo.personalInfo.phone_number }}</p>
-            <p>职位：{{ userInfo.personalInfo.positions }}</p>
           </div>
           <div class="information-item-line">
+            <p>职位：{{ userInfo.personalInfo.positions }}</p>
             <p>性别：{{ userInfo.personalInfo.gender }}</p>
+          </div>
+          <div class="information-item-line">
+            <p>评语：{{ userInfo.performance.total_performance }}</p>
+            <p>服务次数：{{ userInfo.performance.service_frequency }}</p>
+          </div>
+          <div class="information-item-line">
+            <p>评分：{{ userInfo.performance.score }}</p>
           </div>
           <div class="information-item-right">
             <Text class="edit-button" @click="showEditDialog(userInfo)"
               >编辑</Text
             >
-          </div>
-        </div>
-      </div>
-      <div class="information-item">
-        <div class="information-item-left">
-          <h2>绩效</h2>
-          <div class="information-item-line">
-            <p>评语：{{ userInfo.performance.total_performance }}</p>
-            <p>服务次数：{{ userInfo.performance.service_frequency }}</p>
-            <p>评分：{{ userInfo.performance.score }}</p>
           </div>
         </div>
       </div>
@@ -78,12 +80,13 @@ const userInfo = reactive({
   },
 });
 
-const storedUserInfo = JSON.parse(localStorage.getItem("user_id"));
+const storedUserInfo = JSON.parse(localStorage.getItem("user_id")); //获取用户ID
+const user_name = ref(localStorage.getItem('username'));
 
 const queryData = () => {
   cmRequest
     .request({
-      url: "api/staff/my-info/"+storedUserInfo,
+      url: "api/staff/my-info/" + storedUserInfo,
       method: "GET",
     })
     .then((res) => {
@@ -127,7 +130,7 @@ const showEditDialog = (userInfo) => {
 const saveEditedInfo = () => {
   cmRequest
     .request({
-      url: "api/staff/my-info/"+storedUserInfo+"/edit",
+      url: "api/staff/my-info/" + storedUserInfo + "/edit",
       method: "PATCH",
       data: editedUserInfo, // 使用编辑后的用户信息作为请求数据
     })
@@ -140,6 +143,7 @@ const saveEditedInfo = () => {
           message: "信息保存成功",
         });
         editDialogVisible.value = false; // 保存成功后关闭弹窗
+        window.location.reload(true);
       } else {
         ElMessage({
           type: "error",
@@ -160,18 +164,51 @@ queryData(); // 在组件加载时获取用户信息
 </script>
   
   <style scoped>
+.information_background {
+  width: 1235px;
+  height: 400px;
+  border-radius: 15.000000953674316px;
+  margin-left: -40px;
+  margin-top: -10px;
+  background-image: url("@/assets/information_background.jpg"); /* 替换 'your-background-image.jpg' 为实际的背景图路径 */
+  background-size: cover; /* 控制背景图的尺寸，以覆盖整个容器 */
+  background-repeat: no-repeat; /* 防止背景图重复平铺 */
+  background-position: center; /* 将背景图居中 */
+  display: flex;
+}
+
+.username-container {
+  display: flex;
+  margin-top: 340px;
+  margin-left: 120px;
+  z-index: 1;
+}
+
+.username{
+  font-size:26px;
+  color: #fff; /* 设置文本颜色为蓝色 */
+  font-weight: bold; /* 设置文本为加粗 */
+  margin-left:10px ;
+}
+
+.userid{
+  font-size:15px;
+  color: #fff; /* 设置文本颜色为蓝色 */
+  margin-left:60px ;
+  margin-top:40px ;
+}
+
 .information-item-container {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* 添加间隔 */
-  padding-bottom: 100px; /* 调整数值以设置所需的空白大小 */
+  margin-left: 50px;
 }
 
 .information-item {
-  background-color: #f0f0f0;
-  width: 97%;
-  margin: 5px 5px;
-  border-radius: 30px;
+  width: 1050px;
+  height: 350px;
+  border-radius: 15.000000953674316px;
+  background-color: #fff;
   display: flex;
   align-items: center;
   position: relative;
@@ -194,6 +231,12 @@ queryData(); // 在组件加载时获取用户信息
 .information-item-line {
   display: flex;
   justify-content: space-between;
-  font-size: 16px;
+  font-size: 20px;
+}
+
+.extra-large-avatar {
+  width: 80px; /* 设置更大的宽度 */
+  height: 80px; /* 设置更大的高度 */
 }
 </style>
+

@@ -105,7 +105,14 @@ const router = createRouter({
 
                 },
                 {
-                    path: '/detailRepairInfo/:val',
+                    path: '/battery-info-page',
+                    name: 'battery-info-page',
+                    component: () => import('../views/AdminstratorPage/BatteryInfo.vue')
+
+                },
+                {
+                    //path: '/detailRepairInfo/:val',
+                    path: '/detailRepairInfo',
                     name: 'detailRepairInfo',
                     component: () => import('../views/OwnerPage/DetailRepairInfoPage.vue')
                 },
@@ -124,22 +131,23 @@ const router = createRouter({
                     name: 'car-page',
                     component: () => import('../views/OwnerPage/CarPage.vue')
                 },
-                {
-                    path: '/staffRepair/:val',
-                    name: 'staffRepair',
-                    component: () => import('../views/StaffPage/StaffRepairMessage.vue')
-                },
+                // {
+                //     path: '/staffRepair/:val',
+                //     name: 'staffRepair',
+                //     component: () => import('../views/StaffPage/StaffRepairMessage.vue')
+                // },
                 {
                     path: '/owner-notice-page',
                     name: 'owner-notice-page',
                     component: () => import('../views/OwnerPage/OwnerNotice.vue')
                 },
+                // {
+                //     path: '/staffSwitch/:val',
+                //     //path: '/staffSwitch',
+                //     name: 'staffSwitch',
+                //     component: () => import('../views/StaffPage/StaffSwitchMessage.vue')
+                // },
                 {
-                    path: '/staffSwitch/:val',
-                    //path: '/staffSwitch',
-                    name: 'staffSwitch',
-                    component: () => import('../views/StaffPage/StaffSwitchMessage.vue')
-                }, {
                     path: '/switch-history',
                     name: 'switch-history',
                     component: () => import('../views/OwnerPage/SwitchHistoryPage.vue')

@@ -8,7 +8,7 @@
         <span class="logo-text">智能电动汽车管理系统</span>
       </div>
       <div class="user-info">
-        <el-avatar :src="userAvatar || defaultAvatar" size="default"></el-avatar>
+        <el-avatar :icon="UserFilled" size="default"></el-avatar>
         <span class="welcome-text">欢迎，{{ user_name }}</span>
         <el-icon class="setting-icon" size="1.5em" @click="goToSettings"><Setting /></el-icon>
         <el-icon class="logout-icon" size="1.5em" @click="logout"><CloseBold /></el-icon>
@@ -33,7 +33,7 @@ import mySlNav from '@/components/sliderbar-nav.vue'
 //import mySlNav from '../../components/sliderbar-nav.vue'
 import { ref, computed,getCurrentInstance,onBeforeMount,onMounted } from 'vue';
 import { useRouter, createRouter } from 'vue-router';
-import { Setting, CloseBold } from '@element-plus/icons-vue';
+import { Setting, CloseBold, UserFilled } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 
@@ -64,7 +64,7 @@ router.beforeEach((to, from, next) => {
 const userAvatar = ref('');
 const user_id = ref(localStorage.getItem('user_id'));
 const user_name = ref(localStorage.getItem('username'));
-const defaultAvatar = '@/assets/defaultAvatar.jpg'; // 设置默认头像路径
+const defaultAvatar = '../assets/defaultAvatar.jpg'; // 设置默认头像路径
 
 // localStorage.setItem('user_type', '0');
 

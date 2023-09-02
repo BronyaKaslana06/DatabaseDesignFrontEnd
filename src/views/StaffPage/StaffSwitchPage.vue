@@ -1,18 +1,19 @@
 <template>
   <div>
-    <el-page-header @back="goBack">
+    <!-- <el-page-header @back="goBack">
       <template #content>
         <span class="text-large font-600 mr-3 custom-text"> 换电服务 </span>
       </template>
-    </el-page-header>
+    </el-page-header> -->
 
-    <div class="block">
+    <div class="upper-block">
       <div class="inner-block2">
         <el-form :inline="true">
           <el-row>
             <el-col :span="8">
               <el-form-item label="换电类型">
                 <el-select v-model="infoForm.switch_type">
+                  <el-option key="1" value="" label="所有类型"> </el-option>
                   <el-option key="1" value="上门换电" label="上门换电"> </el-option>
                   <el-option key="2" value="到店换电" label="到店换电"> </el-option>
                 </el-select>
@@ -26,7 +27,7 @@
       </div>
     </div>
 
-    <div class="block">
+    <div class="down-block">
       <div class="inner-block2">
         <div class="top-right">
           <div class="maintenance-title">
@@ -40,7 +41,7 @@
             </el-date-picker>
           </div>
         </div>
-        <div class="infinite-list-wrapper" style="overflow:auto">
+        <div class="infinite-list-wrapper" style="overflow:auto flex:1;">
           <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
             <li v-for="item in listdata" :key="item.switch_record_id" class="list-item">
               <div class="list-item-content">
@@ -102,8 +103,6 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElButton, ElSelect, ElOption } from 'element-plus';
 import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-vue';
 
-
-
 const infoForm = reactive({
   switch_type: '',
   startDate: '',
@@ -137,6 +136,7 @@ const queryData = () => {
     }
   })
 };
+queryData();
 
 
 const timeValue = ref('');
@@ -264,22 +264,28 @@ const get_switch_info = (id) => {
   font-size: 1.5em;
   /* 调整字体大小 */
 }
-
-.block {
+.down-block {
   border: 1px white solid;
   border-radius: 10px;
   box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
   overflow: auto;
   background-color: white;
-  margin: 30px 20px;
+  margin: 1em 1em;
+  height: 65vh;
+  display: flex; /* 使用Flex布局 */
+  flex-direction: column; /* 纵向排列 */
 }
-
-.inner-block {
-  padding: 20px 20px 30px 20px;
+.upper-block {
+  border: 1px white solid;
+  border-radius: 10px;
+  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
+  overflow: hidden;
+  background-color: white;
+  margin: 1em 1em;
+  height: 15vh;
 }
-
 .inner-block2 {
-  padding: 20px 20px 60px 20px;
+  padding: 1em 1em 1em 1em;
 }
 
 .maintenance-title {
