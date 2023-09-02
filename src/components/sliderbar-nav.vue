@@ -324,10 +324,12 @@ for (let name of svgArray) {
   content: url(../assets/换电订单历史-active.svg);
 }
 
+.icon-电池管理::before,
 .icon-换电站电池管理::before{
   content: url(../assets/换电站电池管理.svg)
 }
 
+.icon-active-电池管理::before,
 .icon-active-换电站电池管理::before{
   content: url(../assets/换电站电池管理-active.svg)
 }
