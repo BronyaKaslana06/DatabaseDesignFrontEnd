@@ -88,12 +88,14 @@ const submitForm = () => {
                 localStorage.setItem('staff_type', msg.data.position);
                 localStorage.setItem('station_id', msg.data.station_id);
             }
-            else if (identity == 2)
+            else if (identity == 2){
+                localStorage.setItem('username', '管理员');
                 router.push('/admin-dashboard-page')
+            }
         }
 
-        else if(user_type == 2)
-            router.push('/admin-dashboard-page');
+        // else if(user_type == 2)
+        //     router.push('/admin-dashboard-page');
     })
     // if (!formData)
     //     return;

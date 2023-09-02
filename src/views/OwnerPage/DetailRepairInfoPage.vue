@@ -2,7 +2,7 @@
   <div class="page-container">
     <el-page-header @back="goBack">
       <template #content>
-        <span class="text-large font-600 mr-3 custom-text"> 维修服务 </span>
+        <span class="text-large font-600 mr-3 custom-text"> 维修订单详情 </span>
       </template>
     </el-page-header>
   </div>
@@ -433,7 +433,7 @@ const submitComment = () => {
 
 <style scoped>
 .custom-text {
-  font-size: 1.5em;
+  font-size: 1em;
   /* 调整字体大小 */
 }
 
