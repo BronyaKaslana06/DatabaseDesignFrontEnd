@@ -47,6 +47,11 @@ const admin_items = [
     title: '换电站信息'
   },
   {
+    name: '电池管理',
+    index: '/battery-info-page',
+    title: '电池管理'
+  },
+  {
     path: '公告管理',
     index: '/notice-info-page',
     title: '公告管理'
@@ -319,10 +324,12 @@ for (let name of svgArray) {
   content: url(../assets/换电订单历史-active.svg);
 }
 
+.icon-电池管理::before,
 .icon-换电站电池管理::before{
   content: url(../assets/换电站电池管理.svg)
 }
 
+.icon-active-电池管理::before,
 .icon-active-换电站电池管理::before{
   content: url(../assets/换电站电池管理-active.svg)
 }
