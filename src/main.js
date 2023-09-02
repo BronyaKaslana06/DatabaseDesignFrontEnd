@@ -9,6 +9,8 @@ import axios from 'axios'
 axios.defaults.baseURL=''
 import VWave from 'v-wave'
 
+
+
 const app = createApp(App);
 app.use(router)
 app.use(ElementPlus)
