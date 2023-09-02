@@ -47,8 +47,8 @@
             </el-select>
             <el-button @click="fetchvehicle_id">切换</el-button>
           </div>
-          <img :src="car_information.snip" class="" alt="" />
-          <div class="car-information-left-bottom">
+          <img :src="car_information.snip" class="car_informationjpg" alt="" v-if="showCarInformation"/>
+          <div class="car-information-left-bottom" v-if="showCarInformation">
             <div class="information-item-line-other1">
               <p>行驶里程数：{{ car_information.mileage }}(单位：Km)</p>
             </div>
@@ -70,7 +70,7 @@
           <div>
             <p class="car-information-right-title">车辆详情信息</p>
           </div>
-          <div class="car-information-right-item">
+          <div class="car-information-right-item" v-if="showCarInformation">
             <div class="information-item-line">
               <p>型号：{{ car_information.vehicle_model }}</p>
             </div>
@@ -137,6 +137,8 @@ import { ElMessage } from "element-plus";
 
 const storedUserInfo = JSON.parse(localStorage.getItem("user_id")); //获取用户ID
 const user_name = ref(localStorage.getItem('username'));
+
+const showCarInformation = ref(false); // 初始时隐藏内容
 
 const userInfo = reactive({
   user_name: "",
@@ -259,7 +261,8 @@ const fetchPlateNumbers = () => {
       if (!res.code) {
         plateNumbers.value = res.data; // 将获取的车牌号列表赋值给 plateNumbers
         if (plateNumbers.value.length > 0) {
-          selectedPlateNumber.value = ""; // 设置默认选中的车牌号
+          selectedPlateNumber.value = res.data[0].vehicle_id; // 设置默认选中的车牌号
+          console.log(selectedPlateNumber.value);
         }
       } else {
         ElMessage({
@@ -308,13 +311,14 @@ const fetchvehicle_id = () => {
         car_information.current_capacity = res.data.current_capacity;
         car_information.battery_id = res.data.battery_id;
         car_information.purchase_date = res.data.purchase_date;
-        car_information.snip = res.data.snip;
+        car_information.snip= 'data:image/png;base64,'+ res.data.snip;
         car_information.mileage = res.data.mileage;
         car_information.max_speed = res.data.max_speed;
         car_information.transmission = res.data.transmission;
         car_information.battery_type = res.data.battery_type;
         car_information.warrange = res.data.warrange;
         car_information.temperature = res.data.temperature;
+        showCarInformation.value = true;
       } else {
         ElMessage({
           type: "error",
@@ -346,6 +350,7 @@ function formatScientificToPercentage(scientificNotation) {
 fetchPlateNumbers(); // 获取车牌号列表
 
 queryData(); // 在组件加载时获取用户信息
+
 </script>
 
 <style scoped>
@@ -517,11 +522,20 @@ queryData(); // 在组件加载时获取用户信息
 }
 
 .car-information-left-bottom {
-  margin: 50px;
+  margin-left:50px ;
+  margin-top:37px ;
 }
 
 .extra-large-avatar {
   width: 80px; /* 设置更大的宽度 */
   height: 80px; /* 设置更大的高度 */
 }
+
+.car_informationjpg{
+  width: 400px; /* 设置更大的宽度 */
+  height: 200px; /* 设置更大的高度 */
+  margin-left:50px ;
+  margin-top:-50px ;
+}
 </style>
+
