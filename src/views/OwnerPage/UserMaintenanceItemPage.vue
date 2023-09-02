@@ -1,10 +1,10 @@
 <template>
     <div>
-        <el-page-header  @back="goBack">
+        <!-- <el-page-header  @back="goBack">
             <template #content>
               <span class="text-large font-600 mr-3 custom-text"> 维修服务 </span>
             </template>
-        </el-page-header>
+        </el-page-header> -->
         <div class="block">
             <div class="inner-block">
               <div class="content">
@@ -47,11 +47,11 @@
                             </el-text>
                             <el-divider />
                             <div class="form">
-                                <el-row :gutter="10" class="custom-row">
+                                <!-- <el-row :gutter="10" class="custom-row">
                                     <el-col :span="4"><span :style="{ fontSize: '1.3em' }">维修车辆id</span></el-col>
                                     <el-col :span="20"><span :style="{ fontSize: '1.3em' }">{{ repairItem.vehicle_id
                                     }}</span></el-col>
-                                </el-row>
+                                </el-row> -->
                                 <el-row :gutter="10" class="custom-row">
                                     <el-col :span="4"><span :style="{ fontSize: '1.3em' }">车牌号</span></el-col>
                                     <el-col :span="20">
@@ -601,7 +601,7 @@ const handleClose = () => {
 }
 
 .inner-block {
-    padding: 20px 20px 30px 20px;
+    padding: 1em;
 }
 .content {
   display: flex; /* 创建水平布局 */
@@ -688,9 +688,9 @@ const handleClose = () => {
 
 
 .form-item-margin {
-    margin-top: 40px;
+    margin-top: 1em;
     /* 添加上边框间距 */
-    margin-left: 30px;
+    margin-left: 2em;
     /* 添加左边框间距 */
 }
 

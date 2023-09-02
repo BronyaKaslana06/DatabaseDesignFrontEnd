@@ -1,36 +1,34 @@
 <template>
     <div>
-        <el-page-header @back="goBack">
+        <!-- <el-page-header @back="goBack">
             <template #content>
                 <span class="text-large font-600 mr-3 custom-text"> 换电站管理 </span>
             </template>
-        </el-page-header>
+        </el-page-header> -->
 
         <div class="block">
             <div class="inner-block">
                 <div class="text-section">
-                <div class="mytitle">
-                    <span>我的换电站</span>
+                    <div class="mytitle">
+                        <span>我的换电站</span>
+                    </div>
+
+                    <el-form label-width="170px">
+                        <el-form-item label="换电站名字 :">
+                            {{ stationInfo.station_name }}
+                        </el-form-item>
+                        <el-form-item label="换电站ID :">
+                            {{ stationInfo.station_id }}
+                        </el-form-item>
+                        <el-form-item label="换电站地址 :">
+                            {{ stationInfo.station_name }}
+                        </el-form-item>
+                        <el-form-item label="可用电池数/电池容量 :">
+                            {{ stationInfo.available_battery_count }} / {{ stationInfo.battery_capacity }}
+                        </el-form-item>
+                    </el-form>
                 </div>
-
-                <el-form label-width="170px">
-                    <el-form-item label="换电站名字 :">
-                        {{ stationInfo.station_name }}
-                    </el-form-item>
-                    <el-form-item label="换电站ID :">
-                        {{ stationInfo.station_id }}
-                    </el-form-item>
-                    <el-form-item label="换电站地址 :">
-                        {{ stationInfo.station_name }}
-                    </el-form-item>
-                    <el-form-item label="可用电池数/电池容量 :">
-                        {{ stationInfo.available_battery_count }} / {{ stationInfo.battery_capacity }}
-                    </el-form-item>
-                </el-form>
-            </div>
-
-                    <div id="myMap" style="width:50%;height:200px"></div>
-
+                <div id="myMap" style="width:50%;height:200px"></div>
             </div>
         </div>
     </div>
@@ -45,15 +43,15 @@ import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-
 
 
 const stationInfo = reactive(
-{
-    station_id: "38",
-    station_name: "好内那",
-    faliure_status: true,
-    battery_capacity: 88,
-    available_battery_count: 14,
-    longitude: 121.21633041361302,
-    latitude: 31.268357562330195
-})
+    {
+        station_id: "38",
+        station_name: "好内那",
+        faliure_status: true,
+        battery_capacity: 88,
+        available_battery_count: 14,
+        longitude: 121.21633041361302,
+        latitude: 31.268357562330195
+    })
 //const stationInfo = reactive({})
 
 const pullData = () => {
@@ -91,7 +89,9 @@ const mapOpen = () => {
     var marker = new BMap.Marker(point);
     map.addOverlay(marker);
 }
-mapOpen();
+onMounted(() => {
+    mapOpen();
+})
 
 </script>
 
@@ -114,6 +114,7 @@ mapOpen();
 .text-section {
     flex: 1;
 }
+
 .mytitle {
     font-size: 27px;
     font-weight: bold;
@@ -125,7 +126,7 @@ mapOpen();
     display: flex;
     justify-content: flex-end;
     align-items: flex-start;
-    padding-left: 20px; /* Add some spacing between text and map */
+    padding-left: 20px;
+    /* Add some spacing between text and map */
 }
-
 </style>
