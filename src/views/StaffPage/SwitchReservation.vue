@@ -10,9 +10,9 @@
           <div>
             <div class="switch-button">
               <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleSwitchChange">
-                <el-tab-pane label="待接单订单" name="1"></el-tab-pane>
-                <el-tab-pane label="待完成订单" name="2"></el-tab-pane>
-                <el-tab-pane label="换电站订单" name="3"></el-tab-pane>
+                <el-tab-pane label="待接单订单" name="1" :disabled="listLoading"></el-tab-pane>
+                <el-tab-pane label="待完成订单" name="2" :disabled="listLoading"></el-tab-pane>
+                <el-tab-pane label="换电站订单" name="3" :disabled="listLoading"></el-tab-pane>
               </el-tabs>
               <div>
                 <el-button @click="refreshSwitch" :icon="RefreshRight">
@@ -164,7 +164,7 @@ const selectedOrNot = ref(false);
 const showMap = ref(false);
 const activeName = ref('1');
 const switch_data = ref([]); //换电订单列表
-const listLoading = ref(true);
+const listLoading = ref(false);
 const staff_type = ref(localStorage.getItem('staff_type'));
 
 const switch_item_data = ref({});   //换电订单详细信息

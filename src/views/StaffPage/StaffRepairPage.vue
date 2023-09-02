@@ -10,8 +10,8 @@
           <div>
             <div class="switch-button">
               <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleSwitchChange">
-                <el-tab-pane label="待接单订单" name="1"></el-tab-pane>
-                <el-tab-pane label="待完成订单" name="2"></el-tab-pane>
+                <el-tab-pane label="待接单订单" name="1" :disabled="listLoading"></el-tab-pane>
+                <el-tab-pane label="待完成订单" name="2" :disabled="listLoading"></el-tab-pane>
               </el-tabs>
               <div>
                 <el-button @click="refreshRepair(true)" :icon="RefreshRight">
