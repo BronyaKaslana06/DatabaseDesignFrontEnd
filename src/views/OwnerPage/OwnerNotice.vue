@@ -9,8 +9,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="发布者">
+            <!-- <el-form-item label="发布者">
               <el-input v-model="searchFormData.publisher" class="input-box"></el-input>
+            </el-form-item> -->
+            <el-form-item label="发布内容">
+              <el-input v-model="searchFormData.contents" class="input-box"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -20,13 +23,13 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <!-- <el-row>
           <el-col :span="50">
             <el-form-item label="发布内容">
               <el-input v-model="searchFormData.contents" class="input-box"></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
         <div class="button-wrapper">
           <el-button @click="searchData">搜索</el-button>
         </div>
@@ -35,7 +38,7 @@
   </div>
 
   <!-- 原始的公告展示内容从这里开始 -->
- 
+
   <div class="down-block">
     <div class="inner-block2">
       <div class="top-right">
@@ -51,9 +54,22 @@
                 <img src="@/assets/notice.png" alt="Image" />
               </div>
               <div class="list-item-text">
-                <p class="title">{{ announcement.title }}</p>
-                <p class="publisher-publish_pos">{{ announcement.publisher }} - {{ announcement.publish_pos
-                }}-{{ announcement.publish_time }}</p>
+                <div>
+                  <span class="title">{{ announcement.title }}</span>
+                  <!-- <span
+                    style="font-size: 14px;background-color: #4fd1c4e7;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
+                    {{ "发布时间：" + announcement.publish_time }}</span> -->
+                  <span>
+                    {{ "发布时间：" + announcement.publish_time }}</span>
+                </div>
+                <div style="display: inline-block; margin-top: 0.4em;">
+                  <span
+                    style="font-size: 14px;background-color: #2d79dd;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
+                    {{ "管理员" + announcement.publisher }}</span>
+                  <span
+                    style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
+                    {{ "发布对象：" + announcement.publish_pos }}</span>
+                </div>
                 <p class="announcement-content">
                   {{ somecontents(announcement.contents) }}......
                 </p>
@@ -312,8 +328,8 @@ const closePopup = () => {
 
 /* 搜索栏的样式 */
 .search-bar {
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 1em;
+  margin-bottom: 0.5em;
 }
 
 .search-row {
@@ -421,6 +437,8 @@ const closePopup = () => {
 
 .infinite-list-wrapper .title {
   font-weight: bold;
+  margin-right: 2em;
+  font-size: large;
 }
 
 .infinite-list-wrapper .publisher-publish_pos {
