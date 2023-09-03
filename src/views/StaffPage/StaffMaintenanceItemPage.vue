@@ -1,11 +1,5 @@
 <template>
   <div>
-    <!-- <el-page-header @back="goBack">
-      <template #content>
-        <span class="text-large font-600 mr-3 custom-text"> 维修历史 </span>
-      </template>
-    </el-page-header> -->
-
     <div class="upper-block">
       <div class="inner-block">
         <el-form :inline="true">
@@ -34,10 +28,6 @@
           <div class="maintenance-title">
             维修历史记录
           </div>
-          <!-- <div class="button-wrapper2">
-            <el-button @click="queryData" :icon="RefreshRight">刷新</el-button>
-          </div> -->
-          <!-- 日期选择 -->
           <div class="date-picker-wrapper">
             <el-date-picker v-model="timeValue" type="daterange" align="right" unlink-panels range-separator="至"
               start-placeholder="开始日期" end-placeholder="结束日期" value-format="YYYY-MM-DD" format="YYYY 年 MM 月 DD 日"
@@ -113,6 +103,7 @@ const infoForm = reactive({
 });
 
 const queryData = () => {
+
   cmRequest.request({
     url: 'api/staff/my-info/repair-records/query',
     method: 'GET',
@@ -198,10 +189,6 @@ const load = () => {
   }, 2000)
 }
 
-const goBack = () => {
-  // 使用 Vue Router 的 go(-1) 方法返回上一个访问的页面
-  router.go(-1);
-};
 
 const dialogVisible = ref(false);
 const selectedItemId = ref('');
@@ -245,6 +232,7 @@ const Detail = (Item) => {
 }
 
 const get_maintenance_info = (id) => {
+  item_loading.value=true;
   maintenance_item_detail.value = {};
   cmRequest.request({
     //url: 'api/staff/maintanence/detail',
