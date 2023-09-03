@@ -1,10 +1,4 @@
 <template>
-  <el-page-header :icon="ArrowLeft">
-    <template #content>
-      <span class="text-large font-600 mr-3"> 仪表盘 </span>
-    </template>
-  </el-page-header>
-
   <div class="info-card">
     <div class="info-card-item">
       <h2 class="info-card-value">{{ infoSet.owner_count }}</h2>
@@ -26,21 +20,15 @@
       <p class="info-card-label">总员工数</p>
     </div>
   </div>
-  <div>
-    <!-- <div class="chart-container">
-        <div ref="barChart" class="chart"></div>
-      </div>      
-      <div class="chart-container">
-        <div ref="pieChart" class="chart"></div>
-        <div ref="lineChart" class="chart"></div>
+  <div style="width:100%;">
+    <div style="display: flex;flex-direction: row;width: 100%;">
+      <div style="height: 400px; width: 50%;" class="info-card-item">
+        <line-chart :chartData="chartData" :key="chartKey" />
       </div>
-      <div class="chart-container">
-        <div ref="chartDom" class="chart"></div>
-      </div> -->
+      <div style="height: 400px; width: 50%;" class="info-card-item">
 
-    <line-chart
-      :chartData="chartData"
-      :options="options"/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -52,12 +40,13 @@ import LineChart from '../../components/LineChart.vue'
 
 
 const infoSet = ref([]);
+const chartKey = ref(0);
 const chartData = reactive({
-  labels: ["1:00","2:00","3:00"],
+  labels: [],
   datasets: [
-   {
-     data: [1,2,3],
-   }
+    {
+      data: [],
+    }
   ]
 })
 
@@ -68,9 +57,9 @@ const pullData = () => {
     method: 'GET',
 
   }).then((res) => {
-      if(!res.code){
-        infoSet.value = res.data;
-      }
+    if (!res.code) {
+      infoSet.value = res.data;
+    }
     else {
       ElMessage({
         type: 'error',
@@ -81,24 +70,25 @@ const pullData = () => {
 
   cmRequest.request({
     baseURL: 'https://mock.apifox.cn/m1/3058331-0-default',
-    url:'administrator/dashboard/time_span_stats',
+    url: 'administrator/dashboard/time_span_stats',
     method: 'GET',
-    params:{
+    params: {
       query_range: "month"
     }
-  }).then((res)=>{
+  }).then((res) => {
     chartData.labels = [];
     chartData.datasets = [{}];
-    if(!res.code){
+    if (!res.code) {
       let data = [];
-      for(let item of res.data){
+      for (let item of res.data) {
         chartData.labels.push(item.time_span);
         data.push(item.switch_count);
       }
       chartData.datasets[0].data = data;
       console.log(chartData);
+      chartKey.value++;
     }
-    else{
+    else {
     }
   })
 }
@@ -448,7 +438,6 @@ pullData();
 </script>
 
 <style scoped>
-
 .dashboard-header {
   background-color: #35495e;
   color: #ffffff;
