@@ -50,7 +50,7 @@
                 <span style="fontSize: '1.2em'; font-weight: bold">预约时间：</span>
               </div>
               <div class="flex-item flex-input">
-                <el-date-picker v-model="changeItem.appoint_time" type="datetime" placeholder="选择日期和时间" />
+                <el-date-picker v-model="changeItem.appoint_time" type="datetime" placeholder="选择日期和时间" value-format="YYYY-MM-DD HH:mm:ss" />
               </div>
             </div>
           </template>
@@ -132,7 +132,7 @@
         <div class="button-container">
           <el-button v-if="disableInput3" type="primary" @click="submitComment" :disabled="disableInput">提交评价</el-button>
           <el-button v-else type="primary" @click="handleChange">{{ isEditing ? '完成修改' : '修改订单' }}</el-button>
-          <el-button v-show="showCancelChangeButton" type="warning" @click="cancelChange">取消修改</el-button>
+          <el-button v-show="showCancelChangeButton" type="warning" @click="cancelChangeButton">取消修改</el-button>
           <el-button v-show="!showCancelChangeButton" type="danger" @click="cancelItem" :disabled="disableInput2">取消订单</el-button>
         </div>
 
@@ -188,7 +188,7 @@ const repairItem = reactive({
   evaluations: '哈哈哈啊哈',
   appoint_time: '2000-02-06',
   maintenance_location: '这是地点',
-  longtitude: 121.21633041361302,
+  longitude: 121.21633041361302,
   latitude: 31.268357562330195
 })*/
 
@@ -213,7 +213,7 @@ const repairItem = reactive({
   evaluations: '',
   appoint_time: '',
   maintenance_location: '',
-  longtitude: 0,
+  longitude: 0,
   latitude: 0,
 })
 
@@ -238,7 +238,7 @@ const changeItem = ref({
   remarks: repairItem.remarks,
   appoint_time: repairItem.appoint_time,
   maintenance_location: repairItem.maintenance_location,
-  longitude: repairItem.longtitude,
+  longitude: repairItem.longitude,
   latitude: repairItem.latitude,
   evaluations: repairItem.evaluations,
   score: repairItem.score
@@ -248,10 +248,17 @@ const cancelChange = () => {
   changeItem.value.remarks = repairItem.remarks;
   changeItem.value.appoint_time = repairItem.appoint_time;
   changeItem.value.maintenance_location = repairItem.maintenance_location;
-  changeItem.value.longitude = repairItem.longtitude;
+  changeItem.value.longitude = repairItem.longitude;
   changeItem.value.latitude = repairItem.latitude;
   changeItem.value.evaluations = repairItem.evaluations;
   changeItem.value.score =  repairItem.score;
+}
+
+const cancelChangeButton = () => {
+  cancelChange();
+  getDetailedData();
+  isEditing.value=!isEditing.value;
+  showCancelChangeButton.value = !showCancelChangeButton.value;
 }
 
 const showCancelChangeButton = ref(false);
@@ -269,8 +276,8 @@ const mapOpen = () => {
   const BMap = window.BMap;
   var map = new BMap.Map("myMap");
   console.log("map open");
-  var point = new BMap.Point(repairItem.longtitude, repairItem.latitude)
-  map.centerAndZoom(new BMap.Point(repairItem.longtitude, repairItem.latitude), 12);
+  var point = new BMap.Point(changeItem.value.longitude, changeItem.value.latitude)
+  map.centerAndZoom(new BMap.Point(changeItem.value.longitude, changeItem.value.latitude), 12);
   map.enableScrollWheelZoom(true);
   var geoc = new BMap.Geocoder();
   var marker = new BMap.Marker(point);
@@ -320,26 +327,27 @@ const getDetailedData = () => {
       repairItem.order_submission_time = res.data.order_submission_time;
       repairItem.service_time = res.data.service_time;
       repairItem.order_status = res.data.order_status;
-      repairItem.remarks = res.data.remarks;
+      repairItem.remarks = res.data.remarks !== null ? res.data.remarks : '';
 
       /* 旧版 */
-      // repairItem.name = res.data.name;
-      // repairItem.phone_number = res.data.phone_number;
-
+      //repairItem.name = res.data.name;
+      //repairItem.phone_number = res.data.phone_number;
+      
       /* 新版 */
-      // for(let i =0;i<res.data.ep_data.length();i++)
-      // {
-      //   repairItem.name += res.data[0].ep_data[i].name + '(' + res.data[0].ep_data[i].phone_number + ')  ';
-      // }
-      // console.log("repairItem.name:",repairItem.name);
+      repairItem.name = '';
+      for(let i =0;i<res.data.ep_data.length;i++)
+      {
+        repairItem.name += res.data.ep_data[i].name + '(' + res.data.ep_data[i].phone_number + ')  ';
+      }
+      console.log("repairItem.name:",repairItem.name);
 
       repairItem.score = res.data.score;
       repairItem.evaluations = res.data.evaluations;
       repairItem.appoint_time = res.data.appoint_time;
       repairItem.maintenance_location = res.data.maintenance_location;
-      repairItem.longtitude = res.data.longtitude;
+      repairItem.longitude = res.data.longitude;
       repairItem.latitude = res.data.latitude;
-      repairItem.name = res.data.ep_data[0].name + '  ' + res.data.ep_data[0].phone_number;
+      //repairItem.name = res.data.ep_data[0].name + '  ' + res.data.ep_data[0].phone_number;
       cancelChange();
     }
     else {

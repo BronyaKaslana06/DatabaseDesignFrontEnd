@@ -70,8 +70,8 @@
                     <p>地点：{{ switch_item_detail.position }}</p>
                     <p>换电时间：{{ switch_item_detail.switch_time }}</p>
                     <p>换电类型：{{ switch_item_detail.switch_type }}</p>
-                    <p>服务时间：{{ switch_item_detail.battery_id_on }}</p>
-                    <p>服务时间：{{ switch_item_detail.battery_id_off }}</p>
+                    <p>换上电池ID：{{ switch_item_detail.battery_id_on }}</p>
+                    <p>换下电池ID：{{ switch_item_detail.battery_id_off }}</p>
                     <p>评价：{{ switch_item_detail.evaluations }}</p>
                     <p>评分：{{ switch_item_detail.score }}</p>
                   </div>
@@ -114,8 +114,7 @@ const queryData = () => {
     url: 'api/staff/my-info/switch-records/query',
     method: 'GET',
     params: {
-      //employee_id: localStorage.getItem('user_id'),
-      employee_id:"1234",
+      employee_id: localStorage.getItem('user_id'),
       switch_type: infoForm.switch_type,
       startDate: infoForm.startDate,
       endDate: infoForm.endDate,
@@ -232,7 +231,6 @@ const get_switch_info = (id) => {
   item_loading.value=true;
   switch_item_detail.value = {};
   cmRequest.request({
-    //url: 'api/staff/maintanence/detail',
     url: 'api/staff/switch_record/itemDetail',
     method: 'GET',
     params: {

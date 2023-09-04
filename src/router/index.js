@@ -116,14 +116,9 @@ const router = createRouter({
                     component: () => import('../views/StaffPage/SwitchReservation.vue')
                 },
                 {
-                    path: '/orderDashboard',
+                    path: '/ownerDashboard',
                     name: 'ownerDashboard',
                     component: () => import('../views/OwnerPage/OwnerDashboard.vue')
-                },
-                {
-                    path: '/car-page',
-                    name: 'car-page',
-                    component: () => import('../views/OwnerPage/CarPage.vue')
                 },
                 // {
                 //     path: '/staffRepair/:val',

@@ -66,7 +66,7 @@ const admin_items = [
 const owner_items = [
   {
     name: '个人主页',
-    index: '/orderDashboard',
+    index: '/ownerDashboard',
     title: '个人主页'
   },
   {
@@ -94,11 +94,6 @@ const owner_items = [
     index: '/owner-notice-page',
     title: '公告信息'
   },
-  {
-    name: '车辆信息',
-    index: '/car-page',
-    title: '车辆信息'
-  }
 ]
 
 const staff_items = [
@@ -167,6 +162,7 @@ else {
 const route = useRoute();
 onBeforeRouteUpdate((to) => {
   activePath.value = to.path;
+  selectedItem.value = to.path;
 })
 
 const onMenuSelect = (item) => {

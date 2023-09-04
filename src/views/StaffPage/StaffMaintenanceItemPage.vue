@@ -108,8 +108,7 @@ const queryData = () => {
     url: 'api/staff/my-info/repair-records/query',
     method: 'GET',
     params: {
-      //employee_id: localStorage.getItem('user_id'),
-      employee_id:"12",
+      employee_id: localStorage.getItem('user_id'),
       order_status: infoForm.order_status,
       startDate: infoForm.startDate,
       endDate: infoForm.endDate
@@ -235,7 +234,6 @@ const get_maintenance_info = (id) => {
   item_loading.value=true;
   maintenance_item_detail.value = {};
   cmRequest.request({
-    //url: 'api/staff/maintanence/detail',
     url: 'api/staff/my-info/repair-records/MessageDetail',
     method: 'GET',
     params: {
