@@ -113,11 +113,6 @@ const staff_items = [
     title: '电池管理'
   },
   {
-    name: '换电站管理',
-    index: '/station-info-page',
-    title: '换电站管理'
-  },
-  {
     name: '换电管理',
     index: '/switchReservation',
     title: '换电管理'
@@ -282,11 +277,11 @@ for (let name of svgArray) {
   content: url(../assets/换电申请信息.svg);
 }
 
-.icon-换电站信息::before, .icon-换电站管理::before {
+.icon-换电站信息::before {
   content: url(../assets/换电站信息.svg);
 }
 
-.icon-active-换电站信息::before, .icon-active-换电站管理::before {
+.icon-active-换电站信息::before{
   content: url(../assets/换电站信息-active.svg);
 }
 

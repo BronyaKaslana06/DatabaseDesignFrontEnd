@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="canvas-container">
+    <div class="canvas-container" v-loading="battery">
       <div class="canvas-wrapper">
         <canvas ref="mycanvas" :width="cWidth" :height="cHeight"></canvas>
         <div class="percentage">{{ CarInfo.current_capacity }}%</div>
@@ -48,11 +48,8 @@
 
   <div style="width:100%;">
     <div style="display: flex;flex-direction: row;width: 100%;">
-      <div style="height: 400px; width: 50%;" class="info-card-item">
+      <div style="height: 400px; width: 50%;" class="chart-item">
         <line-chart :chartData="chartData" :key="chartKey" />
-      </div>
-      <div style="height: 400px; width: 50%;" class="info-card-item">
-
       </div>
     </div>
   </div>
@@ -65,7 +62,7 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router';
 import LineChart from '../../components/LineChart.vue'
 
-
+const battery= ref(false);
 const OwnerInfo = ref({});
 const CarInfo = ref({});
 
@@ -140,6 +137,7 @@ const getOwnerInfo = () => {
 getOwnerInfo();
 
 const getCarInfo = () => {
+  battery.value = true;
   cmRequest.request({
     url: 'api/owner/dashboard/min_capacity',
     method: 'GET',
@@ -165,6 +163,7 @@ const getCarInfo = () => {
         message: '刷新失败',
       })
     }
+    battery.value = false;
   })
 };
 getCarInfo();
@@ -318,7 +317,17 @@ const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
 }
-
+.chart-item{
+  flex: 1;
+  padding: 20px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 3em;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
 .info-card-item:hover {
   transform: translateY(-5px);
 }
