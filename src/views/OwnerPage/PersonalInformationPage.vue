@@ -346,8 +346,18 @@ function formatScientificToPercentage(scientificNotation) {
   return `${percentage}%`;
 }
 
+const start = () => {
+
+  fetchPlateNumbers(); // 获取车牌号列表
+
+  setTimeout(() => {
+    fetchvehicle_id();
+  }, 500); 
+};
+
 // 在查询用户信息之前调用获取车牌号列表的函数
-fetchPlateNumbers(); // 获取车牌号列表
+start(); // 获取车牌号列表
+
 
 queryData(); // 在组件加载时获取用户信息
 
