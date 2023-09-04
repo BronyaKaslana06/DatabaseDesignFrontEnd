@@ -61,32 +61,19 @@
           <el-table-column :inline="true" label="操作" min-width="15%" align="center">
             <template #default="scope">
               <span>
-                <el-button text type="primary" size="small" :icon="Edit" @click="handleEdit(scope.row)">
+                <el-button text :icon="Edit" @click="handleEdit(scope.row)">
                   编辑
                 </el-button>
                 <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" title="请确认是否删除"
                   @confirm="deleteInfo(scope.row)">
                   <template #reference>
-                    <el-button style="color: red;" type="primary" size="small" text :icon="Delete">
+                    <el-button style="color: red;" text :icon="Delete">
                       删除
                     </el-button>
                   </template>
                 </el-popconfirm>
               </span>
             </template>
-            <!-- <template #default>
-              <el-button link type="primary" size="small" :icon="Edit" @click="handleEdit(scope.row)">
-                编辑
-              </el-button>
-              <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" title="请确认是否删除"
-                  @confirm="deleteInfo(scope.row)">
-                  <template #reference>
-                    <el-button link type="primary" size="small" :icon="Delete">
-                      删除
-                    </el-button>
-                  </template>
-                </el-popconfirm>
-            </template> -->
           </el-table-column>
         </el-table>
         <div class="pagination">
@@ -551,10 +538,9 @@ const saveEdit = () => {
   border: 1px white solid;
   border-radius: 10px;
   box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
-  overflow: hidden;
+  overflow: auto;
   background-color: white;
   margin: 30px 20px;
-  height: 22vh;
 }
 
 .down-block {

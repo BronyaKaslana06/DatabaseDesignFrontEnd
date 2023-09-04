@@ -10,7 +10,7 @@
       <div class="user-info">
         <el-avatar :icon="UserFilled" size="default"></el-avatar>
         <span class="welcome-text">欢迎，{{ user_name }}</span>
-        <el-icon class="setting-icon" size="1.5em" @click="goToSettings"><Setting /></el-icon>
+        <el-icon class="home-icon" size="1.5em" @click="goToHomes"><HomeFilled /></el-icon>
         <el-icon class="logout-icon" size="1.5em" @click="logout"><CloseBold /></el-icon>
       </div>
     </el-header>
@@ -33,7 +33,7 @@ import mySlNav from '@/components/sliderbar-nav.vue'
 //import mySlNav from '../../components/sliderbar-nav.vue'
 import { ref, computed,getCurrentInstance,onBeforeMount,onMounted } from 'vue';
 import { useRouter, createRouter } from 'vue-router';
-import { Setting, CloseBold, UserFilled } from '@element-plus/icons-vue';
+import { Setting, CloseBold, UserFilled, HomeFilled } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 
@@ -75,9 +75,10 @@ onMounted(() => {
   console.log(localStorage.getItem('username'));
 })
 
-const goToSettings = () => {
-  // 处理设置按钮点击事件
-  // 进行相应的操作
+const goToHomes = () => {
+  if(localStorage.getItem('user_type') == 2){
+    router.push('/admin-dashboard-page')
+  }
 };
 
 const cleanLocalStorage = () =>{
@@ -126,7 +127,7 @@ const logout = () => {
 .content{
   margin-left: 40px;
 }
-.setting-icon:hover,
+.home-icon:hover,
 .logout-icon:hover {
   color: #1a9cff;
 }

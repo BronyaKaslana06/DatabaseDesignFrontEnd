@@ -229,6 +229,7 @@ const Detail = (Item) => {
 }
 
 const get_switch_info = (id) => {
+  item_loading.value=true;
   switch_item_detail.value = {};
   cmRequest.request({
     //url: 'api/staff/maintanence/detail',
