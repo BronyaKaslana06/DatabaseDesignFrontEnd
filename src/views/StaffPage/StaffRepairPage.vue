@@ -60,7 +60,7 @@
           <div v-if="selectedOrNot" style="height: 100%;">
             <div class="container-vertical" v-loading="repair_item_loading" style="height: 100%;">
               <div class="right-info-part">
-                <div class="detail-info" style="height: 100%;padding-top: 10px;padding-left: 20px;">
+                <div class="detail-info" style="height: 100%;padding-top: 10px;padding-left: 20px;overflow: auto;">
                   <el-form-item label="订单编号">{{ repair_item_data.maintenance_item_id }}</el-form-item>
                   <el-form-item label="车牌号">{{ repair_item_data.plate_number }}</el-form-item>
                   <el-form-item label="用户姓名">{{ repair_item_data.username }}</el-form-item>

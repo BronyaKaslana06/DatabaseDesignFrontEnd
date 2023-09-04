@@ -49,7 +49,7 @@
       </div>
       <div class="infinite-list-wrapper" style="overflow:auto flex:1;" v-loading="loading">
         <ul class="list" :infinite-scroll-disabled="disabled">
-          <li v-for="announcement in announcementArray" :key="announcement.announcement_id" class="list-item">
+          <li v-for="announcement in announcementArray" :key="announcement.announcement_id" class="list-item" style="cursor: pointer;" @click="openPopup(announcement)">
             <div class="list-item-content">
               <div class="list-item-image">
                 <img src="@/assets/notice.png" alt="Image" />
@@ -72,9 +72,9 @@
                   {{ somecontents(announcement.contents) }}......
                 </div>
               </div>
-              <div class="list-item-button">
+              <!-- <div class="list-item-button">
                 <el-button text :icon="Document" @click="openPopup(announcement)">查看详情</el-button>
-              </div>
+              </div> -->
             </div>
           </li>
         </ul>
@@ -533,6 +533,9 @@ const closePopup = () => {
 
 .el-dialog ::deep(.el-dialog__body){
   padding: 0;
+}
+.list-item:hover {
+  background-color: #e8e8e8; 
 }
 </style>
   
