@@ -48,7 +48,7 @@
           <template v-if="isEditing">
             <el-col :span="4"><span :style="{ fontSize: '1.3em' }">预约时间：</span></el-col>
             <el-col :span="20">
-              <el-date-picker v-model="repairItem.appoint_time" type="datetime" placeholder="选择日期和时间" />
+              <el-date-picker v-model="repairItem.appoint_time" type="datetime" placeholder="选择日期和时间" value-format="YYYY-MM-DD HH:mm:ss"/>
             </el-col>
           </template>
           <template v-else>
@@ -180,7 +180,7 @@ const repairItem = reactive({
   evaluations: '哈哈哈啊哈',
   appoint_time: '2000-02-06',
   maintenance_location: '这是地点',
-  longtitude: 121.21633041361302,
+  longitude: 121.21633041361302,
   latitude: 31.268357562330195
 })*/
 
@@ -205,7 +205,7 @@ const repairItem = reactive({
   evaluations: '',
   appoint_time: '',
   maintenance_location: '',
-  longtitude: 0,
+  longitude: 0,
   latitude: 0
 })
 
@@ -238,8 +238,8 @@ const mapOpen = () => {
   const BMap = window.BMap;
   var map = new BMap.Map("myMap");
   console.log("map open");
-  var point = new BMap.Point(repairItem.longtitude, repairItem.latitude)
-  map.centerAndZoom(new BMap.Point(repairItem.longtitude, repairItem.latitude), 12);
+  var point = new BMap.Point(repairItem.longitude, repairItem.latitude)
+  map.centerAndZoom(new BMap.Point(repairItem.longitude, repairItem.latitude), 12);
   map.enableScrollWheelZoom(true);
   var geoc = new BMap.Geocoder();
   var marker = new BMap.Marker(point);
@@ -260,9 +260,9 @@ const mapOpen = () => {
     //lz
     console.log("lng:", point.lng);
     console.log("lat:", point.lat);
-    repairItem.longtitude = point.lng;
+    repairItem.longitude = point.lng;
     repairItem.latitude = point.lat;
-    console.log("up lo:", repairItem.longtitude);
+    console.log("up lo:", repairItem.longitude);
     console.log("up lo:", repairItem.latitude);
   });
 
@@ -289,16 +289,16 @@ const getDetailedData = () => {
       repairItem.order_submission_time = res.data.order_submission_time;
       repairItem.service_time = res.data.service_time;
       repairItem.order_status = res.data.order_status;
-      repairItem.remarks = res.data.remarks;
+      repairItem.remarks = res.data.remarks !== null ? res.data.remarks : '';
 
       /* 旧版 */
-      repairItem.name = res.data.name;
-      repairItem.phone_number = res.data.phone_number;
+      //repairItem.name = res.data.name;
+      //repairItem.phone_number = res.data.phone_number;
       
       /* 新版 */
-      /*for(let i =0;i<res.data[0].ep_data.length();i++)
+      for(let i =0;i<res.data.ep_data.length;i++)
       {
-        repairItem.name += res.data[0].ep_data[i].name + '(' + res.data[0].ep_data[i].phone_number + ')  ';
+        repairItem.name += res.data.ep_data[i].name + '(' + res.data.ep_data[i].phone_number + ')  ';
       }
       console.log("repairItem.name:",repairItem.name);
 
@@ -306,8 +306,8 @@ const getDetailedData = () => {
       repairItem.evaluations = res.data.evaluations;
       repairItem.appoint_time = res.data.appoint_time;
       repairItem.maintenance_location = res.data.maintenance_location;
-      repairItem.longtitude = res.data.longtitude;
-      repairItem.latitude = res.data.latitude;*/
+      repairItem.longitude = res.data.longtitude;
+      repairItem.latitude = res.data.latitude;
     }
     else {
       ElMessage({
@@ -324,13 +324,13 @@ getDetailedData();
 const submitChange=()=>{
   cmRequest.request({
     url: 'api/owner/repair_reservation/update',
-    method: 'POST',
+    method: 'PATCH',
     data: {
-      maintenance_item_id: repairItem.maintenance_item_id,
+      maintenance_item_id: (repairItem.maintenance_item_id).toString(),
       remarks : repairItem.remarks,
       appoint_time : repairItem.appoint_time,
       maintenance_location : repairItem.maintenance_location,
-      longtitude : repairItem.longtitude,
+      longitude : repairItem.longitude,
       latitude : repairItem.latitude
     }
   }).then((res) => {
@@ -393,9 +393,9 @@ const cancelItem = () => {
 const submitComment = () => {
   cmRequest.request({
     url: 'api/owner/repair_reservation/update',
-    method: 'POST',
+    method: 'PATCH',
     data: {
-      maintenance_item_id: repairItem.maintenance_item_id,
+      maintenance_item_id: (repairItem.maintenance_item_id).toString(),
       evaluations: repairItem.evaluations,
       score:repairItem.score
     }

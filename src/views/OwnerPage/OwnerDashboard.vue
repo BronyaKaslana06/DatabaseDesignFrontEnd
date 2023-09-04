@@ -14,9 +14,10 @@
       </div>
     </div>
 
-    <div class="canvas-container" v-loading="battery">
+    <div class="canvas-container" v-loading="battery" 
+    :class="{ 'low-capacity': CarInfo.current_capacity < 30, 'high-capacity': CarInfo.current_capacity >= 30 }">
       <div class="canvas-wrapper">
-        <canvas ref="mycanvas" :width="cWidth" :height="cHeight"></canvas>
+        <canvas ref="mycanvas" :width="cWidth+20" :height="cHeight"></canvas>
         <div class="percentage">{{ CarInfo.current_capacity }}%</div>
       </div>
       <div class="license">{{ CarInfo.plate_number }}</div>
@@ -48,7 +49,8 @@
 
   <div style="width:100%;">
     <div style="display: flex;flex-direction: row;width: 100%;">
-      <div style="height: 400px; width: 50%;" class="chart-item">
+      <div style="height: 350px; flex: 6;" class="chart-item">
+          <div style="color:#8e8e8e">换电订单统计</div>
         <line-chart :chartData="chartData" :key="chartKey" />
       </div>
     </div>
@@ -72,23 +74,71 @@ const ctx = ref(null);
 const cWidth = 132;
 const cHeight = 56;
 
-const drawBg = () => {
-  ctx.value.strokeStyle = 'white';
-  ctx.value.lineWidth = 6;
-  ctx.value.strokeRect(0, 0, 120, 56);
-  ctx.value.fillStyle = 'rgba(0,0,0,0.2)';
-  ctx.value.fillRect(0, 0, 120, 56);
-  ctx.value.fillStyle = 'rgba(255,255,255,1)';
-  ctx.value.fillRect(121, 14, 12, 28);
+const drawRoundedRect = (ctx, x, y, width, height, radius) => {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.arcTo(x + width, y, x + width, y + radius, radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
+  ctx.lineTo(x + radius, y + height);
+  ctx.arcTo(x, y + height, x, y + height - radius, radius);
+  ctx.lineTo(x, y + radius);
+  ctx.arcTo(x, y, x + radius, y, radius);
+  ctx.closePath();
 };
 
-const drawPath = (quantity) => {
-  if (quantity < 20) {
-    ctx.value.fillStyle = 'red';
+const drawRoundedBattery = (ctx, quantity) => {
+  const radius = 6; // 圆角半径
+  const borderWidth = 6;
+  const batteryWidth = cWidth - borderWidth;
+  const batteryHeight = cHeight - borderWidth;
+  const batteryX = borderWidth / 2;
+  const batteryY = borderWidth / 2;
+
+  // 绘制电池的背景
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  drawRoundedRect(ctx, batteryX, batteryY, batteryWidth, batteryHeight, radius);
+  ctx.fill();
+
+  // 绘制电池的电量部分
+  if (quantity < 30) {
+    ctx.fillStyle = 'red';
   } else {
-    ctx.value.fillStyle = 'green';
+    ctx.fillStyle = 'green';
   }
-  ctx.value.fillRect(6, 6, (120 - 12) * quantity / 100, 44);
+  const chargeWidth = (batteryWidth - 2 * radius) * quantity / 100;
+  drawRoundedRect(ctx, batteryX + radius, batteryY, chargeWidth, batteryHeight, radius);
+  ctx.fill();
+
+  // 绘制电池的外框
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth = borderWidth;
+  drawRoundedRect(ctx, batteryX, batteryY, batteryWidth, batteryHeight, radius);
+  ctx.stroke();
+
+  // 绘制电池的正极标志
+  const positiveWidth = 10;
+const positiveHeight = batteryHeight * 0.4;
+const positiveX = batteryX + batteryWidth+5;
+const positiveRadius = 3; // 正极标志的圆角半径
+
+ctx.fillStyle = 'white';
+
+// 绘制圆角矩形
+ctx.beginPath();
+ctx.moveTo(positiveX + positiveRadius, batteryY + (batteryHeight - positiveHeight) / 2);
+ctx.lineTo(positiveX + positiveWidth - positiveRadius, batteryY + (batteryHeight - positiveHeight) / 2);
+ctx.arcTo(positiveX + positiveWidth, batteryY + (batteryHeight - positiveHeight) / 2, positiveX + positiveWidth, batteryY + (batteryHeight - positiveHeight) / 2 + positiveRadius, positiveRadius);
+ctx.lineTo(positiveX + positiveWidth, batteryY + (batteryHeight - positiveHeight) / 2 + positiveHeight - positiveRadius);
+ctx.arcTo(positiveX + positiveWidth, batteryY + (batteryHeight - positiveHeight) / 2 + positiveHeight, positiveX + positiveWidth - positiveRadius, batteryY + (batteryHeight - positiveHeight) / 2 + positiveHeight, positiveRadius);
+ctx.lineTo(positiveX + positiveRadius, batteryY + (batteryHeight - positiveHeight) / 2 + positiveHeight);
+ctx.arcTo(positiveX, batteryY + (batteryHeight - positiveHeight) / 2 + positiveHeight, positiveX, batteryY + (batteryHeight - positiveHeight) / 2 + positiveHeight - positiveRadius, positiveRadius);
+ctx.lineTo(positiveX, batteryY + (batteryHeight - positiveHeight) / 2 + positiveRadius);
+ctx.arcTo(positiveX, batteryY + (batteryHeight - positiveHeight) / 2, positiveX + positiveRadius, batteryY + (batteryHeight - positiveHeight) / 2, positiveRadius);
+ctx.closePath();
+
+ctx.fill();
 };
 
 
@@ -153,9 +203,8 @@ const getCarInfo = () => {
       CarInfo.value = res.data;
       mycanvas.value = mycanvas.value || null;
       ctx.value = mycanvas.value.getContext('2d');
-      drawBg();
       //改成对应的变量
-      drawPath(res.data.current_capacity);
+      drawRoundedBattery(ctx.value, res.data.current_capacity);
     }
     else {
       ElMessage({
@@ -168,11 +217,45 @@ const getCarInfo = () => {
 };
 getCarInfo();
 
+let width, height, gradient;
+const getGradient = (ctx, chartArea) => {
+  const chartWidth = chartArea.right - chartArea.left;
+  const chartHeight = chartArea.bottom - chartArea.top;
+  if (!gradient || width !== chartWidth || height !== chartHeight) {
+    // Create the gradient because this is either the first render
+    // or the size of the chart has changed
+    width = chartWidth;
+    height = chartHeight;
+    gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+    gradient.addColorStop(1, "rgba(79,209,197,0.54)");
+    gradient.addColorStop(0.05, "rgba(75, 192, 192, 0.08)");
+  }
+
+  return gradient;
+}
+
+const chartKey = ref(0);
 const chartData = reactive({
   labels: [],
   datasets: [
     {
       data: [],
+      borderColor: '#4FD1C5',
+      pointHoverRadius: 5,
+      tension: 0.25,
+      fill: true,
+      backgroundColor: function (context) {
+        const chart = context.chart;
+        const { ctx, chartArea } = chart;
+
+        if (!chartArea) {
+          // This case happens on initial chart load
+          return;
+        }
+        return getGradient(ctx, chartArea);
+      },
+      pointBackgroundColor: 'rgba(75, 192, 192)',
+      pointBorderColor: 'rgba(75, 192, 192)'
     }
   ]
 })
@@ -187,16 +270,17 @@ const getChartInfo = () => {
   }).then((res) => {
     chartData.labels = [];
     chartData.datasets = [{}];
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     if (!res.code) {
-      /*
+      
       let data = [];
-      res.data.forEach((item, index) => {
-        chartData.labels.push(index);
-        data.push(item);
-        });
+      for (let i = 0; i < res.data.length; i++) {
+        chartData.labels.push(monthNames[i]);
+        data.push(res.data[i]);
+      }
       chartData.datasets[0].data = data;
       console.log(chartData);
-      chartKey.value++;*/
+      chartKey.value++;
     }
     else {
       ElMessage({
@@ -270,8 +354,6 @@ const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
 
 .canvas-container {
   width: 33.33%;
-  background-color: rgb(237, 235, 235);
-  /* 设置背景色为灰色 */
   padding: 20px;
   border-radius: 10px;
   margin-left: 3em;
@@ -282,7 +364,13 @@ const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
   justify-content: center;
   align-items: center;
 }
+.low-capacity {
+  background-color: rgb(243, 195, 195); /* 低电量时的背景颜色 */
+}
 
+.high-capacity {
+  background-color: rgb(166, 226, 166); /* 高电量时的背景颜色 */
+}
 .canvas-wrapper {
   display: flex;
   align-items: center;
@@ -320,13 +408,10 @@ const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
 .chart-item{
   flex: 1;
   padding: 20px;
-  margin-top: 10px;
-  margin-left: 10px;
-  margin-right: 3em;
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
+  margin-top: 20px;
 }
 .info-card-item:hover {
   transform: translateY(-5px);
