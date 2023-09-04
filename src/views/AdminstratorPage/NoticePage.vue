@@ -1,9 +1,9 @@
 <template>
-  <el-page-header :icon="ArrowLeft">
+  <!-- <el-page-header :icon="ArrowLeft">
     <template #content>
       <span class="text-large font-600 mr-3"> 公告管理 </span>
     </template>
-  </el-page-header>
+  </el-page-header> -->
   <div class="block">
     <div class="search-bar">
       <el-form :inline="true" class="search-form">

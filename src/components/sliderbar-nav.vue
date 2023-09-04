@@ -102,20 +102,20 @@ const owner_items = [
 ]
 
 const staff_items = [
+  // {
+  //   name: '员工仪表盘',
+  //   index: '/employee-dashboard-page',
+  //   title: '员工仪表盘'
+  // },
   {
-    name: '员工仪表盘',
-    index: '/employee-dashboard-page',
-    title: '员工仪表盘'
+    name: '员工信息',
+    index: '/staff-information-page',
+    title: '员工信息'
   },
   {
     name: '电池管理',
     index: '/station-battery-page',
     title: '电池管理'
-  },
-  {
-    name: '换电站管理',
-    index: '/station-info-page',
-    title: '换电站管理'
   },
   {
     name: '换电管理',
@@ -132,12 +132,6 @@ const staff_items = [
     index: '/employee-notice-page',
     title: '公告信息'
   },
-  {
-    name: '员工信息',
-    index: '/staff-information-page',
-    title: '员工信息'
-  },
-
   {
     name: '维修历史',
     index: '/staffMaintenanceItem',
@@ -249,11 +243,13 @@ for (let name of svgArray) {
   content: url(../assets/员工信息-active.svg);
 }
 
+.icon-个人主页::before,
 .icon-管理员仪表盘::before,
 .icon-员工仪表盘::before {
   content: url(../assets/管理员仪表盘.svg);
 }
 
+.icon-active-个人主页::before,
 .icon-active-管理员仪表盘::before,
 .icon-active-员工仪表盘::before {
   content: url(../assets/管理员仪表盘-active.svg);
@@ -281,11 +277,11 @@ for (let name of svgArray) {
   content: url(../assets/换电申请信息.svg);
 }
 
-.icon-换电站信息::before, .icon-换电站管理::before {
+.icon-换电站信息::before {
   content: url(../assets/换电站信息.svg);
 }
 
-.icon-active-换电站信息::before, .icon-active-换电站管理::before {
+.icon-active-换电站信息::before{
   content: url(../assets/换电站信息-active.svg);
 }
 

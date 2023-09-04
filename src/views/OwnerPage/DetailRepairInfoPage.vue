@@ -86,7 +86,7 @@
         <div class="detail-item">
           <span class="label">订单备注：</span>
           <template v-if="isEditing">
-            <el-input v-model="repairItem.remarks" :rows="4" type="textarea" placeholder="repairItem.remarks" />
+            <el-input v-model="repairItem.remarks" :rows="4" type="textarea" placeholder="订单备注" />
           </template>
 
           <template v-else>  
@@ -290,14 +290,24 @@ const getDetailedData = () => {
       repairItem.service_time = res.data.service_time;
       repairItem.order_status = res.data.order_status;
       repairItem.remarks = res.data.remarks;
+
+      /* 旧版 */
       repairItem.name = res.data.name;
       repairItem.phone_number = res.data.phone_number;
+      
+      /* 新版 */
+      /*for(let i =0;i<res.data[0].ep_data.length();i++)
+      {
+        repairItem.name += res.data[0].ep_data[i].name + '(' + res.data[0].ep_data[i].phone_number + ')  ';
+      }
+      console.log("repairItem.name:",repairItem.name);
+
       repairItem.score = res.data.score;
       repairItem.evaluations = res.data.evaluations;
       repairItem.appoint_time = res.data.appoint_time;
       repairItem.maintenance_location = res.data.maintenance_location;
       repairItem.longtitude = res.data.longtitude;
-      repairItem.latitude = res.data.latitude;
+      repairItem.latitude = res.data.latitude;*/
     }
     else {
       ElMessage({

@@ -1,129 +1,158 @@
 <template>
-  <el-page-header :icon="ArrowLeft">
-    <template #content>
-      <span class="text-large font-600 mr-3"> 公告信息 </span>
-    </template>
-  </el-page-header>
   <div class="block">
     <div class="search-bar">
       <el-form :inline="true" class="search-form">
         <el-row>
           <el-col :span="8">
             <el-form-item label="标题">
-              <el-input
-                v-model="searchFormData.title"
-                class="input-box"
-              ></el-input>
+              <el-input v-model="searchFormData.title" class="input-box"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="发布者">
-              <el-input
-                v-model="searchFormData.publisher"
-                class="input-box"
-              ></el-input>
+            <!-- <el-form-item label="发布者">
+              <el-input v-model="searchFormData.publisher" class="input-box"></el-input>
+            </el-form-item> -->
+            <el-form-item label="发布内容">
+              <el-input v-model="searchFormData.contents" class="input-box"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="发布时间">
-              <el-date-picker
-                v-model="searchFormData.publish_time"
-                type="date"
-                placeholder="选择日期"
-                style="width: 100%"
-              ></el-date-picker>
+              <el-date-picker v-model="searchFormData.publish_time" type="date" placeholder="选择日期"
+                style="width: 100%"></el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <!-- <el-row>
           <el-col :span="50">
             <el-form-item label="发布内容">
-              <el-input
-                v-model="searchFormData.contents"
-                class="input-box"
-              ></el-input>
+              <el-input v-model="searchFormData.contents" class="input-box"></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
         <div class="button-wrapper">
-          <el-button @click="searchData">搜索</el-button>
+          <el-button @click="resetSearch">重置</el-button>
+          <el-button @click="searchData" type="primary">搜索</el-button>
         </div>
       </el-form>
     </div>
   </div>
 
   <!-- 原始的公告展示内容从这里开始 -->
-  <div class="announcement-container">
-    <div
-      class="announcement"
-      v-for="announcement in announcementArray"
-      :key="announcement.announcement_id"
-    >
-      <div class="announcement-left">
-        <h3>{{ announcement.title }}</h3>
-        <div class="meta-info">
-          <span>发布者：{{ announcement.publisher }}</span>
-          <span>发布对象：{{ announcement.publish_pos }}</span>
-          <span>发布时间：{{ deletetime(announcement.publish_time) }}</span>
+
+  <div class="down-block">
+    <div class="inner-block2">
+      <div class="top-right">
+        <div class="maintenance-title">
+          信息公告
         </div>
-        <p class="announcement-content">
-          {{ somecontents(announcement.contents) }}......
-        </p>
       </div>
-      <!-- 在右侧显示按钮容器 -->
-      <div class="announcement-right">
-        <div class="announcement-buttons">
-          <Text class="view-more-button" @click="openPopup(announcement)"
-            >查看全文</Text
-          >
-        </div>
+      <div class="infinite-list-wrapper" style="overflow:auto flex:1;" v-loading="loading">
+        <ul class="list" :infinite-scroll-disabled="disabled">
+          <li v-for="announcement in announcementArray" :key="announcement.announcement_id" class="list-item">
+            <div class="list-item-content">
+              <div class="list-item-image">
+                <img src="@/assets/notice.png" alt="Image" />
+              </div>
+              <div class="list-item-text">
+                <div>
+                  <span class="title">{{ announcement.title }}</span>
+                  <span>
+                    {{ "发布时间：" + announcement.publish_time.replace(/T/g, '&nbsp;&nbsp;&nbsp;') }}</span>
+                </div>
+                <div style="display: inline-block; margin-top: 0.4em;">
+                  <span
+                    style="font-size: 14px;background-color: #2d79dd;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
+                    {{ "发布人：管理员" + announcement.publisher }}</span>
+                  <span
+                    style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
+                    {{ "发布对象：" + (announcement.publish_pos===2?"车主用户":(announcement.publish_pos===1?"员工":"未知")) }}</span>
+                </div>
+                <div style="margin-top: 0.4em;">
+                  {{ somecontents(announcement.contents) }}......
+                </div>
+              </div>
+              <div class="list-item-button">
+                <el-button text :icon="Document" @click="openPopup(announcement)">查看详情</el-button>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <p v-if="noMore">没有更多了</p>
       </div>
     </div>
   </div>
+
   <!-- 原始的公告展示内容从这里结束 -->
 
   <!-- 弹窗 -->
-  <el-dialog
-    v-model="showPopup"
-    title="公告内容"
-    width="70%"
-    @update:visible="closePopup"
-  >
-    <div class="popup-header">
-      <div class="popup-title">{{ popupNotice.title }}</div>
-      <div class="popup-item">
-        <div class="popup-item">发布者：{{ popupNotice.publisher }}</div>
-        <div class="popup-item">发布对象：{{ popupNotice.publish_pos }}</div>
-        <span>发布时间：{{ deletetime(popupNotice.publish_time) }}</span>
+  <el-dialog v-model="showPopup" title="公告内容" width="55%" @update:visible="closePopup">
+    <template #header>
+      <div class="my-header">
+        <h4 style="margin-top: 1em;margin-bottom: 1em;">{{ popupNotice.title }}</h4>
+        <div class="popup-details">
+          <div style="margin-bottom: 0.5em;">
+            <span class="gray-text" style="margin-right: 1em;">{{ "发布人：管理员" + popupNotice.publisher }}</span>
+          <span class="gray-text">{{ "发布对象：" + (popupNotice.publish_pos === 2 ? "车主用户" : (popupNotice.publish_pos === 1 ? "员工" : "未知")) }}</span>
+          </div>
+          <span class="gray-text">发布时间：{{ deletetime(popupNotice.publish_time) }}</span>
+        </div>
       </div>
-    </div>
-    <!-- 公告的完整内容 -->
-    <div class="popup-notice-content">{{ popupContent }}</div>
+    </template>
+    <div class="announcement-content">{{ popupContent }}</div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button type="primary" @click="showPopup = false">
+          确定
+        </el-button>
+      </span>
+    </template>
   </el-dialog>
 </template>
     
-    <script setup>
+<script setup>
 import { ref, onMounted, reactive } from "vue";
 import cmRequest from "../../service/index.js";
 import { ElMessage } from "element-plus";
+import { ElLoading } from 'element-plus'
+import { Loading } from "element-plus/es/components/loading/src/service";
+import { computed } from 'vue'
+import { Document } from '@element-plus/icons-vue';
 
 const announcementArray = ref([]);
+const loading = ref(true);
+const count = ref(4)
+const noMore = computed(() => count.value >= announcementArray.value.length)
+const disabled = computed(() => loading.value || noMore.value)
+
+const load = () => {
+  loading.value = false
+}
+
 
 const searchFormData = reactive({
   title: "",
   publisher: "",
   publish_time: "",
-  publish_pos: "深圳",
+  publish_pos: "",
   contents: "",
 });
 
 const queryData = () => {
+  //console.log(parseInt(localStorage.getItem('user_type')));
+  let pos = 3;
+  if(localStorage.getItem('user_type') === '0'){
+    pos = 2;
+  }
+  else if(localStorage.getItem('user_type') === '1'){
+    pos = 1;
+  }
   const queryParams = {
     title: "",
     publisher: "",
-    publish_pos: "",
+    publish_pos: pos,
     contents: "",
-    publish_time:""
+    publish_time: ""
   };
   cmRequest
     .request({
@@ -139,6 +168,7 @@ const queryData = () => {
           type: "error",
           message: "未找到内容",
         });
+        load();
       }
     })
     .catch((error) => {
@@ -147,15 +177,26 @@ const queryData = () => {
         type: "error",
         message: "获取数据失败，请稍后再试",
       });
+      load();
     });
+  console.log(loading.value)
 };
 
 onMounted(() => {
   queryData(); // 在组件挂载后调用queryData函数获取公告数据
 });
 
+const resetSearch = () => {
+  searchFormData.title = '';
+  searchFormData.publisher = '';
+  searchFormData.publish_time = '';
+  searchFormData.publish_pos = '';
+  searchFormData.contents = '';
+  queryData();
+}
+
 const formatDate = (dateString) => {
-  console.log(dateString);
+
   if (dateString === "") {
     return "";
   }
@@ -170,7 +211,7 @@ const formatDate = (dateString) => {
 };
 
 const somecontents = (dateString) => {
-  console.log(dateString);
+  load();
   if (dateString === null) {
     return "";
   }
@@ -178,26 +219,34 @@ const somecontents = (dateString) => {
 };
 
 const deletetime = (dateString) => {
-  console.log(dateString);
+
   if (dateString === "") {
     return "";
   }
   if (dateString === null) {
     return "";
   }
-  return dateString.slice(0,10);
+  return dateString.slice(0, 10);
+
 };
 
 const searchData = () => {
+  let pos = 3;
+  if(localStorage.getItem('user_type') === '0'){
+    pos = 2;
+  }
+  else if(localStorage.getItem('user_type') === '1'){
+    pos = 1;
+  }
   // 根据输入的数据准备搜索参数
   const searchParams = {
     title: searchFormData.title,
     publisher: searchFormData.publisher,
-    publish_pos: searchFormData.publish_pos,
+    publish_pos: pos,
     contents: searchFormData.contents,
     publish_time: formatDate(searchFormData.publish_time), // 转换日期格式
   };
-  console.log(searchParams);
+
   cmRequest
     .request({
       //url: "administrator/announcement/query",
@@ -223,6 +272,7 @@ const searchData = () => {
         message: "获取数据失败，请稍后再试",
       });
     });
+
 };
 
 // 响应式变量用于控制弹窗显示与隐藏
@@ -246,12 +296,11 @@ const closePopup = () => {
 };
 </script>
   
-    <style scoped>
+<style scoped>
 .block {
   border: 1px white solid;
   border-radius: 10px;
-  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px
-    rgba(0, 0, 0, 0.066);
+  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
   overflow: auto;
   background-color: white;
   margin: 30px 20px;
@@ -271,12 +320,14 @@ const closePopup = () => {
   display: flex;
   align-items: center;
   position: relative;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 修改阴影效果 */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  /* 修改阴影效果 */
 }
 
 .announcement-left {
   padding: 20px;
-  flex: 0.9; /* 占据剩余空间 */
+  flex: 0.9;
+  /* 占据剩余空间 */
 }
 
 .edit-button {
@@ -304,8 +355,8 @@ const closePopup = () => {
 
 /* 搜索栏的样式 */
 .search-bar {
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 1em;
+  margin-bottom: 0.5em;
 }
 
 .search-row {
@@ -333,6 +384,155 @@ const closePopup = () => {
   max-height: 400px;
   overflow-y: auto;
 }
-/* 如果需要，可以在这里添加更多的样式 */
+
+.down-block {
+  border: 1px white solid;
+  border-radius: 10px;
+  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
+  overflow: auto;
+  background-color: white;
+  margin: 1em 1em;
+  height: 65vh;
+  display: flex;
+  /* 使用Flex布局 */
+  flex-direction: column;
+  /* 纵向排列 */
+}
+
+.inner-block {
+  padding: 1em 1em 1em 1em;
+}
+
+.inner-block2 {
+  padding: 1em 1em 1em 1em;
+  flex: 1;
+}
+
+.maintenance-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.date-picker-wrapper {
+  text-align: right;
+}
+
+
+.infinite-list-wrapper {
+  /*height: 300px;*/
+}
+
+.infinite-list-wrapper .list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.infinite-list-wrapper .list-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  border-bottom: 1px solid #ddd;
+}
+
+.infinite-list-wrapper .list-item+.list-item {
+  margin-top: 10px;
+}
+
+.infinite-list-wrapper .list-item-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.infinite-list-wrapper .list-item-image {
+  margin-right: 10px;
+}
+
+.infinite-list-wrapper .list-item-image img {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+}
+
+.infinite-list-wrapper .list-item-text {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.infinite-list-wrapper .title {
+  font-weight: bold;
+  margin-right: 2em;
+  font-size: large;
+}
+
+.infinite-list-wrapper .publisher-publish_pos {
+  font-size: 14px;
+  color: #999;
+}
+
+.container-vertical {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.left-info-part {
+  display: flex;
+  flex: 70%;
+  border-right: 1px solid #ccc;
+  padding-right: 1em;
+}
+
+.detail-info {
+  flex: 70%;
+}
+
+.form-item-margin {
+  margin-top: 40px;
+  /* 添加上边框间距 */
+  margin-left: 30px;
+  /* 添加左边框间距 */
+}
+
+.top-right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button-wrapper2 {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.my-header {
+  text-align: center; /* 文本居中 */
+}
+.my-header h4 {
+  font-weight: bold; /* 加粗 */
+  font-size: 1.8em; /* 大字号 */
+}
+
+.popup-details {
+  text-align: right; /* 文本居右 */
+}
+
+.gray-text {
+  color: gray; /* 灰色文本颜色 */
+  font-size: 0.9em; /* 小字号 */
+}
+
+.el-dialog ::deep(.el-dialog__body){
+  padding: 0;
+}
 </style>
   
