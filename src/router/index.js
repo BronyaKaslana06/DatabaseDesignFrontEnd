@@ -7,7 +7,7 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: user_type == 0 ? '/reservation' : (user_type == 1 ? '/employee-dashboard-page' : '/admin-dashboard-page') // 添加重定向路由
+            redirect: user_type == 0 ? '/reservation' : (user_type == 1 ? '/staff-information-page' : '/admin-dashboard-page') // 添加重定向路由
         },
         {
             path: '/',
@@ -68,12 +68,12 @@ const router = createRouter({
                     component: () => import('../views/StaffPage/EmployeeNotice.vue')
 
                 },
-                {
-                    path: '/employee-dashboard-page',
-                    name: 'employee-dashboard-page',
-                    component: () => import('../views/StaffPage/EmployeeDashboard.vue')
+                // {
+                //     path: '/employee-dashboard-page',
+                //     name: 'employee-dashboard-page',
+                //     component: () => import('../views/StaffPage/EmployeeDashboard.vue')
 
-                },
+                // },
                 {
                     path: '/employee-notice-page',
                     name: 'employee-notice-page',

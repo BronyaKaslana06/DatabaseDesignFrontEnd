@@ -84,7 +84,7 @@ const submitForm = () => {
             if (identity == 0)
                 router.push('/reservation');
             else if (identity == 1) {
-                router.push('/employee-dashboard-page');
+                router.push('/staff-information-page');
                 localStorage.setItem('staff_type', msg.data.position);
                 localStorage.setItem('station_id', msg.data.station_id);
             }

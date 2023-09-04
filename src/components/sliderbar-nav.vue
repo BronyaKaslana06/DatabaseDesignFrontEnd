@@ -102,10 +102,15 @@ const owner_items = [
 ]
 
 const staff_items = [
+  // {
+  //   name: '员工仪表盘',
+  //   index: '/employee-dashboard-page',
+  //   title: '员工仪表盘'
+  // },
   {
-    name: '员工仪表盘',
-    index: '/employee-dashboard-page',
-    title: '员工仪表盘'
+    name: '员工信息',
+    index: '/staff-information-page',
+    title: '员工信息'
   },
   {
     name: '电池管理',
@@ -132,12 +137,6 @@ const staff_items = [
     index: '/employee-notice-page',
     title: '公告信息'
   },
-  {
-    name: '员工信息',
-    index: '/staff-information-page',
-    title: '员工信息'
-  },
-
   {
     name: '维修历史',
     index: '/staffMaintenanceItem',
