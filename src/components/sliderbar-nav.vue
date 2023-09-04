@@ -167,6 +167,7 @@ else {
 const route = useRoute();
 onBeforeRouteUpdate((to) => {
   activePath.value = to.path;
+  selectedItem.value = to.path;
 })
 
 const onMenuSelect = (item) => {

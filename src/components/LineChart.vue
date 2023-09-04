@@ -4,9 +4,8 @@
 
 <script setup>
 import { Line } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, PointElement,CategoryScale, LinearScale,LineElement  } from 'chart.js'
-import{toRefs, defineProps,reactive,onMounted} from 'vue'
-import { stringifyQuery } from 'vue-router';
+import { Chart as ChartJS, Title, Tooltip, Legend, PointElement, CategoryScale, LinearScale, LineElement, Filler } from 'chart.js'
+import { toRefs, defineProps, reactive } from 'vue'
 
 
 ChartJS.register(
@@ -14,14 +13,27 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  Filler,
   Title,
   Tooltip,
   Legend
 )
 
-const options =reactive({
-  responsive: true,
-  maintainAspectRatio: false
+const options = reactive({
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: false,
+    },
+    filler: {
+      propagate: false,
+    },
+
+  }, interaction: {
+    intersect: false,
+    mode: "index",
+  },
+
 })
 
 const props = defineProps({
@@ -29,7 +41,7 @@ const props = defineProps({
 
 })
 
-const {chartData} = toRefs(props);
+const { chartData } = toRefs(props);
 
 
 </script>
