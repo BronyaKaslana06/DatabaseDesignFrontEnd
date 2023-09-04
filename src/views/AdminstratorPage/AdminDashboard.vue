@@ -1,15 +1,15 @@
 <template>
-  <div style="margin-right: 40px;display: flex;flex-direction: column;height: 100%;overflow: hidden;">
+  <div style="margin-right: 40px;display: flex;flex-direction: column;height: 100%;">
     <div class="info-card">
       <div class="info-card-item">
         <div class="info-card-value">{{ infoSet.owner_count }}</div>
-        <div :class="growthRcd.owner_growth === true? 'up' : 'down'">{{ growthSet.owner_growth }}</div>
+        <div :class="growthRcd.owner_growth === true ? 'up' : 'down'">{{ growthSet.owner_growth }}</div>
         <div class="info-card-label">总用户数</div>
       </div>
 
       <div class="info-card-item">
         <div class="info-card-value">{{ infoSet.switch_count }}</div>
-        <div :class="growthRcd.request_growth === true? 'up' : 'down'">{{ growthSet.request_growth }}</div>
+        <div :class="growthRcd.request_growth === true ? 'up' : 'down'">{{ growthSet.request_growth }}</div>
         <div class="info-card-label">总订单数</div>
       </div>
 
@@ -17,7 +17,7 @@
 
       <div class="info-card-item">
         <div class="info-card-value">{{ infoSet.staff_count }}</div>
-        <div :class="growthRcd.staff_growth=== true? 'up' : 'down'">{{ growthSet.staff_growth }}</div>
+        <div :class="growthRcd.staff_growth === true ? 'up' : 'down'">{{ growthSet.staff_growth }}</div>
         <div class="info-card-label">总员工数</div>
       </div>
       <div class="info-card-item">
@@ -172,10 +172,10 @@ let select1Value = "year";
 let standardStas = [];
 let longStas = [];
 const growthRcd = reactive({
-    "owner_growth": true,
-    "staff_growth": true,
-    "request_growth": true,
-    "benefit_growth": true
+  "owner_growth": true,
+  "staff_growth": true,
+  "request_growth": true,
+  "benefit_growth": true
 })
 
 
@@ -338,38 +338,38 @@ const pullGrowthData = () => {
     url: 'api/administrator/dashboard/growth',
     method: 'GET'
   }).then((res) => {
-    
 
-    if(res.data.owner_growth<0)
+
+    if (res.data.owner_growth < 0)
       growthRcd.owner_growth = false;
-    if(res.data.request_growth<0)
+    if (res.data.request_growth < 0)
       growthRcd.request_growth = false;
-    if(res.data.staff_growth<0)
-      growthRcd.staff_growth =false;
-    if(res.data.benefit_growth <0)
+    if (res.data.staff_growth < 0)
+      growthRcd.staff_growth = false;
+    if (res.data.benefit_growth < 0)
       growthRcd.benefit_growth = false;
 
-      for (let key in res.data) {
-        if (res.data.hasOwnProperty(key)) {
-          let minusFlag = false;
-          if(res.data[key]<-1000){
-            minusFlag = true;
-          }
-          const value = Math.abs(res.data[key]);
+    for (let key in res.data) {
+      if (res.data.hasOwnProperty(key)) {
+        let minusFlag = false;
+        if (res.data[key] < -1000) {
+          minusFlag = true;
+        }
+        const value = Math.abs(res.data[key]);
 
-          if (value >= 1000 && value < 10000) {
-            const formattedValue = (value / 1000).toFixed(1) + 'k';
-            res.data[key] = formattedValue;
-          } else if (value >= 10000) {
-            const formattedValue = (value / 10000).toFixed(1) + 'w';
-            res.data[key] = formattedValue;
-          }
-          if(minusFlag){
-            res.data[key] ="-"+res.data[key];
-          }
+        if (value >= 1000 && value < 10000) {
+          const formattedValue = (value / 1000).toFixed(1) + 'k';
+          res.data[key] = formattedValue;
+        } else if (value >= 10000) {
+          const formattedValue = (value / 10000).toFixed(1) + 'w';
+          res.data[key] = formattedValue;
+        }
+        if (minusFlag) {
+          res.data[key] = "-" + res.data[key];
         }
       }
-      growthSet.value.owner_growth = res.data.owner_growth;
+    }
+    growthSet.value.owner_growth = res.data.owner_growth;
     growthSet.value.request_growth = res.data.request_growth;
     growthSet.value.staff_growth = res.data.staff_growth;
     growthSet.value.benefit_growth = res.data.benefit_growth;
@@ -388,6 +388,7 @@ const pullNoticeData = () => {
     }
   })
 }
+
 const changeChart1 = () => {
   if (select1.value === "近一天")
     select1Value = "day";
