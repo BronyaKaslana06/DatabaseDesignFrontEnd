@@ -248,11 +248,13 @@ for (let name of svgArray) {
   content: url(../assets/员工信息-active.svg);
 }
 
+.icon-个人主页::before,
 .icon-管理员仪表盘::before,
 .icon-员工仪表盘::before {
   content: url(../assets/管理员仪表盘.svg);
 }
 
+.icon-active-个人主页::before,
 .icon-active-管理员仪表盘::before,
 .icon-active-员工仪表盘::before {
   content: url(../assets/管理员仪表盘-active.svg);

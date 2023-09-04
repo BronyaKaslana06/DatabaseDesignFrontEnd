@@ -159,6 +159,7 @@ const editFlag = ref(false);
 const addFlag = ref(false);
 
 const formData = reactive({
+    station_id:'',
     battery_id: '',
     battery_type_id: '',
     available_status: ''
@@ -174,6 +175,32 @@ const query = reactive({
     pageSize: 25,
 });
 
+const getStationID = () => {
+    cmRequest.request({
+        url: 'api/staff/switchstation/station_info',
+        method: 'GET',
+        params: {
+            employee_id: localStorage.getItem('user_id').toString()
+        }
+    }).then((res) => {
+        if (!res.code) {
+            ElMessage({
+                type: 'success',
+                message: '刷新成功',
+            })
+            formData.station_id = res.data.station_id;
+            pullData();
+        }
+        else {
+            ElMessage({
+                type: 'error',
+                message: '刷新失败',
+            })
+        }
+    })
+};
+getStationID();
+
 
 var totalData = 1;
 
@@ -182,7 +209,7 @@ const pullData = () => {
         url: 'api/staff/switchstation/battery',
         method: 'GET',
         params: {
-            station_id:'1',
+            station_id:formData.station_id,
             pageIndex: query.pageIndex,
             pageSize: query.pageSize,
             battery_type_id: '',
@@ -205,7 +232,7 @@ const pullData = () => {
         }
     })
 }
-pullData();
+
 /*
 tableData.value = [
     {
@@ -233,7 +260,7 @@ const changeView = () => {
         url: 'api/staff/switchstation/battery',
         method: 'GET',
         params: {
-            station_id:'1',
+            station_id:formData.station_id,
             pageIndex: 1,
             pageSize: query.pageSize,
             battery_type_id: '',
@@ -268,7 +295,7 @@ const queryData = () => {
         url: 'api/staff/switchstation/battery',
         method: 'GET',
         params: {
-            station_id:'1',
+            station_id:formData.station_id,
             pageIndex: query.pageIndex,
             pageSize: query.pageSize,
             battery_type_id: formData.battery_type_id,
@@ -323,7 +350,7 @@ const addData = () => {
             url: 'api/staff/switchstation/battery/add',
             method: 'POST',
             data: {
-                station_id:'1',
+                station_id:formData.station_id,
                 manufacturing_date: addedData.manufacturing_date,
                 battery_type_id: addedData.battery_type_id
             }
@@ -352,7 +379,7 @@ const deleteInfo = (val) => {
         url: 'api/staff/switchstation/battery/delete',
         method: 'DELETE',
         params: {
-            station_id:'1',
+            station_id:formData.station_id,
             battery_id: val.battery_id
         }
     }).then((res) => {
@@ -377,7 +404,7 @@ const saveEdit = (row) => {
         url: 'api/staff/switchstation/battery/update',
         method: 'PATCH',
         data: {
-            station_id:'1',
+            station_id:formData.station_id,
             battery_id: row.battery_id,
             available_status: row.available_status
         }

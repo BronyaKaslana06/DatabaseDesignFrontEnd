@@ -1,275 +1,337 @@
 <template>
-    <header class="dashboard-header">
-      <h1 class="dashboard-title">个人主页</h1>
-      <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
-    </header> 
-
-    <div class="info-card">
-        <div class="info-card-item">
-          <h2 class="info-card-value">{{ totalCharge }}</h2>
-          <p class="info-card-label">总充电次数</p>
+  <div class="firstline">
+    <div class="welcome">
+      <div class="left-section">
+        <div class="left-content">
+          <img :src="temp_img || ''" alt="" class="profile-image">
+          <p class="greeting">
+            {{ getGreeting() }}
+          </p>
         </div>
-
-        <div class="info-card-item">
-          <h2 class="info-card-value">{{ totalOrders }}</h2>
-          <p class="info-card-label">总维修次数</p>
-        </div>
-
-        <div class="info-card-item">
-          <h2 class="info-card-value">{{ totalVehicle }}</h2>
-          <p class="info-card-label">车辆数量</p>
-        </div> 
-    </div>
-    
-    <div class="dashboard">      
-        <div class="chart-container">
-          <div ref="lineChart" class="chart"></div>
-        </div>
-        <div class="chart-container">
-          <div ref="chartDom" class="chart"></div>
-        </div>
+      </div>
+      <div class="right-section">
+        <el-button type="info" size="large" round @click="gotoPersonal">查看资料</el-button>
+      </div>
     </div>
 
+    <div class="canvas-container">
+      <div class="canvas-wrapper">
+        <canvas ref="mycanvas" :width="cWidth" :height="cHeight"></canvas>
+        <div class="percentage">{{ CarInfo.current_capacity }}%</div>
+      </div>
+      <div class="license">{{ CarInfo.plate_number }}</div>
+    </div>
+  </div>
+
+
+  <div class="info-card">
+    <div class="info-card-item">
+      <p class="info-card-label">待评价的换电订单</p>
+      <h2 class="info-card-value">{{ OwnerInfo.unscored_switchlog }}</h2>
+    </div>
+
+    <div class="info-card-item">
+      <p class="info-card-label">待评价的维修订单</p>
+      <h2 class="info-card-value">{{ OwnerInfo.unscored_maintenance }}</h2>
+    </div>
+
+    <div class="info-card-item">
+      <p class="info-card-label">累计里程数</p>
+      <h2 class="info-card-value">{{ OwnerInfo.mileage }}km</h2>
+    </div>
+
+    <div class="info-card-item">
+      <p class="info-card-label">总换电次数</p>
+      <h2 class="info-card-value">{{ OwnerInfo.dealCount }}</h2>
+    </div>
+  </div>
+
+  <div style="width:100%;">
+    <div style="display: flex;flex-direction: row;width: 100%;">
+      <div style="height: 400px; width: 50%;" class="info-card-item">
+        <line-chart :chartData="chartData" :key="chartKey" />
+      </div>
+      <div style="height: 400px; width: 50%;" class="info-card-item">
+
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="js">
 import cmRequest from '../../service/index.js'
 import { ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
-import { RefreshRight } from '@element-plus/icons-vue';
-import * as echarts from 'echarts';
+import { useRouter } from 'vue-router';
+import LineChart from '../../components/LineChart.vue'
 
 
-const totalCharge = ref();
-const totalOrders = ref();
-const totalVehicle = ref(); 
-const chartDom = ref();
+const OwnerInfo = ref({});
+const CarInfo = ref({});
 
-const pullData = () => {
-    cmRequest.request({
-    // url: 'api/owner/dashboard/message',
-    url: 'owner/dashboard/message',// 我的本地api地址
+/*  画电池  */
+const mycanvas = ref(null);
+const ctx = ref(null);
+const cWidth = 132;
+const cHeight = 56;
+
+const drawBg = () => {
+  ctx.value.strokeStyle = 'white';
+  ctx.value.lineWidth = 6;
+  ctx.value.strokeRect(0, 0, 120, 56);
+  ctx.value.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.value.fillRect(0, 0, 120, 56);
+  ctx.value.fillStyle = 'rgba(255,255,255,1)';
+  ctx.value.fillRect(121, 14, 12, 28);
+};
+
+const drawPath = (quantity) => {
+  if (quantity < 20) {
+    ctx.value.fillStyle = 'red';
+  } else {
+    ctx.value.fillStyle = 'green';
+  }
+  ctx.value.fillRect(6, 6, (120 - 12) * quantity / 100, 44);
+};
+
+
+const getGreeting = () => {
+  const now = new Date();
+  const hour = now.getHours();
+
+  if (hour >= 5 && hour < 11) {
+    return "早上好," + localStorage.getItem("username");
+  } else if (hour >= 11 && hour < 15) {
+    return "中午好，" + localStorage.getItem("username");
+  } else if (hour >= 15 && hour < 20) {
+    return "下午好，" + localStorage.getItem("username");
+  } else {
+    return "晚上好，" + localStorage.getItem("username");
+  }
+}
+
+const router = useRouter();
+const gotoPersonal = () => {
+  router.push('personal-information-page');
+}
+const getOwnerInfo = () => {
+  cmRequest.request({
+    url: 'api/owner/dashboard/base_info',
     method: 'GET',
-   
+    params: {
+      user_id: localStorage.getItem('user_id').toString()
+    }
   }).then((res) => {
-    if(!res.code){
+    if (!res.code) {
       ElMessage({
         type: 'success',
         message: '刷新成功',
       })
-      totalCharge.value = res.data.totalCharge;
-      totalOrders.value = res.data.totalOrders;
-      totalVehicle.value = res.data.totalVehicle;
+      OwnerInfo.value = res.data;
     }
-    else{
+    else {
       ElMessage({
         type: 'error',
         message: '刷新失败',
       })
     }
   })
-}
-pullData();
+};
+getOwnerInfo();
 
-totalCharge.value = 1919;
-totalOrders.value = 810;
-totalVehicle.value = 2;
-
-const barChart = ref();
-const lineChart = ref();
-const pieChart = ref();
-const barChartData = ref([]);
-const lineChartData = ref([]);
-const pieChartData = ref([]);
-
-
-const getOrderData= () =>{
-    cmRequest.request({
-    // url: 'api/administrator/dashboard/order',
-    url: 'administrator/dashboard/order',// 我的本地api地址
+const getCarInfo = () => {
+  cmRequest.request({
+    url: 'api/owner/dashboard/min_capacity',
     method: 'GET',
-   
+    params: {
+      user_id: localStorage.getItem('user_id').toString()
+    }
   }).then((res) => {
-    if(!res.code){
+    if (!res.code) {
       ElMessage({
         type: 'success',
         message: '刷新成功',
       })
-      barChartData.value = res.data.barChartData; // 根据API响应修改
-      lineChartData.value = res.data.lineChartData; // 根据API响应修改
-      pieChartData.value = res.data.pieChartData; // 根据API响应修改
+      CarInfo.value = res.data;
+      mycanvas.value = mycanvas.value || null;
+      ctx.value = mycanvas.value.getContext('2d');
+      drawBg();
+      //改成对应的变量
+      drawPath(res.data.current_capacity);
     }
-    
+    else {
+      ElMessage({
+        type: 'error',
+        message: '刷新失败',
+      })
+    }
   })
-}
-getOrderData();
+};
+getCarInfo();
 
-// 处理面积图的实现
-let base = +new Date(1968, 9, 3);
-let oneDay = 24 * 3600 * 1000;
-let date = [];
-let data = [Math.random() * 300];
-for (let i = 1; i < 20000; i++) {
-  var now = new Date((base += oneDay));
-  date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-  data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
-}
+const chartData = reactive({
+  labels: [],
+  datasets: [
+    {
+      data: [],
+    }
+  ]
+})
 
-// 各个图表数据的存放
-onMounted(() => {
-    // 折线图（本周每日充电总车次）
-    const lineChartInstance = echarts.init(lineChart.value);
-    lineChartInstance.setOption({
-        title: {
-        text: '本周每日充换电次数',
-        },
-        xAxis: {
-          type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-        {
-          data: [3, 4, 1, 2, 4, 1, 5],
-          type: 'line',
-          smooth: true
-        }
-        ]
-    });
-    // 面积图（）
-    const chartDomInstance = echarts.init(chartDom.value);
-    chartDomInstance.setOption({
-    tooltip: {
-    trigger: 'axis',
-    position: function (pt) {
-      return [pt[0], '10%'];
+const getChartInfo = () => {
+  cmRequest.request({
+    url: 'api/owner/dashboard/monthlyswitch',
+    method: 'GET',
+    params: {
+      user_id: localStorage.getItem('user_id').toString()
     }
-    },
-    title: {
-    left: 'center',
-    text: '每日电量变化'
-    },
-    toolbox: {
-    feature: {
-      dataZoom: {
-        yAxisIndex: 'none'
-      },
-      restore: {},
-      saveAsImage: {}
+  }).then((res) => {
+    chartData.labels = [];
+    chartData.datasets = [{}];
+    if (!res.code) {
+      /*
+      let data = [];
+      res.data.forEach((item, index) => {
+        chartData.labels.push(index);
+        data.push(item);
+        });
+      chartData.datasets[0].data = data;
+      console.log(chartData);
+      chartKey.value++;*/
     }
-    },
-    xAxis: {
-    type: 'category',
-    boundaryGap: false,
-    data: date
-    },
-    yAxis: {
-    type: 'value',
-    boundaryGap: [0, '100%']
-    },
-    dataZoom: [
-    {
-      type: 'inside',
-      start: 0,
-      end: 10
-    },
-    {
-      start: 0,
-      end: 10
+    else {
+      ElMessage({
+        type: 'error',
+        message: '刷新失败',
+      })
     }
-    ],
-    series: [
-    {
-      name: 'Fake Data',
-      type: 'line',
-      symbol: 'none',
-      sampling: 'lttb',
-      itemStyle: {
-        color: 'rgb(255, 70, 131)'
-      },
-      areaStyle: {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          {
-            offset: 0,
-            color: 'rgb(255, 158, 68)'
-          },
-          {
-            offset: 1,
-            color: 'rgb(255, 70, 131)'
-          }
-        ])
-      },
-      data: data
-    }
-    ] 
-  });
-});
+  })
+};
+getChartInfo();
+
+const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
+
 
 
 </script>
 
 <style scoped>
- .dashboard {
-    background-color: #f4f5f7;
-    min-height: 100vh;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .dashboard-header {
-    background-color: #35495e;
-    color: #ffffff;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .dashboard-title {
-    font-size: 28px;
-    margin: 0;
-  }
+.firstline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
 
-  .info-card {
-    display: flex;
-    gap: 20px;
-    margin: 20px;
-  }
+.welcome {
+  background-color: #44c9b5;
+  color: #ffffff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 66.66%;
+  margin-top: 10px;
+  border-radius: 10px;
+  background-image: linear-gradient(45deg, transparent 25%, rgba(255, 255, 255, 0.2) 25%, rgba(255, 255, 255, 0.2) 50%, transparent 50%, transparent 75%, rgba(255, 255, 255, 0.2) 75%);
+}
 
-  .info-card-item {
-    flex: 1;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out;
-  }
-  
-  .info-card-item:hover {
-    transform: translateY(-5px);
-  }
-  
-  .info-card-value {
-    font-size: 28px;
-    margin: 0;
-    color: #35495e;
-  }
-  
-  .info-card-label {
-    font-size: 16px;
-    color: #8e8e8e;
-    margin-top: 5px;
-  }
+.profile-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 30px;
+}
 
-  .chart-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-  
-  .chart {
-    width: 100%;
-    height: 400px;
-  }
+.left-section {
+  display: flex;
+  align-items: center;
+  /* 垂直居中对齐 */
+}
+
+.left-content {
+  display: flex;
+  align-items: center;
+  /* 垂直居中对齐 */
+}
+
+.greeting {
+  font-size: 36px;
+  font-weight: bold;
+  margin-right: 10px;
+  /* 右侧间距，根据需求调整 */
+}
+
+.right-section {
+  font-weight: bold;
+}
+
+.canvas-container {
+  width: 33.33%;
+  background-color: rgb(237, 235, 235);
+  /* 设置背景色为灰色 */
+  padding: 20px;
+  border-radius: 10px;
+  margin-left: 3em;
+  margin-right: 3em;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.canvas-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.percentage {
+  font-size: 24px;
+  margin-left: 1em;
+  /* 添加左侧的间距 */
+}
+
+.license {
+  font-size: 30px;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+
+.info-card {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 3em;
+}
+
+.info-card-item {
+  flex: 1;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.info-card-item:hover {
+  transform: translateY(-5px);
+}
+
+.info-card-value {
+  font-size: 28px;
+  margin: 0;
+  color: #35495e;
+}
+
+.info-card-label {
+  font-size: 16px;
+  color: #8e8e8e;
+  margin-top: 5px;
+}
 </style>
