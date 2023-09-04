@@ -51,7 +51,9 @@
     <div style="display: flex;flex-direction: row;width: 100%;">
       <div style="height: 350px; flex: 6;" class="chart-item">
           <div style="color:#8e8e8e">换电订单统计</div>
-        <line-chart :chartData="chartData" :key="chartKey" />
+          <div style="height: 350px;">
+            <line-chart :chartData="chartData" :key="chartKey" />
+          </div>
       </div>
     </div>
   </div>
@@ -63,6 +65,7 @@ import { ElMessage } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router';
 import LineChart from '../../components/LineChart.vue'
+
 
 const battery= ref(false);
 const OwnerInfo = ref({});
@@ -161,30 +164,7 @@ const router = useRouter();
 const gotoPersonal = () => {
   router.push('personal-information-page');
 }
-const getOwnerInfo = () => {
-  cmRequest.request({
-    url: 'api/owner/dashboard/base_info',
-    method: 'GET',
-    params: {
-      user_id: localStorage.getItem('user_id').toString()
-    }
-  }).then((res) => {
-    if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
-      OwnerInfo.value = res.data;
-    }
-    else {
-      ElMessage({
-        type: 'error',
-        message: '刷新失败',
-      })
-    }
-  })
-};
-getOwnerInfo();
+
 
 const getCarInfo = () => {
   battery.value = true;
@@ -215,7 +195,7 @@ const getCarInfo = () => {
     battery.value = false;
   })
 };
-getCarInfo();
+
 
 let width, height, gradient;
 const getGradient = (ctx, chartArea) => {
@@ -252,10 +232,12 @@ const chartData = reactive({
           // This case happens on initial chart load
           return;
         }
+        console.log("backgroundColor function is called!");
         return getGradient(ctx, chartArea);
       },
       pointBackgroundColor: 'rgba(75, 192, 192)',
       pointBorderColor: 'rgba(75, 192, 192)'
+
     }
   ]
 })
@@ -269,8 +251,7 @@ const getChartInfo = () => {
     }
   }).then((res) => {
     chartData.labels = [];
-    chartData.datasets = [{}];
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthNames = ['一月', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     if (!res.code) {
       
       let data = [];
@@ -290,7 +271,33 @@ const getChartInfo = () => {
     }
   })
 };
-getChartInfo();
+
+const getOwnerInfo = () => {
+  cmRequest.request({
+    url: 'api/owner/dashboard/base_info',
+    method: 'GET',
+    params: {
+      user_id: localStorage.getItem('user_id').toString()
+    }
+  }).then((res) => {
+    if (!res.code) {
+      ElMessage({
+        type: 'success',
+        message: '刷新成功',
+      })
+      OwnerInfo.value = res.data;
+    }
+    else {
+      ElMessage({
+        type: 'error',
+        message: '刷新失败',
+      })
+    }
+  })
+  getCarInfo();
+  getChartInfo();
+};
+getOwnerInfo();
 
 const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
 
@@ -369,7 +376,7 @@ const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
 }
 
 .high-capacity {
-  background-color: rgb(166, 226, 166); /* 高电量时的背景颜色 */
+  background-color: rgb(181, 245, 181); /* 高电量时的背景颜色 */
 }
 .canvas-wrapper {
   display: flex;

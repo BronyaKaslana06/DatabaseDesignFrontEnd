@@ -82,7 +82,7 @@ const submitForm = () => {
             localStorage.setItem('user_id', msg.data.user_id);
             localStorage.setItem('username', msg.data.username);
             if (identity == 0)
-                router.push('/reservation');
+                router.push('/ownerDashboard');
             else if (identity == 1) {
                 router.push('/staff-information-page');
                 localStorage.setItem('staff_type', msg.data.position);
