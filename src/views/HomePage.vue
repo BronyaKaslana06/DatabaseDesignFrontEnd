@@ -79,6 +79,9 @@ const goToHomes = () => {
   if(localStorage.getItem('user_type') == 2){
     router.push('/admin-dashboard-page')
   }
+  else if(localStorage.getItem('user_type') == 1){
+    router.push('/staff-information-page')
+  }
 };
 
 const cleanLocalStorage = () =>{

@@ -31,7 +31,8 @@
           </el-col>
         </el-row> -->
         <div class="button-wrapper">
-          <el-button @click="searchData">搜索</el-button>
+          <el-button @click="resetSearch">重置</el-button>
+          <el-button @click="searchData" type="primary">搜索</el-button>
         </div>
       </el-form>
     </div>
@@ -56,23 +57,20 @@
               <div class="list-item-text">
                 <div>
                   <span class="title">{{ announcement.title }}</span>
-                  <!-- <span
-                    style="font-size: 14px;background-color: #4fd1c4e7;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
-                    {{ "发布时间：" + announcement.publish_time }}</span> -->
                   <span>
-                    {{ "发布时间：" + announcement.publish_time }}</span>
+                    {{ "发布时间：" + announcement.publish_time.replace(/T/g, '&nbsp;&nbsp;&nbsp;') }}</span>
                 </div>
                 <div style="display: inline-block; margin-top: 0.4em;">
                   <span
                     style="font-size: 14px;background-color: #2d79dd;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
-                    {{ "管理员" + announcement.publisher }}</span>
+                    {{ "发布人：管理员" + announcement.publisher }}</span>
                   <span
                     style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
-                    {{ "发布对象：" + announcement.publish_pos }}</span>
+                    {{ "发布对象：" + (announcement.publish_pos===2?"车主用户":(announcement.publish_pos===1?"员工":"未知")) }}</span>
                 </div>
-                <p class="announcement-content">
+                <div style="margin-top: 0.4em;">
                   {{ somecontents(announcement.contents) }}......
-                </p>
+                </div>
               </div>
               <div class="list-item-button">
                 <el-button text :icon="Document" @click="openPopup(announcement)">查看详情</el-button>
@@ -89,12 +87,19 @@
 
   <!-- 弹窗 -->
   <el-dialog v-model="showPopup" title="公告内容" width="55%" @update:visible="closePopup">
-
-    <p class="title">{{ popupNotice.title }}</p>
-    <p class="publisher-publish_pos">发布者：{{ popupNotice.publisher }}</p>
-    <p class="publisher-publish_pos">发布对象：{{ popupNotice.publish_pos }}</p>
-    <span>发布时间：{{ deletetime(popupNotice.publish_time) }}</span>
-    <p class="announcement-content">{{ popupContent }}</p>
+    <template #header>
+      <div class="my-header">
+        <h4 style="margin-top: 1em;margin-bottom: 1em;">{{ popupNotice.title }}</h4>
+        <div class="popup-details">
+          <div style="margin-bottom: 0.5em;">
+            <span class="gray-text" style="margin-right: 1em;">{{ "发布人：管理员" + popupNotice.publisher }}</span>
+          <span class="gray-text">{{ "发布对象：" + (popupNotice.publish_pos === 2 ? "车主用户" : (popupNotice.publish_pos === 1 ? "员工" : "未知")) }}</span>
+          </div>
+          <span class="gray-text">发布时间：{{ deletetime(popupNotice.publish_time) }}</span>
+        </div>
+      </div>
+    </template>
+    <div class="announcement-content">{{ popupContent }}</div>
     <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="showPopup = false">
@@ -102,9 +107,6 @@
         </el-button>
       </span>
     </template>
-
-
-
   </el-dialog>
 </template>
     
@@ -125,7 +127,6 @@ const disabled = computed(() => loading.value || noMore.value)
 
 const load = () => {
   loading.value = false
-
 }
 
 
@@ -133,15 +134,23 @@ const searchFormData = reactive({
   title: "",
   publisher: "",
   publish_time: "",
-  publish_pos: "深圳",
+  publish_pos: "",
   contents: "",
 });
 
 const queryData = () => {
+  //console.log(parseInt(localStorage.getItem('user_type')));
+  let pos = 3;
+  if(localStorage.getItem('user_type') === '0'){
+    pos = 2;
+  }
+  else if(localStorage.getItem('user_type') === '1'){
+    pos = 1;
+  }
   const queryParams = {
     title: "",
     publisher: "",
-    publish_pos: "",
+    publish_pos: pos,
     contents: "",
     publish_time: ""
   };
@@ -159,6 +168,7 @@ const queryData = () => {
           type: "error",
           message: "未找到内容",
         });
+        load();
       }
     })
     .catch((error) => {
@@ -167,6 +177,7 @@ const queryData = () => {
         type: "error",
         message: "获取数据失败，请稍后再试",
       });
+      load();
     });
   console.log(loading.value)
 };
@@ -174,6 +185,15 @@ const queryData = () => {
 onMounted(() => {
   queryData(); // 在组件挂载后调用queryData函数获取公告数据
 });
+
+const resetSearch = () => {
+  searchFormData.title = '';
+  searchFormData.publisher = '';
+  searchFormData.publish_time = '';
+  searchFormData.publish_pos = '';
+  searchFormData.contents = '';
+  queryData();
+}
 
 const formatDate = (dateString) => {
 
@@ -211,11 +231,18 @@ const deletetime = (dateString) => {
 };
 
 const searchData = () => {
+  let pos = 3;
+  if(localStorage.getItem('user_type') === '0'){
+    pos = 2;
+  }
+  else if(localStorage.getItem('user_type') === '1'){
+    pos = 1;
+  }
   // 根据输入的数据准备搜索参数
   const searchParams = {
     title: searchFormData.title,
     publisher: searchFormData.publisher,
-    publish_pos: searchFormData.publish_pos,
+    publish_pos: pos,
     contents: searchFormData.contents,
     publish_time: formatDate(searchFormData.publish_time), // 转换日期格式
   };
@@ -487,6 +514,25 @@ const closePopup = () => {
   justify-content: flex-start;
 }
 
-/* 如果需要，可以在这里添加更多的样式 */
+.my-header {
+  text-align: center; /* 文本居中 */
+}
+.my-header h4 {
+  font-weight: bold; /* 加粗 */
+  font-size: 1.8em; /* 大字号 */
+}
+
+.popup-details {
+  text-align: right; /* 文本居右 */
+}
+
+.gray-text {
+  color: gray; /* 灰色文本颜色 */
+  font-size: 0.9em; /* 小字号 */
+}
+
+.el-dialog ::deep(.el-dialog__body){
+  padding: 0;
+}
 </style>
   
