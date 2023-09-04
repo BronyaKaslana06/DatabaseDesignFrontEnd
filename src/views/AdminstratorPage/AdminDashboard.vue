@@ -1,32 +1,129 @@
 <template>
-  <div class="info-card">
-    <div class="info-card-item">
-      <h2 class="info-card-value">{{ infoSet.owner_count }}</h2>
-      <p class="info-card-label">总用户数</p>
-    </div>
-
-    <div class="info-card-item">
-      <h2 class="info-card-value">{{ infoSet.switch_count }}</h2>
-      <p class="info-card-label">总订单数</p>
-    </div>
-
-    <div class="info-card-item">
-      <h2 class="info-card-value">{{ infoSet.station_count }}</h2>
-      <p class="info-card-label">总换电站数</p>
-    </div>
-
-    <div class="info-card-item">
-      <h2 class="info-card-value">{{ infoSet.staff_count }}</h2>
-      <p class="info-card-label">总员工数</p>
-    </div>
-  </div>
-  <div style="width:100%;">
-    <div style="display: flex;flex-direction: row;width: 100%;">
-      <div style="height: 400px; width: 50%;" class="info-card-item">
-        <line-chart :chartData="chartData" :key="chartKey" />
+  <div style="margin-right: 40px;display: flex;flex-direction: column;height: 100%;overflow: hidden;">
+    <div class="info-card">
+      <div class="info-card-item">
+        <div class="info-card-value">{{ infoSet.owner_count }}</div>
+        <div :class="growthRcd.owner_growth === true? 'up' : 'down'">{{ growthSet.owner_growth }}</div>
+        <div class="info-card-label">总用户数</div>
       </div>
-      <div style="height: 400px; width: 50%;" class="info-card-item">
 
+      <div class="info-card-item">
+        <div class="info-card-value">{{ infoSet.switch_count }}</div>
+        <div :class="growthRcd.request_growth === true? 'up' : 'down'">{{ growthSet.request_growth }}</div>
+        <div class="info-card-label">总订单数</div>
+      </div>
+
+
+
+      <div class="info-card-item">
+        <div class="info-card-value">{{ infoSet.staff_count }}</div>
+        <div :class="growthRcd.staff_growth=== true? 'up' : 'down'">{{ growthSet.staff_growth }}</div>
+        <div class="info-card-label">总员工数</div>
+      </div>
+      <div class="info-card-item">
+        <div class="info-card-value">{{ infoSet.switch_benefit }}</div>
+        <div :class="growthRcd.benefit_growth === true ? 'up' : 'down'">{{ growthSet.benefit_growth }}</div>
+        <div class="info-card-label">总收益</div>
+      </div>
+      <div class="info-card-item">
+        <div class="info-card-value">{{ infoSet.station_count }}</div>
+        <div class="info-card-label">总换电站数</div>
+      </div>
+    </div>
+    <div style="width:100%;">
+      <div style="display: flex;flex-direction: row;gap:20px;width: 100%;">
+        <div style="height: 350px; flex: 6;" class="chart-card">
+          <div style="color:#8e8e8e">换电订单统计</div>
+          <el-select v-model="select1" style="    position: relative;
+    transform: translateX(-100%);
+    left: 100%;width:100px">
+            <el-option value="近一天" @click="changeChart1">近一天</el-option>
+            <el-option value="近一月" @click="changeChart1">近一月</el-option>
+            <el-option value="近一年" @click="changeChart1">近一年</el-option>
+          </el-select>
+          <div style="height: 300px;">
+            <line-chart :chartData="chartData" :key="chartKey" />
+          </div>
+        </div>
+        <div style="height: 350px;flex: 4;" class="chart-card">
+          <div style="color:#8e8e8e;height: 30px;">
+            车型数量统计
+          </div>
+          <div style="height: 90%;;">
+            <horizontal-bar-chart :chartData="chartData2" :key="chartKey2" />
+          </div>
+        </div>
+        <div style="height: 350px;flex: 1;display: flex;flex-direction: column;" class="info-card-item">
+          <div style="flex: 1;display: flex;flex-direction: column;justify-content: center;">
+            <div
+              style="font-size: 40px;font-weight: 290;text-align: center;background-color: #5bbeb5;color:white;border-radius: 20px;padding: 10px 10px;">
+              <!-- {{ infoSet.avg_switch_score }} -->
+              {{ 4.5 }}
+            </div>
+            <div style="color:#8e8e8e;margin-top: 10px;font-size: 15px;">
+              换电服务均分
+            </div>
+          </div>
+          <div style="flex: 1;display: flex;flex-direction: column;justify-content: center;">
+            <div
+              style="font-size: 40px;font-weight: 290;text-align: center;background-color: #5bbeb5;color:white;border-radius: 20px;padding: 10px 10px;">
+              <!-- {{ infoSet.avg_repair_score }} -->
+              {{ 4.7 }}
+            </div>
+            <div style="color:#8e8e8e;margin-top: 10px;font-size: 15px;">
+              维修服务均分
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div style="display: flex;gap: 20px;margin-top: 20px;height: 100%;margin-bottom: 20px;">
+      <div class="chart-card" style="flex:1;display:flex;flex-direction: column;max-height: 100%;">
+        <div>
+          <div style="color:#8e8e8e;">
+            电池情况统计
+          </div>
+          <el-select v-model="batteryType" style="width: 150px;position: relative;transform: translateX(-100%);
+    left: 100%;">
+            <el-option value="标准续航型" @click="changeChart3">
+              标准续航型
+            </el-option>
+            <el-option value="长续航型" @click="changeChart3">
+              长续航型
+            </el-option>
+          </el-select>
+        </div>
+        <div style="height: 70%;margin-top:10px;">
+          <pie-chart :chartData="chartData3" :key="chartKey3"></pie-chart>
+        </div>
+      </div>
+      <div class="chart-card" style="flex:1;">
+        <div style="color:#8e8e8e;">
+          近七日收益
+        </div>
+        <div style="height: 90%;">
+          <bar-chart :chartData="chartData4" :key="chartKey4"></bar-chart>
+        </div>
+      </div>
+      <div class="chart-card" style="flex:1;display:flex;flex-direction: column;cursor: pointer;" @click="toNoticePage">
+        <div style="color:#8e8e8e">
+          最新公告
+        </div>
+        <div style="margin-top: 10px;">
+          <div v-for="item in noticeSet" style="padding-bottom: 5px;border-bottom: 1px solid #E2E8F0;">
+            <div style="font-weight: bolder;padding: 2px 0;  white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;margin-top: 4px;color:#3b3b3b ">
+              {{ item.title }}
+            </div>
+            <div style="display: flex;">
+              <div style="width: fit-content;font-size: 5px;color:#8e8e8e;margin-top: 5px;">
+                {{ "时间：" + item.publish_time }}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -37,18 +134,285 @@ import cmRequest from '../../service/index.js'
 import { ElMessage } from 'element-plus'
 import { reactive, ref } from 'vue'
 import LineChart from '../../components/LineChart.vue'
+import HorizontalBarChart from '../../components/HorizontalBarChart.vue'
+import { useRouter } from 'vue-router';
+import PieChart from '../../components/PieChart.vue'
+import BarChart from '../../components/BarChart.vue'
+import cmrequest from '../../service/index.js'
 
+let width, height, gradient;
+const getGradient = (ctx, chartArea) => {
+  const chartWidth = chartArea.right - chartArea.left;
+  const chartHeight = chartArea.bottom - chartArea.top;
+  if (!gradient || width !== chartWidth || height !== chartHeight) {
+    // Create the gradient because this is either the first render
+    // or the size of the chart has changed
+    width = chartWidth;
+    height = chartHeight;
+    gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+    gradient.addColorStop(1, "rgba(79,209,197,0.54)");
+    gradient.addColorStop(0.05, "rgba(75, 192, 192, 0.08)");
+  }
+
+  return gradient;
+}
+
+const router = useRouter();
 
 const infoSet = ref([]);
 const chartKey = ref(0);
+const chartKey2 = ref(0);
+const chartKey3 = ref(0);
+const chartKey4 = ref(0);
+const noticeSet = ref([]);
+const growthSet = ref({});
+const select1 = ref("近一年")
+const batteryType = ref("标准续航型");
+let select1Value = "year";
+let standardStas = [];
+let longStas = [];
+const growthRcd = reactive({
+    "owner_growth": true,
+    "staff_growth": true,
+    "request_growth": true,
+    "benefit_growth": true
+})
+
+
 const chartData = reactive({
   labels: [],
   datasets: [
     {
       data: [],
+      borderColor: '#4FD1C5',
+      pointHoverRadius: 5,
+      tension: 0.25,
+      fill: true,
+      backgroundColor: function (context) {
+        const chart = context.chart;
+        const { ctx, chartArea } = chart;
+
+        if (!chartArea) {
+          // This case happens on initial chart load
+          return;
+        }
+        return getGradient(ctx, chartArea);
+      },
+      pointBackgroundColor: 'rgba(75, 192, 192)',
+      pointBorderColor: 'rgba(75, 192, 192)'
+
     }
   ]
 })
+
+const chartData2 = reactive({
+  labels: [],
+  datasets: [
+    {
+      axis: 'y',
+      data: [],
+      fill: true,
+      backgroundColor: "rgba(75, 192, 192,0.3)",
+      borderRadius: 100,
+    }
+  ]
+})
+
+const chartData3 = reactive({
+  labels: [],
+  datasets: [
+    {
+      data: [],
+      backgroundColor: ['rgba(75, 192, 192,1)', 'rgba(75, 192, 192,0.75)', 'rgba(75, 192, 192,0.5)', 'rgba(255, 129, 0,0.45)', 'rgba(255,0,0,0.25)', 'rgba(0,0,0,0.2)']
+    }
+  ]
+})
+
+const chartData4 = reactive({
+  labels: [],
+  datasets: [
+    {
+      data: [],
+      backgroundColor: ['rgba(75, 192, 192,0.28)', 'rgba(75, 192, 192,0.28)', 'rgba(75, 192, 192,0.42)', 'rgba(75, 192, 192,0.56)', 'rgba(75, 192, 192,0.70)', 'rgba(75, 192, 192,0.84)', 'rgba(75, 192, 192,0.98)']
+    }
+  ]
+})
+
+const pullChart1Data = () => {
+  cmRequest.request({
+    // baseURL: 'https://mock.apifox.cn/m1/3058331-0-default',
+    url: 'api/administrator/dashboard/time_span_stats',
+    method: 'GET',
+    params: {
+      query_range: select1Value
+    }
+  }).then((res) => {
+    chartData.labels = [];
+    if (!res.code) {
+      let data = [];
+      for (let item of res.data) {
+        if (select1.value == '近一天') {
+          item.time_span = parseInt(item.time_span.substring(0, 2));
+          console.log(item.time_span);
+        }
+        chartData.labels.push(item.time_span);
+        data.push(item.switch_count);
+      }
+      chartData.datasets[0].data = data;
+      chartKey.value++;
+    }
+    else {
+    }
+  })
+}
+
+const pullChart2Data = () => {
+  cmRequest.request({
+    url: 'api/administrator/dashboard/vehicles',
+    method: 'GET',
+  }).then((res) => {
+    if (!res.code) {
+      let labels = [];
+      let data = [];
+      for (let item of res.data) {
+        labels.push(item.vehicle_type);
+        data.push(item.vehicle_num);
+      }
+      chartData2.labels = labels;
+      chartData2.datasets[0].data = data;
+      chartKey2.value++;
+    }
+  })
+}
+
+const pullChart3Data = () => {
+  cmRequest.request({
+    // baseURL:'https://mock.apifox.cn/m1/3058331-0-default',
+    url: 'api/administrator/dashboard/batteries',
+    method: 'GET'
+  }).then((res) => {
+    if (!res.code) {
+      for (let item of res.data) {
+        let group = item.battery_type.split(" ");
+        if (group[1] == '标准续航型') {
+          chartData3.labels.push(group[0]);
+          standardStas.push(item.battery_num);
+        }
+        else if (group[1] == '长续航型') {
+          longStas.push(item.battery_num);
+        }
+        chartData3.datasets[0].data = standardStas;
+        chartKey3.value++;
+      }
+    }
+  })
+}
+
+const pullChart4Data = () => {
+  cmRequest.request({
+    // baseURL:'https://mock.apifox.cn/m2/3058331-0-default/107756661?apifoxApiId=107756661',
+    url: 'api/administrator/dashboard/week_benefits',
+    method: 'GET'
+  }).then((res) => {
+    if (!res.code) {
+      let labels = [];
+      let benefits = [];
+      for (let item of res.data) {
+        let date = item.day;
+        date = date.replace(/\//g, '-');
+        date = date.substring(5);
+        labels.push(date);
+        benefits.push(item.benefits);
+      }
+      chartData4.labels = labels;
+      chartData4.datasets[0].data = benefits;
+      console.log(chartData4.labels);
+      console.log(chartData4.datasets[0].data)
+      chartKey4.value++;
+    }
+  })
+}
+
+const pullGrowthData = () => {
+  cmRequest.request({
+    url: 'api/administrator/dashboard/growth',
+    method: 'GET'
+  }).then((res) => {
+    
+
+    if(res.data.owner_growth<0)
+      growthRcd.owner_growth = false;
+    if(res.data.request_growth<0)
+      growthRcd.request_growth = false;
+    if(res.data.staff_growth<0)
+      growthRcd.staff_growth =false;
+    if(res.data.benefit_growth <0)
+      growthRcd.benefit_growth = false;
+
+      for (let key in res.data) {
+        if (res.data.hasOwnProperty(key)) {
+          let minusFlag = false;
+          if(res.data[key]<-1000){
+            minusFlag = true;
+          }
+          const value = Math.abs(res.data[key]);
+
+          if (value >= 1000 && value < 10000) {
+            const formattedValue = (value / 1000).toFixed(1) + 'k';
+            res.data[key] = formattedValue;
+          } else if (value >= 10000) {
+            const formattedValue = (value / 10000).toFixed(1) + 'w';
+            res.data[key] = formattedValue;
+          }
+          if(minusFlag){
+            res.data[key] ="-"+res.data[key];
+          }
+        }
+      }
+      growthSet.value.owner_growth = res.data.owner_growth;
+    growthSet.value.request_growth = res.data.request_growth;
+    growthSet.value.staff_growth = res.data.staff_growth;
+    growthSet.value.benefit_growth = res.data.benefit_growth;
+
+  })
+}
+
+const pullNoticeData = () => {
+  cmRequest.request({
+    url: 'api/administrator/announcement/newest',
+    method: 'GET',
+  }).then((res) => {
+    if (!res.code) {
+      noticeSet.value = res.data.slice(0, 4);
+
+    }
+  })
+}
+const changeChart1 = () => {
+  if (select1.value === "近一天")
+    select1Value = "day";
+  else if (select1.value === "近一月")
+    select1Value = "month";
+  else
+    select1Value = "year"
+
+  pullChart1Data();
+}
+
+const changeChart3 = () => {
+  console.log(batteryType.value)
+  console.log(standardStas, longStas);
+  if (batteryType.value === '标准续航型')
+    chartData3.datasets[0].data = standardStas;
+  else
+    chartData3.datasets[0].data = longStas;
+
+  chartKey3.value++;
+}
+
+const toNoticePage = () => {
+  router.push('/notice-info-page')
+}
 
 const pullData = () => {
   cmRequest.request({
@@ -58,6 +422,19 @@ const pullData = () => {
 
   }).then((res) => {
     if (!res.code) {
+      for (let key in res.data) {
+        if (res.data.hasOwnProperty(key)) {
+          const value = res.data[key];
+
+          if (value >= 1000 && value < 10000) {
+            const formattedValue = (value / 1000).toFixed(1) + 'k';
+            res.data[key] = formattedValue;
+          } else if (value >= 10000) {
+            const formattedValue = (value / 10000).toFixed(1) + 'w';
+            res.data[key] = formattedValue;
+          }
+        }
+      }
       infoSet.value = res.data;
     }
     else {
@@ -67,373 +444,15 @@ const pullData = () => {
       })
     }
   })
+  pullChart1Data();
+  pullChart2Data();
+  pullChart3Data();
+  pullChart4Data();
+  pullNoticeData();
+  pullGrowthData();
 
-  cmRequest.request({
-    baseURL: 'https://mock.apifox.cn/m1/3058331-0-default',
-    url: 'administrator/dashboard/time_span_stats',
-    method: 'GET',
-    params: {
-      query_range: "month"
-    }
-  }).then((res) => {
-    chartData.labels = [];
-    chartData.datasets = [{}];
-    if (!res.code) {
-      let data = [];
-      for (let item of res.data) {
-        chartData.labels.push(item.time_span);
-        data.push(item.switch_count);
-      }
-      chartData.datasets[0].data = data;
-      console.log(chartData);
-      chartKey.value++;
-    }
-    else {
-    }
-  })
 }
 pullData();
-
-// const barChart = ref();
-// const lineChart = ref();
-// const pieChart = ref();
-// const barChartData = ref([]);
-// const lineChartData = ref([]);
-// const pieChartData = ref([]);
-
-
-// const getOrderData = () => {
-//   cmRequest.request({
-//     // url: 'api/administrator/dashboard/order',
-//     url: 'administrator/dashboard/order',// 我的本地api地址
-//     method: 'GET',
-
-//   }).then((res) => {
-//     if (!res.code) {
-//       ElMessage({
-//         type: 'success',
-//         message: '刷新成功',
-//       })
-//       barChartData.value = res.data.barChartData; // 根据API响应修改
-//       lineChartData.value = res.data.lineChartData; // 根据API响应修改
-//       pieChartData.value = res.data.pieChartData; // 根据API响应修改
-//     }
-
-//   })
-// }
-// getOrderData();
-
-// // 处理条形图的实现
-// var app = {};
-// const posList = [
-//   'left',
-//   'right',
-//   'top',
-//   'bottom',
-//   'inside',
-//   'insideTop',
-//   'insideLeft',
-//   'insideRight',
-//   'insideBottom',
-//   'insideTopLeft',
-//   'insideTopRight',
-//   'insideBottomLeft',
-//   'insideBottomRight'
-// ];
-// app.configParameters = {
-//   rotate: {
-//     min: -90,
-//     max: 90
-//   },
-//   align: {
-//     options: {
-//       left: 'left',
-//       center: 'center',
-//       right: 'right'
-//     }
-//   },
-//   verticalAlign: {
-//     options: {
-//       top: 'top',
-//       middle: 'middle',
-//       bottom: 'bottom'
-//     }
-//   },
-//   position: {
-//     options: posList.reduce(function (map, pos) {
-//       map[pos] = pos;
-//       return map;
-//     }, {})
-//   },
-//   distance: {
-//     min: 0,
-//     max: 100
-//   }
-// };
-// app.config = {
-//   rotate: 90,
-//   align: 'left',
-//   verticalAlign: 'middle',
-//   position: 'insideBottom',
-//   distance: 15,
-//   onChange: function () {
-//     const labelOption = {
-//       rotate: app.config.rotate,
-//       align: app.config.align,
-//       verticalAlign: app.config.verticalAlign,
-//       position: app.config.position,
-//       distance: app.config.distance
-//     };
-//     myChart.setOption({
-//       series: [
-//         {
-//           label: labelOption
-//         },
-//         {
-//           label: labelOption
-//         },
-//         {
-//           label: labelOption
-//         },
-//         {
-//           label: labelOption
-//         }
-//       ]
-//     });
-//   }
-// };
-// const labelOption = {
-//   show: true,
-//   position: app.config.position,
-//   distance: app.config.distance,
-//   align: app.config.align,
-//   verticalAlign: app.config.verticalAlign,
-//   rotate: app.config.rotate,
-//   formatter: '{c}  {name|{a}}',
-//   fontSize: 16,
-//   rich: {
-//     name: {}
-//   }
-// };
-
-// // 处理面积图的实现
-// let base = +new Date(1968, 9, 3);
-// let oneDay = 24 * 3600 * 1000;
-// let date = [];
-// let data = [Math.random() * 300];
-// for (let i = 1; i < 20000; i++) {
-//   var now = new Date((base += oneDay));
-//   date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-//   data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
-// }
-
-// // 各个图表数据的存放
-// onMounted(() => {
-//   // 条形图（各个换电站每月订单）
-//   const barChartInstance = echarts.init(barChart.value);
-//   barChartInstance.setOption({
-//     title: {
-//       text: '每月订单',
-//     },
-//     tooltip: {
-//       trigger: 'axis',
-//       axisPointer: {
-//         type: 'shadow'
-//       }
-//     },
-//     toolbox: {
-//       show: true,
-//       orient: 'vertical',
-//       left: 'right',
-//       top: 'center',
-//       feature: {
-//         mark: { show: true },
-//         dataView: { show: true, readOnly: false },
-//         magicType: { show: true, type: ['line', 'bar', 'stack'] },
-//         restore: { show: true },
-//         saveAsImage: { show: true }
-//       }
-//     },
-//     xAxis: [
-//       {
-//         type: 'category',
-//         axisTick: { show: false },
-//         data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-//       }
-//     ],
-//     yAxis: [
-//       {
-//         type: 'value'
-//       }
-//     ],
-//     series: [
-//       {
-//         name: '换电站1',
-//         type: 'bar',
-//         barGap: 0,
-//         label: labelOption,
-//         emphasis: {
-//           focus: 'series'
-//         },
-//         data: [320, 332, 301, 334, 390, 320, 332, 301, 334, 390, 400, 500]
-//       },
-//       {
-//         name: '换电站2',
-//         type: 'bar',
-//         label: labelOption,
-//         emphasis: {
-//           focus: 'series'
-//         },
-//         data: [220, 182, 191, 234, 290, 220, 182, 191, 234, 290, 114, 180]
-//       },
-//       {
-//         name: '换电站3',
-//         type: 'bar',
-//         label: labelOption,
-//         emphasis: {
-//           focus: 'series'
-//         },
-//         data: [150, 232, 201, 154, 190, 150, 232, 201, 154, 190, 180, 190]
-//       },
-//       {
-//         name: '换电站4',
-//         type: 'bar',
-//         label: labelOption,
-//         emphasis: {
-//           focus: 'series'
-//         },
-//         data: [98, 77, 101, 99, 40, 98, 77, 101, 99, 40, 80, 100]
-//       }
-//     ]
-//   });
-//   // 折线图（本周每日充电总车次）
-//   const lineChartInstance = echarts.init(lineChart.value);
-//   lineChartInstance.setOption({
-//     title: {
-//       text: '本周每日总充电车次',
-//     },
-//     xAxis: {
-//       type: 'category',
-//       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-//     },
-//     yAxis: {
-//       type: 'value'
-//     },
-//     series: [
-//       {
-//         data: [820, 932, 901, 934, 1290, 1330, 1320],
-//         type: 'line',
-//         smooth: true
-//       }
-//     ]
-//   });
-//   // 饼状图（换电站维修订单统计）
-//   const pieChartInstance = echarts.init(pieChart.value);
-//   pieChartInstance.setOption({
-//     title: {
-//       text: '换电站维修订单统计',
-//     },
-//     tooltip: {
-//       trigger: 'item',
-//       formatter: '{a} <br/>{b} : {c} ({d}%)'
-//     },
-//     toolbox: {
-//       show: true,
-//       feature: {
-//         mark: { show: true },
-//         dataView: { show: true, readOnly: false },
-//         restore: { show: true },
-//         saveAsImage: { show: true }
-//       }
-//     },
-//     series: [
-//       {
-//         name: '数据详情',
-//         type: 'pie',
-//         radius: [20, 140],
-
-//         roseType: 'area',
-//         itemStyle: {
-//           borderRadius: 5
-//         },
-//         data: [
-//           { value: 30, name: '换电站1' },
-//           { value: 28, name: '换电站2' },
-//           { value: 26, name: '换电站3' },
-//           { value: 24, name: '换电站4' },
-//         ]
-//       }
-//     ]
-//   });
-//   // 面积图（）
-//   const chartDomInstance = echarts.init(chartDom.value);
-//   chartDomInstance.setOption({
-//     tooltip: {
-//       trigger: 'axis',
-//       position: function (pt) {
-//         return [pt[0], '10%'];
-//       }
-//     },
-//     title: {
-//       left: 'center',
-//       text: '总电量统计'
-//     },
-//     toolbox: {
-//       feature: {
-//         dataZoom: {
-//           yAxisIndex: 'none'
-//         },
-//         restore: {},
-//         saveAsImage: {}
-//       }
-//     },
-//     xAxis: {
-//       type: 'category',
-//       boundaryGap: false,
-//       data: date
-//     },
-//     yAxis: {
-//       type: 'value',
-//       boundaryGap: [0, '100%']
-//     },
-//     dataZoom: [
-//       {
-//         type: 'inside',
-//         start: 0,
-//         end: 10
-//       },
-//       {
-//         start: 0,
-//         end: 10
-//       }
-//     ],
-//     series: [
-//       {
-//         name: 'Fake Data',
-//         type: 'line',
-//         symbol: 'none',
-//         sampling: 'lttb',
-//         itemStyle: {
-//           color: 'rgb(255, 70, 131)'
-//         },
-//         areaStyle: {
-//           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-//             {
-//               offset: 0,
-//               color: 'rgb(255, 158, 68)'
-//             },
-//             {
-//               offset: 1,
-//               color: 'rgb(255, 70, 131)'
-//             }
-//           ])
-//         },
-//         data: data
-//       }
-//     ]
-//   });
-// });
-
 
 </script>
 
@@ -455,7 +474,7 @@ pullData();
 .info-card {
   display: flex;
   gap: 20px;
-  margin: 20px;
+  margin-bottom: 20px;
 }
 
 .info-card-item {
@@ -464,23 +483,33 @@ pullData();
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
 }
 
-.info-card-item:hover {
-  transform: translateY(-5px);
+.chart-card {
+  flex: 1;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
+
 
 .info-card-value {
   font-size: 28px;
   margin: 0;
   color: #35495e;
+  width: fit-content;
+  display: inline;
 }
 
 .info-card-label {
   font-size: 16px;
   color: #8e8e8e;
   margin-top: 5px;
+  display: inline;
+  margin-left: 20px;
 }
 
 .chart-container {
@@ -492,5 +521,27 @@ pullData();
 .chart {
   width: 100%;
   height: 400px;
+}
+
+.up {
+  color: red;
+
+}
+
+.down {
+  color: green;
+
+}
+
+.up::before {
+  content: url(../../assets/up.svg);
+  margin: 0 2px;
+  margin-left: 10px;
+}
+
+.down::before {
+  content: url(../../assets/down.svg);
+  margin: 0 2px;
+  margin-left: 10px;
 }
 </style>

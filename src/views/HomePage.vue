@@ -125,6 +125,7 @@ const logout = () => {
 }
 .content{
   margin-left: 40px;
+  height: 100%;
 }
 .setting-icon:hover,
 .logout-icon:hover {
