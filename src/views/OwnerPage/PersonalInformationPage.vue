@@ -1,5 +1,5 @@
-<template>
-  <div>
+<template >
+  <div v-loading="loadTableData">
     <div class="information_background">
       <div class="username-container">
         <el-avatar
@@ -12,31 +12,33 @@
     </div>
     <div class="information-item-container">
       <div class="information-item">
-        <div class="information-item-left">
-          <h2>个人资料</h2>
-          <div class="information-item-line">
-            <p>姓名：{{ userInfo.user_name }}</p>
-            <p>生日：{{ userInfo.birthday }}</p>
-          </div>
-          <div class="information-item-line">
-            <p>性别：{{ userInfo.gender }}</p>
-            <p>手机号码：{{ userInfo.phone_number }}</p>
-          </div>
-          <div class="information-item-line">
-            <p>家庭住址：{{ userInfo.address }}</p>
-            <p>邮箱：{{ userInfo.email }}</p>
-          </div>
-          <div class="information-item-right">
-            <Text class="edit-button" @click="showEditDialog(userInfo)"
-              >编辑</Text
-            >
+        <div class="information-item-all">
+          <p class="car-information-left-top-text">个人信息</p>
+          <div class="information-item-left">
+            <div class="information-item-line">
+              <p><strong>姓名：</strong>{{ userInfo.user_name }}</p>
+              <p><strong>生日：</strong>{{ userInfo.birthday }}</p>
+              <p><strong>性别：</strong>{{ userInfo.gender }}</p>
+            </div>
+            <div class="information-item-line">
+              <p><strong>家庭住址：</strong>{{ userInfo.address }}</p>
+              <p><strong>手机号码：</strong>{{ userInfo.phone_number }}</p>
+              <p><strong>邮箱：</strong>{{ userInfo.email }}</p>
+            </div>
+            <div class="information-item-right">
+              <Text class="edit-button" @click="showEditDialog(userInfo)"
+                >编辑</Text
+              >
+            </div>
           </div>
         </div>
       </div>
       <div class="car-information">
         <div class="car-information-left">
           <div class="car-information-left-top">
-            <p class="car-information-left-top-text">蔚来</p>
+            <p class="car-information-left-top-text">
+              {{ car_information.vehicle_model }}
+            </p>
             <el-select v-model="selectedPlateNumber" placeholder="选择车牌号">
               <el-option
                 v-for="plate in plateNumbers"
@@ -47,14 +49,19 @@
             </el-select>
             <el-button @click="fetchvehicle_id">切换</el-button>
           </div>
-          <img :src="car_information.snip" class="car_informationjpg" alt="" v-if="showCarInformation"/>
+          <img
+            :src="car_information.snip"
+            class="car_informationjpg"
+            alt=""
+            v-if="showCarInformation"
+          />
           <div class="car-information-left-bottom" v-if="showCarInformation">
             <div class="information-item-line-other1">
-              <p>行驶里程数：{{ car_information.mileage }}(单位：Km)</p>
+              <p><strong>行驶里程数：</strong>{{ car_information.mileage }}(单位：Km)</p>
             </div>
             <div class="information-item-line-other2">
               <p>
-                剩余电量：{{
+                <strong>剩余电量：</strong>{{
                   formatScientificToPercentage(
                     car_information.current_capacity
                   )
@@ -62,32 +69,32 @@
               </p>
             </div>
             <div class="information-item-line-other3">
-              <p>温度：{{ car_information.temperature }}°C</p>
+              <p><strong>温度：</strong>{{ car_information.temperature }}°C</p>
             </div>
           </div>
         </div>
         <div class="car-information-right">
-          <div>
-            <p class="car-information-right-title">车辆详情信息</p>
-          </div>
           <div class="car-information-right-item" v-if="showCarInformation">
-            <div class="information-item-line">
-              <p>型号：{{ car_information.vehicle_model }}</p>
-            </div>
-            <div class="information-item-line">
-              <p>保修期限：{{ car_information.warrange }}</p>
-            </div>
-            <div class="information-item-line">
-              <p>电池id：{{ car_information.battery_id }}</p>
-            </div>
-            <div class="information-item-line">
-              <p>购入时间：{{ car_information.purchase_date }}</p>
-            </div>
-            <div class="information-item-line">
-              <p>发动机：{{ car_information.transmission }}</p>
-            </div>
-            <div class="information-item-line">
-              <p>最高时速：{{ car_information.mileage }}</p>
+            <p class="car-information-left-top-text">车辆详情信息</p>
+            <div class="information-item-line-right-all">
+              <div class="information-item-line-right">
+                <p><strong>型号：</strong>{{ car_information.vehicle_model }}</p>
+              </div>
+              <div class="information-item-line-right">
+                <p><strong>保修期限：</strong>{{ car_information.warrange }}</p>
+              </div>
+              <div class="information-item-line-right">
+                <p><strong>电池id：</strong>{{ car_information.battery_id }}</p>
+              </div>
+              <div class="information-item-line-right">
+                <p><strong>购入时间：</strong>{{ car_information.purchase_date }}</p>
+              </div>
+              <div class="information-item-line-right">
+                <p><strong>发动机：</strong>{{ car_information.transmission }}</p>
+              </div>
+              <div class="information-item-line-right">
+                <p><strong>最高时速：</strong>{{ car_information.mileage }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -136,7 +143,8 @@ import cmRequest from "../../service/index.js";
 import { ElMessage } from "element-plus";
 
 const storedUserInfo = JSON.parse(localStorage.getItem("user_id")); //获取用户ID
-const user_name = ref(localStorage.getItem('username'));
+const user_name = ref(localStorage.getItem("username"));
+const loadTableData = ref(false);
 
 const showCarInformation = ref(false); // 初始时隐藏内容
 
@@ -295,6 +303,7 @@ const car_information = reactive({
 });
 
 const fetchvehicle_id = () => {
+  loadTableData.value = true;
   cmRequest
     .request({
       url: "api/owner/repair_reservation/car_information",
@@ -311,7 +320,7 @@ const fetchvehicle_id = () => {
         car_information.current_capacity = res.data.current_capacity;
         car_information.battery_id = res.data.battery_id;
         car_information.purchase_date = res.data.purchase_date;
-        car_information.snip= 'data:image/png;base64,'+ res.data.snip;
+        car_information.snip = "data:image/png;base64," + res.data.snip;
         car_information.mileage = res.data.mileage;
         car_information.max_speed = res.data.max_speed;
         car_information.transmission = res.data.transmission;
@@ -319,11 +328,13 @@ const fetchvehicle_id = () => {
         car_information.warrange = res.data.warrange;
         car_information.temperature = res.data.temperature;
         showCarInformation.value = true;
+        loadTableData.value = false;
       } else {
         ElMessage({
           type: "error",
           message: "未找到信息",
         });
+        loadTableData.value = false;
       }
     })
     .catch((error) => {
@@ -332,6 +343,7 @@ const fetchvehicle_id = () => {
         type: "error",
         message: "获取信息失败，请稍后再试",
       });
+      loadTableData.value = false;
     });
 };
 
@@ -347,26 +359,23 @@ function formatScientificToPercentage(scientificNotation) {
 }
 
 const start = () => {
-
   fetchPlateNumbers(); // 获取车牌号列表
 
   setTimeout(() => {
     fetchvehicle_id();
-  }, 500); 
+  }, 1000); // 1秒
 };
 
 // 在查询用户信息之前调用获取车牌号列表的函数
 start(); // 获取车牌号列表
 
-
 queryData(); // 在组件加载时获取用户信息
-
 </script>
 
 <style scoped>
 .information_background {
   width: 1235px;
-  height: 400px;
+  height: 200px;
   border-radius: 15.000000953674316px;
   margin-left: -40px;
   margin-top: -10px;
@@ -379,23 +388,23 @@ queryData(); // 在组件加载时获取用户信息
 
 .username-container {
   display: flex;
-  margin-top: 340px;
+  margin-top: 140px;
   margin-left: 120px;
   z-index: 1;
 }
 
-.username{
-  font-size:26px;
+.username {
+  font-size: 26px;
   color: #fff; /* 设置文本颜色为蓝色 */
   font-weight: bold; /* 设置文本为加粗 */
-  margin-left:10px ;
+  margin-left: 10px;
 }
 
-.userid{
-  font-size:15px;
+.userid {
+  font-size: 17px;
   color: #fff; /* 设置文本颜色为蓝色 */
-  margin-left:60px ;
-  margin-top:40px ;
+  margin-left: 60px;
+  margin-top: 38px;
 }
 
 .information-item-container {
@@ -409,15 +418,19 @@ queryData(); // 在组件加载时获取用户信息
   height: 280px;
   border-radius: 15.000000953674316px;
   background-color: #fff;
-  display: flex;
   align-items: center;
   position: relative;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 修改阴影效果 */
 }
 
+.information-item-all {
+  margin-top: 50px;
+  margin-left: 40px;
+}
+
 .information-item-left {
-  padding: 20px;
-  flex: 0.9; /* 占据剩余空间 */
+  display: flex;
+  margin-top: -20px;
 }
 
 .edit-button {
@@ -426,16 +439,19 @@ queryData(); // 在组件加载时获取用户信息
   right: 0;
   margin: 20px;
   color: #4fd1c5;
+  cursor: pointer; /* 设置光标样式为小手 */
 }
 
 .information-item-line {
-  display: flex;
-  justify-content: space-between;
+  width: 450px;
+  height: 250px;
   font-size: 20px;
 }
 
 .information-item-line-other1 {
   display: flex;
+  align-items: center;
+  flex-direction: row;
   justify-content: space-between;
   font-size: 20px;
 }
@@ -453,12 +469,13 @@ queryData(); // 在组件加载时获取用户信息
 }
 
 .information-item-line-other1 p::before {
+  align-items: center;
   content: "";
   display: inline-block;
   width: 24px; /* 设置图表图片的宽度 */
   height: 24px; /* 设置图表图片的高度 */
   margin-right: 5px; /* 可以根据需要调整图片与文本之间的间距 */
-  background-image: url("@/assets/bar-chart.png"); /* 图表图片的路径 */
+  background-image: url("@/assets/bar-chart.svg"); /* 图表图片的路径 */
   background-size: contain; /* 图片适应容器大小 */
   background-repeat: no-repeat;
 }
@@ -469,7 +486,7 @@ queryData(); // 在组件加载时获取用户信息
   width: 24px; /* 设置图表图片的宽度 */
   height: 24px; /* 设置图表图片的高度 */
   margin-right: 5px; /* 可以根据需要调整图片与文本之间的间距 */
-  background-image: url("@/assets/battery-half.png"); /* 图表图片的路径 */
+  background-image: url("@/assets/battery-half.svg"); /* 图表图片的路径 */
   background-size: contain; /* 图片适应容器大小 */
   background-repeat: no-repeat;
 }
@@ -480,7 +497,7 @@ queryData(); // 在组件加载时获取用户信息
   width: 24px; /* 设置图表图片的宽度 */
   height: 24px; /* 设置图表图片的高度 */
   margin-right: 5px; /* 可以根据需要调整图片与文本之间的间距 */
-  background-image: url("@/assets/Vector.png"); /* 图表图片的路径 */
+  background-image: url("@/assets/thermometer.svg"); /* 图表图片的路径 */
   background-size: contain; /* 图片适应容器大小 */
   background-repeat: no-repeat;
 }
@@ -494,7 +511,7 @@ queryData(); // 在组件加载时获取用户信息
 
 .car-information-left {
   background-color: #fff;
-  width: 520px;
+  width: 540px;
   height: 550px;
   border-radius: 15.000000953674316px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 修改阴影效果 */
@@ -503,11 +520,11 @@ queryData(); // 在组件加载时获取用户信息
 
 .car-information-right {
   background-color: #fff;
-  width: 520px;
+  width: 540px;
   height: 550px;
   border-radius: 15.000000953674316px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 修改阴影效果 */
-  margin-left: 65px;
+  margin-left: 25px;
 }
 
 .car-information-left-top {
@@ -516,10 +533,12 @@ queryData(); // 在组件加载时获取用户信息
 }
 
 .car-information-left-top-text {
+  font-weight: bold;
+  width: 200px;
   color: #4fd1c5;
   font-size: 30px;
   margin-top: -5px;
-  margin-right: 80px;
+  margin-right: 20px;
 }
 
 .car-information-right-title {
@@ -528,12 +547,13 @@ queryData(); // 在组件加载时获取用户信息
 }
 
 .car-information-right-item {
-  margin: 40px;
+  margin-top: 30px;
+  margin-left: 50px;
 }
 
 .car-information-left-bottom {
-  margin-left:50px ;
-  margin-top:37px ;
+  margin-left: 50px;
+  margin-top: 37px;
 }
 
 .extra-large-avatar {
@@ -541,11 +561,21 @@ queryData(); // 在组件加载时获取用户信息
   height: 80px; /* 设置更大的高度 */
 }
 
-.car_informationjpg{
+.car_informationjpg {
   width: 400px; /* 设置更大的宽度 */
   height: 200px; /* 设置更大的高度 */
-  margin-left:50px ;
-  margin-top:-50px ;
+  margin-left: 50px;
+  margin-top: -50px;
+}
+
+.information-item-line-right-all{
+  margin-top: 70px;
+}
+
+.information-item-line-right {
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
 }
 </style>
 
