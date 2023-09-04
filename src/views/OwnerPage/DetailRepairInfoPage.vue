@@ -1,19 +1,16 @@
 <template>
-  <div class="page-container">
-    <el-page-header @back="goBack">
-      <template #content>
-        <span class="text-large font-600 mr-3 custom-text"> 维修订单详情 </span>
-      </template>
-    </el-page-header>
-  </div>
-
   <div class="card-container" v-loading="loading">
     <el-card shadow="always">
       <template #header>
         <div class="card-header">
-          <span class="header-name">
-            {{ repairItem.title }}
-          </span>
+          <span class="header-name">{{ repairItem.title }}</span>
+          <div class="back-button" @click="goBack" style="cursor: pointer;">
+            <el-icon style="font-size: 1.1em; margin-right: 0.7em; vertical-align: middle;">
+              <Back />
+            </el-icon>
+            <el-button type="text" style="font-size: 1.1em; vertical-align: middle;margin-right: 1.4em;">返回</el-button>
+          </div>
+
         </div>
       </template>
       <div class="card-content">
@@ -27,15 +24,17 @@
         </div>
         <div class="detail-item">
           <template v-if="isEditing">
-            <el-col :span="4"><span :style="{ fontSize: '1.3em' }">预约地点:</span></el-col>
-            <el-col :span="16">
-              <el-input v-model="repairItem.maintenance_location"
-                />
-            </el-col>
-            <el-col :span="4">
-              <el-button type="primary"  @click="openMapDia = true">
-                {{ '地图选点' }}</el-button>
-            </el-col>
+            <div class="flex-container">
+              <div class="flex-item">
+                <span style="fontSize: '1.2em'; font-weight: bold">预约地点：</span>
+              </div>
+              <div class="flex-item flex-input">
+                <el-input v-model="changeItem.maintenance_location" />
+              </div>
+              <div class="flex-item">
+                <el-button type="primary" @click="openMapDia = true">{{ '地图选点' }}</el-button>
+              </div>
+            </div>
           </template>
 
           <template v-else>
@@ -46,10 +45,14 @@
 
         <div class="detail-item">
           <template v-if="isEditing">
-            <el-col :span="4"><span :style="{ fontSize: '1.3em' }">预约时间：</span></el-col>
-            <el-col :span="20">
-              <el-date-picker v-model="repairItem.appoint_time" type="datetime" placeholder="选择日期和时间" value-format="YYYY-MM-DD HH:mm:ss"/>
-            </el-col>
+            <div class="flex-container">
+              <div class="flex-item">
+                <span style="fontSize: '1.2em'; font-weight: bold">预约时间：</span>
+              </div>
+              <div class="flex-item flex-input">
+                <el-date-picker v-model="changeItem.appoint_time" type="datetime" placeholder="选择日期和时间" value-format="YYYY-MM-DD HH:mm:ss" />
+              </div>
+            </div>
           </template>
           <template v-else>
             <span class="label">预约时间：</span>
@@ -86,10 +89,10 @@
         <div class="detail-item">
           <span class="label">订单备注：</span>
           <template v-if="isEditing">
-            <el-input v-model="repairItem.remarks" :rows="4" type="textarea" placeholder="订单备注" />
+            <el-input v-model="changeItem.remarks" :rows="4" type="textarea" placeholder="订单备注" />
           </template>
 
-          <template v-else>  
+          <template v-else>
             <span>{{ repairItem.remarks }}</span>
           </template>
         </div>
@@ -101,32 +104,36 @@
         </div>
 
         <div class="detail-item">
-          <div class="label">评分：</div>
-          <template v-if="disableShow">
-            <el-rate v-model="repairItem.score" disabled :show-score="true" text-color="#ff9900"
-               />
-          </template>
+          <!-- <div class="label">评分：<span v-show="repairItem.order_status === '待评分'||repairItem.order_status === '已完成'">{{ repairItem.score }}</span></div> -->
+          <div class="label">评分</div>
+          <div v-if="repairItem.order_status === '待接单' || repairItem.order_status === '待完成'">
+            订单未完成，暂不能评分
+          </div>
+          <div v-else-if="repairItem.order_status === '已完成'">
+            <el-rate v-model="repairItem.score" disabled :show-score="true" text-color="#ff9900" />
+          </div>
           <template v-else>
-            <el-rate v-model="repairItem.score" :disabled="disableInput" allow-half />
+            <el-rate v-model="changeItem.score" :disabled="disableInput" allow-half />
           </template>
+
         </div>
 
         <!-- 评价框 -->
         <template v-if="disableShow">
           <div class="label">评价：</div>
-          <div class="readonly-evaluation">{{ repairItem.evaluations }}</div>
+          <el-input disabled :placeholder="repairItem.evaluations">{{ repairItem.evaluations }}</el-input>
         </template>
         <template v-else>
           <div class="label">评价：</div>
-          <el-input v-model="repairItem.evaluations" type="textarea" rows="4"
+          <el-input v-model="changeItem.evaluations" type="textarea" rows="4"
             :placeholder="disableInput ? '订单未完成，不可评价' : '请输入您的评价'" :disabled="disableInput" />
         </template>
 
         <div class="button-container">
           <el-button v-if="disableInput3" type="primary" @click="submitComment" :disabled="disableInput">提交评价</el-button>
           <el-button v-else type="primary" @click="handleChange">{{ isEditing ? '完成修改' : '修改订单' }}</el-button>
-          <div class="button-space"></div> <!-- 添加一个用于间隔的空白元素 -->
-          <el-button type="danger" @click="cancelItem" :disabled="disableInput2">取消订单</el-button>
+          <el-button v-show="showCancelChangeButton" type="warning" @click="cancelChangeButton">取消修改</el-button>
+          <el-button v-show="!showCancelChangeButton" type="danger" @click="cancelItem" :disabled="disableInput2">取消订单</el-button>
         </div>
 
 
@@ -137,7 +144,7 @@
             <div id="myMap" style="width:100%;height:300px"></div>
           </div>
           <div class="address">
-            {{ "当前地址：" + repairItem.maintenance_location }}
+            {{ "当前地址：" + changeItem.maintenance_location }}
           </div>
           <div class="button-wrapper">
             <el-button type="primary" @click="openMapDia = false">确定</el-button>
@@ -154,6 +161,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex';
+import { Back } from '@element-plus/icons-vue';
 
 // import { RefreshRight, Edit, Delete } from '@element-plus/icons-vue';
 
@@ -206,7 +214,7 @@ const repairItem = reactive({
   appoint_time: '',
   maintenance_location: '',
   longitude: 0,
-  latitude: 0
+  latitude: 0,
 })
 
 const goBack = () => {
@@ -220,13 +228,43 @@ const disableInput2 = computed(() => {
   return repairItem.order_status === '待接单' ? false : true;
 })
 const disableInput3 = computed(() => {
-  return repairItem.order_status === '待评分'||repairItem.order_status === '已完成' ? true : false;
+  return repairItem.order_status === '待评分' || repairItem.order_status === '已完成' ? true : false;
 })
 const disableShow = computed(() => {
   return repairItem.order_status === '已完成' ? true : false;
 })
 
+const changeItem = ref({
+  remarks: repairItem.remarks,
+  appoint_time: repairItem.appoint_time,
+  maintenance_location: repairItem.maintenance_location,
+  longitude: repairItem.longitude,
+  latitude: repairItem.latitude,
+  evaluations: repairItem.evaluations,
+  score: repairItem.score
+})
+
+const cancelChange = () => {
+  changeItem.value.remarks = repairItem.remarks;
+  changeItem.value.appoint_time = repairItem.appoint_time;
+  changeItem.value.maintenance_location = repairItem.maintenance_location;
+  changeItem.value.longitude = repairItem.longitude;
+  changeItem.value.latitude = repairItem.latitude;
+  changeItem.value.evaluations = repairItem.evaluations;
+  changeItem.value.score =  repairItem.score;
+}
+
+const cancelChangeButton = () => {
+  cancelChange();
+  getDetailedData();
+  isEditing.value=!isEditing.value;
+  showCancelChangeButton.value = !showCancelChangeButton.value;
+}
+
+const showCancelChangeButton = ref(false);
+
 const handleChange = () => {
+  showCancelChangeButton.value = true;
   isEditing.value = !isEditing.value;
   if (!isEditing.value) {
     // 在点击“完成修改”按钮后执行的逻辑
@@ -238,8 +276,8 @@ const mapOpen = () => {
   const BMap = window.BMap;
   var map = new BMap.Map("myMap");
   console.log("map open");
-  var point = new BMap.Point(repairItem.longitude, repairItem.latitude)
-  map.centerAndZoom(new BMap.Point(repairItem.longitude, repairItem.latitude), 12);
+  var point = new BMap.Point(changeItem.value.longitude, changeItem.value.latitude)
+  map.centerAndZoom(new BMap.Point(changeItem.value.longitude, changeItem.value.latitude), 12);
   map.enableScrollWheelZoom(true);
   var geoc = new BMap.Geocoder();
   var marker = new BMap.Marker(point);
@@ -248,7 +286,7 @@ const mapOpen = () => {
   map.addEventListener("click", (e) => {
     var pt = e.point;
     geoc.getLocation(pt, (rs) => {
-      repairItem.maintenance_location = rs.address
+      changeItem.value.maintenance_location = rs.address
       console.log(rs.address);
     });
     map.removeOverlay(marker);
@@ -260,10 +298,10 @@ const mapOpen = () => {
     //lz
     console.log("lng:", point.lng);
     console.log("lat:", point.lat);
-    repairItem.longitude = point.lng;
-    repairItem.latitude = point.lat;
-    console.log("up lo:", repairItem.longitude);
-    console.log("up lo:", repairItem.latitude);
+    changeItem.value.longitude = point.lng;
+    changeItem.value.latitude = point.lat;
+    console.log("up lo:", changeItem.value.longitude);
+    console.log("up lo:", changeItem.value.latitude);
   });
 
 }
@@ -296,6 +334,7 @@ const getDetailedData = () => {
       //repairItem.phone_number = res.data.phone_number;
       
       /* 新版 */
+      repairItem.name = '';
       for(let i =0;i<res.data.ep_data.length;i++)
       {
         repairItem.name += res.data.ep_data[i].name + '(' + res.data.ep_data[i].phone_number + ')  ';
@@ -306,8 +345,10 @@ const getDetailedData = () => {
       repairItem.evaluations = res.data.evaluations;
       repairItem.appoint_time = res.data.appoint_time;
       repairItem.maintenance_location = res.data.maintenance_location;
-      repairItem.longitude = res.data.longtitude;
+      repairItem.longitude = res.data.longitude;
       repairItem.latitude = res.data.latitude;
+      //repairItem.name = res.data.ep_data[0].name + '  ' + res.data.ep_data[0].phone_number;
+      cancelChange();
     }
     else {
       ElMessage({
@@ -317,34 +358,38 @@ const getDetailedData = () => {
     }
     loading.value = false;
   })
-  
+
 }
 getDetailedData();
 
-const submitChange=()=>{
+const submitChange = () => {
+  loading.value = true;
   cmRequest.request({
     url: 'api/owner/repair_reservation/update',
     method: 'PATCH',
     data: {
-      maintenance_item_id: (repairItem.maintenance_item_id).toString(),
-      remarks : repairItem.remarks,
-      appoint_time : repairItem.appoint_time,
-      maintenance_location : repairItem.maintenance_location,
-      longitude : repairItem.longitude,
-      latitude : repairItem.latitude
+      maintenance_item_id: repairItem.maintenance_item_id.toString(),
+      remarks: changeItem.value.remarks,
+      appoint_time: changeItem.value.appoint_time,
+      maintenance_location: changeItem.value.maintenance_location,
+      longitude: changeItem.value.longitude,
+      latitude: changeItem.value.latitude
     }
   }).then((res) => {
     if (!res.code) {
       ElMessage({
-          type: 'success',
-          message: '修改订单成功',
-        })
+        type: 'success',
+        message: '修改订单成功',
+      })
+      getDetailedData();
+      loading.value = false;
     }
     else {
       ElMessage({
         type: 'error',
         message: '修改订单失败'
       })
+      loading.value = false;
     }
   })
 }
@@ -391,13 +436,14 @@ const cancelItem = () => {
 }
 
 const submitComment = () => {
+  loading.value = true;
   cmRequest.request({
     url: 'api/owner/repair_reservation/update',
     method: 'PATCH',
     data: {
-      maintenance_item_id: (repairItem.maintenance_item_id).toString(),
-      evaluations: repairItem.evaluations,
-      score:repairItem.score
+      maintenance_item_id: repairItem.maintenance_item_id,
+      evaluations: changeItem.value.evaluations,
+      score: changeItem.value.score
     }
   }).then((res) => {
     if (!res.code) {
@@ -405,12 +451,15 @@ const submitComment = () => {
         type: 'success',
         message: '评价添加成功',
       })
+      getDetailedData();
+      loading.value = false;
     }
     else {
       ElMessage({
         type: 'error',
         message: '评价添加失败',
       })
+      loading.value = false;
     }
   })
 }
@@ -430,6 +479,7 @@ const submitComment = () => {
 }
 
 .header-name {
+  flex: 1;
   font-size: 1.6em;
   margin-bottom: 7px;
 }
@@ -440,8 +490,10 @@ const submitComment = () => {
 }
 
 .card-container {
-  margin-top: 20px;
-  /* 控制卡片容器上边距 */
+  margin-top: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 .card-content {
@@ -452,15 +504,20 @@ const submitComment = () => {
   margin-bottom: 1.5em;
 }
 
+.detail-item span {
+  font-size: 1.2em;
+}
+
 .label {
   font-weight: bold;
   margin-bottom: 10px;
+  font-size: 1.2em;
 }
 
 .button-container {
-  margin-bottom: 5em;
+  margin-bottom: 1em;
   display: flex;
-  margin-top: 30px;
+  margin-top: 1em;
 }
 
 /* 用于间隔按钮的空白元素样式 */
@@ -475,17 +532,37 @@ const submitComment = () => {
 }
 
 .readonly-evaluation {
-    /* 样式用于只读的文本内容 */
-    /* 可以添加样式来适配你的设计 */
-    color: #333;
-    padding: 6px 10px;
-    border: 1px solid #ddd;
-    background-color: #f5f5f5;
-  }
+  /* 样式用于只读的文本内容 */
+  /* 可以添加样式来适配你的设计 */
+  color: #333;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  background-color: #f5f5f5;
+}
 
 .button-wrapper {
   display: flex;
   justify-content: flex-end;
   margin-top: 10px;
 }
-</style>
+
+.flex-container {
+  display: flex;
+  /*justify-content: space-between;*/
+  /* 在元素之间均匀分布空间 */
+  align-items: center;
+  /* 垂直居中对齐元素 */
+  gap: 1em;
+  /* 元素之间的水平间距，根据需要调整 */
+}
+
+.flex-item {
+  /*flex: 1;*/
+  display: flex;
+  align-items: center;
+}
+
+.flex-input {
+  flex: 2;
+  /* 更大的flex值，分配更多剩余空间给输入框 */
+}</style>
