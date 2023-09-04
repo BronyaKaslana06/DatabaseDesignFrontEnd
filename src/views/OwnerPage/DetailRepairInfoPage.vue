@@ -86,7 +86,7 @@
         <div class="detail-item">
           <span class="label">订单备注：</span>
           <template v-if="isEditing">
-            <el-input v-model="repairItem.remarks" :rows="4" type="textarea" placeholder="repairItem.remarks" />
+            <el-input v-model="repairItem.remarks" :rows="4" type="textarea" placeholder="订单备注" />
           </template>
 
           <template v-else>  

@@ -89,7 +89,7 @@ const submitForm = () => {
                 localStorage.setItem('station_id', msg.data.station_id);
             }
             else if (identity == 2){
-                localStorage.setItem('username', '管理员');
+                localStorage.setItem('username', '管理员' + msg.data.user_id);
                 router.push('/admin-dashboard-page')
             }
         }

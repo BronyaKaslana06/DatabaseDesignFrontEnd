@@ -159,6 +159,7 @@ const queryData = () => {
           type: "error",
           message: "未找到内容",
         });
+        load();
       }
     })
     .catch((error) => {
@@ -167,6 +168,7 @@ const queryData = () => {
         type: "error",
         message: "获取数据失败，请稍后再试",
       });
+      load();
     });
   console.log(loading.value)
 };
