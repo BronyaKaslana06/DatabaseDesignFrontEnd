@@ -81,6 +81,7 @@ const submitForm = () => {
             localStorage.setItem('user_type', identity);
             localStorage.setItem('user_id', msg.data.user_id);
             localStorage.setItem('username', msg.data.username);
+            localStorage.setItem('token', msg.token);
             if (identity == 0)
                 router.push('/ownerDashboard');
             else if (identity == 1) {

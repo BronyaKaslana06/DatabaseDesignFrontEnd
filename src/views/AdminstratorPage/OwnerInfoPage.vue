@@ -212,7 +212,7 @@ const pullData = () => {
         message: '刷新成功',
       })
       tableData.value = res.data;
-      pageTotal = parseInt(res.pageTotal);
+      pageTotal = parseInt(res.totalData);
     }
     else{
       ElMessage({

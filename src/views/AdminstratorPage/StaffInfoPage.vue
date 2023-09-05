@@ -226,11 +226,10 @@
         })
       }
     })
-
     cmRequest.request({
       url: 'api/Account/GetTest',
     }).then((res)=>{
-      
+
     })
   }
   pullData();
