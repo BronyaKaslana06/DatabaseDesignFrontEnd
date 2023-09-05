@@ -5,7 +5,10 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="标题">
-              <el-input v-model="searchFormData.title" class="input-box"></el-input>
+              <el-input
+                v-model="searchFormData.title"
+                class="input-box"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -13,13 +16,20 @@
               <el-input v-model="searchFormData.publisher" class="input-box"></el-input>
             </el-form-item> -->
             <el-form-item label="发布内容">
-              <el-input v-model="searchFormData.contents" class="input-box"></el-input>
+              <el-input
+                v-model="searchFormData.contents"
+                class="input-box"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="发布时间">
-              <el-date-picker v-model="searchFormData.publish_time" type="date" placeholder="选择日期"
-                style="width: 100%"></el-date-picker>
+              <el-date-picker
+                v-model="searchFormData.publish_time"
+                type="date"
+                placeholder="选择日期"
+                style="width: 100%"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
@@ -43,13 +53,21 @@
   <div class="down-block">
     <div class="inner-block2">
       <div class="top-right">
-        <div class="maintenance-title">
-          信息公告
-        </div>
+        <div class="maintenance-title">信息公告</div>
       </div>
-      <div class="infinite-list-wrapper" style="overflow:auto flex:1;" v-loading="loading">
+      <div
+        class="infinite-list-wrapper"
+        style="overflow:auto flex:1;"
+        v-loading="loading"
+      >
         <ul class="list" :infinite-scroll-disabled="disabled">
-          <li v-for="announcement in announcementArray" :key="announcement.announcement_id" class="list-item" style="cursor: pointer;" @click="openPopup(announcement)">
+          <li
+            v-for="announcement in announcementArray"
+            :key="announcement.announcement_id"
+            class="list-item"
+            style="cursor: pointer"
+            @click="openPopup(announcement)"
+          >
             <div class="list-item-content">
               <div class="list-item-image">
                 <img src="@/assets/notice.png" alt="Image" />
@@ -58,17 +76,48 @@
                 <div>
                   <span class="title">{{ announcement.title }}</span>
                   <span>
-                    {{ "发布时间：" + announcement.publish_time.replace(/T/g, '&nbsp;&nbsp;&nbsp;') }}</span>
+                    {{
+                      "发布时间：" +
+                      announcement.publish_time
+                        .replace(/T/g, "&nbsp;&nbsp;&nbsp;")
+                        .slice(0, 21)
+                    }}</span
+                  >
                 </div>
-                <div style="display: inline-block; margin-top: 0.4em;">
+                <div style="display: inline-block; margin-top: 0.4em">
                   <span
-                    style="font-size: 14px;background-color: #2d79dd;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
-                    {{ "发布人：管理员" + announcement.publisher }}</span>
+                    style="
+                      font-size: 14px;
+                      background-color: #2d79dd;
+                      border-radius: 10px;
+                      color: white;
+                      padding: 2px 10px;
+                      margin-right: 20px;
+                    "
+                  >
+                    {{ "发布人：管理员" + announcement.publisher }}</span
+                  >
                   <span
-                    style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
-                    {{ "发布对象：" + (announcement.publish_pos===2?"车主用户":(announcement.publish_pos===1?"员工":"未知")) }}</span>
+                    style="
+                      font-size: 14px;
+                      background-color: #f5a74de7;
+                      border-radius: 10px;
+                      color: white;
+                      padding: 2px 10px;
+                      margin-right: 20px;
+                    "
+                  >
+                    {{
+                      "发布对象：" +
+                      (announcement.publish_pos === 2
+                        ? "车主用户"
+                        : announcement.publish_pos === 1
+                        ? "员工"
+                        : "未知")
+                    }}</span
+                  >
                 </div>
-                <div style="margin-top: 0.4em;">
+                <div style="margin-top: 0.4em">
                   {{ somecontents(announcement.contents) }}......
                 </div>
               </div>
@@ -86,25 +135,41 @@
   <!-- 原始的公告展示内容从这里结束 -->
 
   <!-- 弹窗 -->
-  <el-dialog v-model="showPopup" title="公告内容" width="55%" @update:visible="closePopup">
+  <el-dialog
+    v-model="showPopup"
+    title="公告内容"
+    width="55%"
+    @update:visible="closePopup"
+  >
     <template #header>
       <div class="my-header">
-        <h4 style="margin-top: 1em;margin-bottom: 1em;">{{ popupNotice.title }}</h4>
+        <h4 style="margin-top: 1em; margin-bottom: 1em">
+          {{ popupNotice.title }}
+        </h4>
         <div class="popup-details">
-          <div style="margin-bottom: 0.5em;">
-            <span class="gray-text" style="margin-right: 1em;">{{ "发布人：管理员" + popupNotice.publisher }}</span>
-          <span class="gray-text">{{ "发布对象：" + (popupNotice.publish_pos === 2 ? "车主用户" : (popupNotice.publish_pos === 1 ? "员工" : "未知")) }}</span>
+          <div style="margin-bottom: 0.5em">
+            <span class="gray-text" style="margin-right: 1em">{{
+              "发布人：管理员" + popupNotice.publisher
+            }}</span>
+            <span class="gray-text">{{
+              "发布对象：" +
+              (popupNotice.publish_pos === 2
+                ? "车主用户"
+                : popupNotice.publish_pos === 1
+                ? "员工"
+                : "未知")
+            }}</span>
           </div>
-          <span class="gray-text">发布时间：{{ deletetime(popupNotice.publish_time) }}</span>
+          <span class="gray-text"
+            >发布时间：{{ deletetime(popupNotice.publish_time) }}</span
+          >
         </div>
       </div>
     </template>
     <div class="announcement-content">{{ popupContent }}</div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="showPopup = false">
-          确定
-        </el-button>
+        <el-button type="primary" @click="showPopup = false"> 确定 </el-button>
       </span>
     </template>
   </el-dialog>
@@ -114,21 +179,20 @@
 import { ref, onMounted, reactive } from "vue";
 import cmRequest from "../../service/index.js";
 import { ElMessage } from "element-plus";
-import { ElLoading } from 'element-plus'
+import { ElLoading } from "element-plus";
 import { Loading } from "element-plus/es/components/loading/src/service";
-import { computed } from 'vue'
-import { Document } from '@element-plus/icons-vue';
+import { computed } from "vue";
+import { Document } from "@element-plus/icons-vue";
 
 const announcementArray = ref([]);
 const loading = ref(true);
-const count = ref(4)
-const noMore = computed(() => count.value >= announcementArray.value.length)
-const disabled = computed(() => loading.value || noMore.value)
+const count = ref(4);
+const noMore = computed(() => count.value >= announcementArray.value.length);
+const disabled = computed(() => loading.value || noMore.value);
 
 const load = () => {
-  loading.value = false
-}
-
+  loading.value = false;
+};
 
 const searchFormData = reactive({
   title: "",
@@ -141,10 +205,9 @@ const searchFormData = reactive({
 const queryData = () => {
   //console.log(parseInt(localStorage.getItem('user_type')));
   let pos = 3;
-  if(localStorage.getItem('user_type') === '0'){
+  if (localStorage.getItem("user_type") === "0") {
     pos = 2;
-  }
-  else if(localStorage.getItem('user_type') === '1'){
+  } else if (localStorage.getItem("user_type") === "1") {
     pos = 1;
   }
   const queryParams = {
@@ -152,7 +215,7 @@ const queryData = () => {
     publisher: "",
     publish_pos: pos,
     contents: "",
-    publish_time: ""
+    publish_time: "",
   };
   cmRequest
     .request({
@@ -179,7 +242,7 @@ const queryData = () => {
       });
       load();
     });
-  console.log(loading.value)
+  console.log(loading.value);
 };
 
 onMounted(() => {
@@ -187,16 +250,15 @@ onMounted(() => {
 });
 
 const resetSearch = () => {
-  searchFormData.title = '';
-  searchFormData.publisher = '';
-  searchFormData.publish_time = '';
-  searchFormData.publish_pos = '';
-  searchFormData.contents = '';
+  searchFormData.title = "";
+  searchFormData.publisher = "";
+  searchFormData.publish_time = "";
+  searchFormData.publish_pos = "";
+  searchFormData.contents = "";
   queryData();
-}
+};
 
 const formatDate = (dateString) => {
-
   if (dateString === "") {
     return "";
   }
@@ -215,11 +277,10 @@ const somecontents = (dateString) => {
   if (dateString === null) {
     return "";
   }
-  return dateString.slice(0, 80);
+  return dateString.slice(0, 50);
 };
 
 const deletetime = (dateString) => {
-
   if (dateString === "") {
     return "";
   }
@@ -227,15 +288,13 @@ const deletetime = (dateString) => {
     return "";
   }
   return dateString.slice(0, 10);
-
 };
 
 const searchData = () => {
   let pos = 3;
-  if(localStorage.getItem('user_type') === '0'){
+  if (localStorage.getItem("user_type") === "0") {
     pos = 2;
-  }
-  else if(localStorage.getItem('user_type') === '1'){
+  } else if (localStorage.getItem("user_type") === "1") {
     pos = 1;
   }
   // 根据输入的数据准备搜索参数
@@ -272,7 +331,6 @@ const searchData = () => {
         message: "获取数据失败，请稍后再试",
       });
     });
-
 };
 
 // 响应式变量用于控制弹窗显示与隐藏
@@ -300,7 +358,8 @@ const closePopup = () => {
 .block {
   border: 1px white solid;
   border-radius: 10px;
-  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
+  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px
+    rgba(0, 0, 0, 0.066);
   overflow: auto;
   background-color: white;
   margin: 30px 20px;
@@ -388,7 +447,8 @@ const closePopup = () => {
 .down-block {
   border: 1px white solid;
   border-radius: 10px;
-  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
+  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px
+    rgba(0, 0, 0, 0.066);
   overflow: auto;
   background-color: white;
   margin: 1em 1em;
@@ -418,7 +478,6 @@ const closePopup = () => {
   text-align: right;
 }
 
-
 .infinite-list-wrapper {
   /*height: 300px;*/
 }
@@ -437,7 +496,7 @@ const closePopup = () => {
   border-bottom: 1px solid #ddd;
 }
 
-.infinite-list-wrapper .list-item+.list-item {
+.infinite-list-wrapper .list-item + .list-item {
   margin-top: 10px;
 }
 
@@ -531,11 +590,12 @@ const closePopup = () => {
   font-size: 0.9em; /* 小字号 */
 }
 
-.el-dialog ::deep(.el-dialog__body){
+.el-dialog ::deep(.el-dialog__body) {
   padding: 0;
 }
 .list-item:hover {
-  background-color: #e8e8e8; 
+  background-color: #e8e8e8;
 }
 </style>
   
+

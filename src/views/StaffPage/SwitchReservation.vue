@@ -31,7 +31,7 @@
                   <div style="width: fit-content;">{{ item.switch_request_id }}</div></div>
                   <div style="margin-top: 10px;">
                   <span style="font-size: 14px;background-color: #4fd1c4e7;border-radius: 10px;border: solid 1px #4fd1c4; color: white;padding: 2px 10px;margin-right: 20px;">{{ item.vehicle_model }}</span>
-                  <span style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px;border: solid 1px #f5a74d; color: white;padding: 2px 10px;margin-right: 20px;">{{ item.request_time }}</span>
+                  <span style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px;border: solid 1px #f5a74d; color: white;padding: 2px 10px;margin-right: 20px;">{{ item.switch_date + ' ' + item.switch_period }}</span>
                   <span style="font-size: 14px;background-color: #729cff;border-radius: 10px;border: solid 1px #729cff; color: white;padding: 2px 10px;">{{ item.battery_type }}</span>
                   </div>
                 </div>
@@ -58,7 +58,7 @@
                   <el-form-item label="订单编号">{{ switch_item_data.switch_request_id }}</el-form-item>
                   <el-form-item label="用户姓名">{{ switch_item_data.username }}</el-form-item>
                   <el-form-item label="电池类型">{{ switch_item_data.battery_type }}</el-form-item>
-                  <el-form-item label="预约时间">{{ switch_item_data.request_time }}</el-form-item>
+                  <el-form-item label="预约时间">{{ switch_item_data.switch_date+ ' ' + switch_item_data.switch_period }}</el-form-item>
                   <el-form-item label="电话">{{ switch_item_data.phone_number }}</el-form-item>
                   <el-form-item label="车型">{{ switch_item_data.vehicle_model }}</el-form-item>
                   <el-form-item label="备注">{{ switch_item_data.remarks }}</el-form-item>
@@ -180,7 +180,7 @@ const showDetail = (item) => {
   selectedOrNot.value = true;
   showMap.value = true;
   get_switch_info(item.switch_request_id);
-  showLocation(item);
+  //showLocation(item);
 };
 const switch_detail_loading = ref(false);
 
@@ -255,6 +255,7 @@ const get_switch_info = (id) => {
   }).then((res) => {
     if (!res.code) {
       switch_item_data.value = res.data.switch_request;
+      showLocation(res.data.switch_request.longitude, res.data.switch_request.latitude);
       switch_detail_loading.value = false;
     }
     else {
@@ -268,12 +269,12 @@ const get_switch_info = (id) => {
 }
 //get_switch_info();
 
-const showLocation = (item) => {
+const showLocation = (lng,lat) => {
   if(activeName.value == 3)
     return;
   const BMap = window.BMap;
   const map = new BMap.Map('map-container'); // 创建地图实例
-  const location = new BMap.Point(item.longitude, item.latitude); // 替换为你的坐标经度和纬度
+  const location = new BMap.Point(lng, lat); // 替换为你的坐标经度和纬度
   map.centerAndZoom(location, 11); // 设置地图中心点和缩放级别
   map.enableScrollWheelZoom(true);
   const marker = new BMap.Marker(location); // 创建标记

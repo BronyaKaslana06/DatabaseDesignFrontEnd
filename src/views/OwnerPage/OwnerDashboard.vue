@@ -3,7 +3,7 @@
     <div class="welcome">
       <div class="left-section">
         <div class="left-content">
-          <img :src="temp_img || ''" alt="" class="profile-image">
+          <img src="@/assets/UserAvatar.svg" alt="" class="profile-image">
           <p class="greeting">
             {{ getGreeting() }}
           </p>
@@ -192,10 +192,7 @@ const getCarInfo = () => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
+      
       CarInfo.value = res.data;
       mycanvas.value = mycanvas.value || null;
       ctx.value = mycanvas.value.getContext('2d');
@@ -301,10 +298,7 @@ const getOwnerInfo = () => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
+      
       OwnerInfo.value = res.data;
     }
     else {
@@ -318,8 +312,6 @@ const getOwnerInfo = () => {
   getChartInfo();
 };
 getOwnerInfo();
-
-const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
 
 
 

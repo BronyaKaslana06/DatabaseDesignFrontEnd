@@ -35,12 +35,13 @@
             </el-date-picker>
           </div>
         </div>
-        <div class="infinite-list-wrapper" style="overflow:auto flex:1;">
+        <div class="infinite-list-wrapper" style="overflow:auto flex:1;" v-loading="loadData">
           <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
-            <li v-for="item in listdata" :key="item.maintenance_items_id" class="list-item">
+            <li v-for="item in listdata" :key="item.maintenance_items_id" class="list-item" style="cursor: pointer;"
+              @click="Detail(item)">
               <div class="list-item-content">
                 <div class="list-item-image">
-                  <img src="@/assets/repair.png" alt="Image" />
+                  <img src="@/assets/维修.svg" alt="Image" />
                 </div>
                 <div class="list-item-text">
                   <p class="title">{{ item.title }}</p>
@@ -48,7 +49,18 @@
                   }}</p>
                 </div>
                 <div class="list-item-button">
-                  <el-button text :icon="Document" @click="Detail(item)">查看详情</el-button>
+                  <template v-if="item.order_status === '待接单'">
+                    <el-button type="primary" disabled>待接单</el-button>
+                  </template>
+                  <template v-if="item.order_status === '待完成'">
+                    <el-button type="info" disabled>待完成</el-button>
+                  </template>
+                  <template v-if="item.order_status === '待评分'">
+                    <el-button type="warning" disabled>待评分</el-button>
+                  </template>
+                  <template v-if="item.order_status === '已完成'">
+                    <el-button type="success" disabled>已完成</el-button>
+                  </template>
                 </div>
               </div>
             </li>
@@ -59,14 +71,14 @@
                     <p>订单编号：{{ selectedItemId }}</p>
                     <p>车牌号：{{ maintenance_item_detail.plate_number }}</p>
                     <p>车型：{{ maintenance_item_detail.vehicle_model }}</p>
-                    <p>用户姓名：{{ maintenance_item_detail.user_name }}</p>
+                    <p>用户姓名：{{ maintenance_item_detail.username }}</p>
                     <p>电话：{{ maintenance_item_detail.phone_number }}</p>
                     <p>地点：{{ maintenance_item_detail.maintenance_location }}</p>
                     <p>提交时间：{{ maintenance_item_detail.order_submission_time }}</p>
-                    <p>备注：{{ maintenance_item_detail.remarks?maintenance_item_detail.remarks:"无" }}</p>
-                    <p>服务时间：{{ status_number>2?maintenance_item_detail.service_time:"未进行服务" }}</p>
-                    <p>评价：{{ status_number>3?maintenance_item_detail.evaluations:"用户未作出评价" }}</p>
-                    <p>评分：{{ status_number>3?maintenance_item_detail.score:"暂无评分" }}</p>
+                    <p>备注：{{ maintenance_item_detail.remarks ? maintenance_item_detail.remarks : "无" }}</p>
+                    <p>服务时间：{{ status_number > 2 ? maintenance_item_detail.service_time : "未进行服务" }}</p>
+                    <p>评价：{{ status_number > 3 ? maintenance_item_detail.evaluations : "用户未作出评价" }}</p>
+                    <p>评分：{{ status_number > 3 ? maintenance_item_detail.score : "暂无评分" }}</p>
                   </div>
                 </div>
                 <div class="steps-part" style="height: 20em">
@@ -102,8 +114,10 @@ const infoForm = reactive({
   endDate: ''
 });
 
-const queryData = () => {
+const loadData=ref(false);
 
+const queryData = () => {
+  loadData.value = true;
   cmRequest.request({
     url: 'api/staff/my-info/repair-records/query',
     method: 'GET',
@@ -115,10 +129,7 @@ const queryData = () => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
+      
       listdata.value = res;
     }
     else {
@@ -127,6 +138,7 @@ const queryData = () => {
         message: '刷新失败',
       })
     }
+    loadData.value = false;
   })
 };
 queryData();
@@ -192,19 +204,19 @@ const load = () => {
 const dialogVisible = ref(false);
 const selectedItemId = ref('');
 const status_number = ref(2);
-const item_loading =ref(true);
+const item_loading = ref(true);
 const maintenance_item_detail = ref({
   plate_number: '',
   maintenance_location: '',
   order_status: '',
   remarks: '',
-  evaluations: '',
+  evaluation: '',
   order_submission_time: '',
   service_time: '',
   vehicle_model: '',
   phone_number: '',
   username: '',
-  score:'',
+  score: '',
   title: ''
 
 })
@@ -231,7 +243,7 @@ const Detail = (Item) => {
 }
 
 const get_maintenance_info = (id) => {
-  item_loading.value=true;
+  item_loading.value = true;
   maintenance_item_detail.value = {};
   cmRequest.request({
     url: 'api/staff/my-info/repair-records/MessageDetail',
@@ -241,19 +253,16 @@ const get_maintenance_info = (id) => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '查看订单成功',
-      })
+      
       maintenance_item_detail.value = res;
-      item_loading.value=false;
+      item_loading.value = false;
     }
     else {
       ElMessage({
         type: 'error',
         message: '查看订单失败',
       })
-      item_loading.value=false;
+      item_loading.value = false;
     }
   })
 }
@@ -268,6 +277,7 @@ const get_maintenance_info = (id) => {
   font-size: 1.5em;
   /* 调整字体大小 */
 }
+
 .upper-block {
   border: 1px white solid;
   border-radius: 10px;
@@ -286,12 +296,16 @@ const get_maintenance_info = (id) => {
   background-color: white;
   margin: 1em 1em;
   height: 65vh;
-  display: flex; /* 使用Flex布局 */
-  flex-direction: column; /* 纵向排列 */
+  display: flex;
+  /* 使用Flex布局 */
+  flex-direction: column;
+  /* 纵向排列 */
 }
+
 .inner-block {
   padding: 1em 1em 1em 1em;
 }
+
 .inner-block2 {
   padding: 1em 1em 1em 1em;
   flex: 1;
@@ -325,7 +339,9 @@ const get_maintenance_info = (id) => {
   height: 60px;
   border-bottom: 1px solid #ddd;
 }
-
+.list-item:hover {
+  background-color: #e8e8e8; 
+}
 .infinite-list-wrapper .list-item+.list-item {
   margin-top: 10px;
 }
@@ -409,5 +425,4 @@ const get_maintenance_info = (id) => {
 .steps-part {
   flex: 30%;
   margin-left: 2em;
-}
-</style>
+}</style>

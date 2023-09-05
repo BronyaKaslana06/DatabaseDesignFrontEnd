@@ -18,12 +18,12 @@
             <div class="information-item-line">
               <p><strong>姓名：</strong>{{ userInfo.personalInfo.name }}</p>
               <p><strong>联系方式：</strong>{{ userInfo.personalInfo.phone_number }}</p>
-              <p><strong>职位：</strong>{{ userInfo.personalInfo.positions }}</p>
+              <p><strong>职位：</strong>{{ userInfo.personalInfo.postions }}</p>
             </div>
             <div class="information-item-line">
               <p><strong>性别：</strong>{{ userInfo.personalInfo.gender }}</p>
-              <p><strong>评语：</strong>{{ userInfo.performance.total_performance }}</p>
-              <p><strong>绩效：</strong>{{ userInfo.performance.score }}</p>
+              <p><strong>绩效：</strong>{{ userInfo.performance.total_performance }}</p>
+              <p><strong>评分：</strong>{{ userInfo.performance.score }}</p>
             </div>
             <div class="information-item-right">
               <Text class="edit-button" @click="showEditDialog(userInfo)"
@@ -98,7 +98,7 @@ import { ElMessage } from "element-plus";
 const userInfo = reactive({
   personalInfo: {
     name: "",
-    positions: "",
+    postions: "",
     gender: "",
     phone_number: "",
   },
@@ -212,6 +212,7 @@ const pullData = () => {
           message: "刷新成功",
         });
         stationInfo.value = res.data;
+        mapOpen(res.data.longitude,res.data.latitude);
       } else {
         ElMessage({
           type: "error",
@@ -222,24 +223,26 @@ const pullData = () => {
 };
 pullData();
 
-const mapOpen = () => {
+const mapOpen = (lng,lat) => {
   const BMap = window.BMap;
   var map = new BMap.Map("myMap");
+  console.log(lng)
+  console.log(lat)
   var point = new BMap.Point(
-    stationInfo.value.longitude,
-    stationInfo.value.latitude
+    lng,
+    lat
   ); //?
   map.centerAndZoom(
-    new BMap.Point(stationInfo.value.longitude, stationInfo.value.latitude),
-    100
+    new BMap.Point(lng, lat),
+    11
   ); //?
   map.enableScrollWheelZoom(true);
   var marker = new BMap.Marker(point);
   map.addOverlay(marker);
 };
-onMounted(() => {
-  mapOpen();
-});
+// onMounted(() => {
+//   mapOpen();
+// });
 
 queryData(); // 在组件加载时获取用户信息
 </script>
@@ -399,4 +402,5 @@ queryData(); // 在组件加载时获取用户信息
   font-size: 30px;
 }
 </style>
+
 

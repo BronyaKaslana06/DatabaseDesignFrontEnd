@@ -127,7 +127,7 @@
                 </div>
                 <div class="infinite-list-wrapper" style="overflow:auto">
                     <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled" v-loading="loadData2">
-                        <li v-for="item in listdata" :key="item.maintenance_item_id" class="list-item">
+                        <li v-for="item in listdata" :key="item.maintenance_item_id" class="list-item" style="cursor: pointer;" @click="Detail(item.maintenance_item_id)">
                             <div class="list-item-content">
                                 <div class="list-item-image">
                                     <img src="@/assets/维修.svg" alt="Image" />
@@ -150,8 +150,6 @@
                                     <template v-if="item.order_status === '已完成'">
                                     <el-button type="success" disabled>已完成</el-button>
                                     </template>
-                                    <el-button text :icon="Document"
-                                        @click="Detail(item.maintenance_item_id)">查看详情</el-button>
                                     <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" title="请确认是否删除"
                                         @confirm="deleteInfo(item.maintenance_item_id)">
                                         <template #reference>
@@ -197,18 +195,14 @@ const store = useStore();
 
 const getOptions = () => {
     cmRequest.request({
-      url: 'api/owner/repair_reservation/own_query',
-      //url: '/owner/repair_reservation/own_query',      
+      url: 'api/owner/repair_reservation/own_query',  
       method: 'GET',
       params: {
         owner_id: localStorage.getItem('user_id')  
       }
     }).then((res) => {
       if(!res.code){
-        ElMessage({
-          type: 'success',
-          message: '刷新成功',
-        })
+
         options.value = res.data;
         selectedValue.value = res.data[0].vehicle_id;
         updateSelected();
@@ -239,8 +233,7 @@ const infoForm = reactive({
 const rough_query=()=>{
     loadData2.value = true;
     cmRequest.request({
-      url: 'api/owner/repair_reservation/rough_query',
-      //url: '/owner/repair_reservation/rough_query',      
+      url: 'api/owner/repair_reservation/rough_query',      
       method: 'GET',
       params: {
         vehicle_id : infoForm.vehicle_id,
@@ -249,10 +242,7 @@ const rough_query=()=>{
       }
     }).then((res) => {
       if(!res.code){
-        ElMessage({
-          type: 'success',
-          message: '刷新成功',
-        })
+
         listdata.value=res.data;
         //listdata.value = 
       }
@@ -272,18 +262,13 @@ const updateSelected = () => {
     // 根据选择器的选择更新相关变量的值
     infoForm.vehicle_id = selectedValue.value;
     cmRequest.request({
-      url: 'api/owner/repair_reservation/info_query',
-      //url: '/owner/repair_reservation/info_query',      
+      url: 'api/owner/repair_reservation/info_query',   
       method: 'GET',
       params: {
         vehicle_id : infoForm.vehicle_id
       }
     }).then((res) => {
       if(!res.code){
-        ElMessage({
-          type: 'success',
-          message: '刷新成功',
-        })
         infoForm.vehicle_model = res.data[0].vehicle_model;
         infoForm.purchase_date = res.data[0].purchase_date;
         infoForm.current_capacity = res.data[0].current_capacity;
@@ -403,7 +388,6 @@ const deleteInfo = (maintenanceItemId) => {
   console.log('Deleting item with ID:', maintenanceItemId);
   cmRequest.request({
       url: 'api/owner/repair_reservation/delete',
-      //url: '/owner/repair_reservation/delete',
       method: 'DELETE',
       params: {
         maintenance_item_id: maintenanceItemId
@@ -441,7 +425,19 @@ const repairItem = reactive({
     longitude:'',
     latitude:''
 })
-const selectedValue2 = ref('');
+const selectedValue2 = ref();
+/*
+const getPlate=(id)=>{
+  console.log("options len",options.length);
+  for(let i=0;i<2;i++)
+  {
+    if(id === options.value[i].vehicle_id)
+    {console.log(1);
+      return options.value[i].plate_number;
+    }
+  }
+  return null;
+}*/
 
 const updateSelected2 = () => {
     // 根据选择器的选择更新相关变量的值 
@@ -560,7 +556,6 @@ const handleClose = () => {
     else {
         cmRequest.request({
             url: 'api/owner/repair_reservation/submit',
-            //url: 'owner/repair_reservation/submit',
             method: 'POST',
             data: {
                 vehicle_id: (repairItem.vehicle_id).toString(),
@@ -578,8 +573,9 @@ const handleClose = () => {
                 clearRepairItem();
                 ElMessage({
                     type: 'success',
-                    message: '添加维修项成功',
+                    message: '预约成功',
                 })
+                rough_query();
             }
             else {
                 ElMessage({
@@ -657,6 +653,9 @@ const handleClose = () => {
     border-bottom: 1px solid #ddd;
   }
 
+.list-item:hover {
+  background-color: #e8e8e8; 
+}
   .infinite-list-wrapper .list-item + .list-item {
     margin-top: 10px;
   }

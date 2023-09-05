@@ -427,7 +427,7 @@ const getMoreInfo = (val) => {
     dialogData.employee_id = val.employee_id;
     dialogData.switch_date = val.switch_date;
     dialogData.switch_period = val.switch_period;
-    dialogData.order_status = val.order_status;
+    dialogData.order_status = val.order_type;
     dialogData.remarks = val.remarks;
     cmRequest.request({
         url: "api/staff/switchrequest/detail",

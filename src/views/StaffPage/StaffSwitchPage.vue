@@ -41,46 +41,56 @@
             </el-date-picker>
           </div>
         </div>
-        <div class="infinite-list-wrapper" style="overflow:auto flex:1;">
+        <div class="infinite-list-wrapper" style="overflow:auto flex:1;" v-loading="listLoading">
           <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
-            <li v-for="item in listdata" :key="item.switch_record_id" class="list-item">
+            <li v-for="item in listdata" :key="item.switch_record_id" class="list-item" style="cursor: pointer"
+              @click="Detail(item)">
               <div class="list-item-content">
                 <div class="list-item-image">
                   <img src="@/assets/switch.png" alt="Image" />
                 </div>
                 <div class="list-item-text">
                   <p class="title">换电记录{{ item.switch_record_id }}</p>
-                  <p class="type-date">{{ item.switch_time
+                  <p class="type-date">预约时间：{{ item.switch_time
                   }}</p>
                 </div>
-                <div class="list-item-button">
-                  <el-button text :icon="Document" @click="Detail(item)">查看详情</el-button>
+                <div class="list-item-button" style="margin-right: 3em;">
+                  <!-- <el-button text :icon="Document" @click="Detail(item)">查看详情</el-button> -->
+                  <template v-if="item.request_status === '待评价'">
+                    <el-button type="warning" disabled>待评价</el-button>
+                  </template>
+                  <template v-if="item.request_status === '已完成'">
+                    <el-button type="success" disabled>已完成</el-button>
+                  </template>
                 </div>
               </div>
             </li>
-            <el-dialog v-model="dialogVisible" title="订单详情" width="50%" >
+            <el-dialog v-model="dialogVisible" title="订单详情" width="50%">
               <div class="container-vertical" v-loading="item_loading">
                 <div class="left-info-part">
                   <div class="detail-info">
-                    <p>订单编号：{{ selectedItemId }}</p>
-                    <p>车牌号：{{ switch_item_detail.plate_number }}</p>
-                    <p>车型：{{ switch_item_detail.vehicle_model }}</p>
-                    <p>用户姓名：{{ switch_item_detail.username }}</p>
-                    <p>电话：{{ switch_item_detail.phone_number }}</p>
-                    <p>地点：{{ switch_item_detail.position }}</p>
-                    <p>换电时间：{{ switch_item_detail.switch_time }}</p>
-                    <p>换电类型：{{ switch_item_detail.switch_type }}</p>
-                    <p>换上电池ID：{{ switch_item_detail.battery_id_on }}</p>
-                    <p>换下电池ID：{{ switch_item_detail.battery_id_off }}</p>
-                    <p>评价：{{ switch_item_detail.evaluations }}</p>
-                    <p>评分：{{ switch_item_detail.score }}</p>
+                    <p><strong>订单编号：</strong>{{ selectedItemId }}</p>
+                    <p><strong>车牌号：</strong>{{ switch_item_detail.plate_number }}</p>
+                    <p><strong>车型：</strong>{{ switch_item_detail.vehicle_model }}</p>
+                    <p><strong>用户名：</strong>{{ switch_item_detail.username }}</p>
+                    <p><strong>电话：</strong>{{ switch_item_detail.phone_number }}</p>
+                    <p><strong>换电站：</strong>{{ switch_item_detail.station_name }}</p>
+                    <p><strong>换电时间：</strong>{{ switch_item_detail.switch_time }}</p>
+                    <p><strong>换电类型：</strong>{{ switch_item_detail.switch_type }}</p>
+                    <p><strong>换上电池ID：</strong>{{ switch_item_detail.battery_id_on }}</p>
+                    <p><strong>换上电池型号：</strong>{{ switch_item_detail.battery_type_on }}</p>
+                    <p><strong>换下电池ID：</strong>{{ switch_item_detail.battery_id_off }}</p>
+                    <p><strong>换下电池型号：</strong>{{ switch_item_detail.battery_type_off }}</p>
+                    <p><strong>评价：</strong>{{ switch_item_detail.evaluations === '' ? '暂无评价' : switch_item_detail.evaluations }}
+                    </p>
+                    <p><strong>评分：</strong>{{ switch_item_detail.score === -1 ? '暂无评分' : switch_item_detail.score }}</p>
                   </div>
                 </div>
                 <div class="steps-part" style="height: 20em">
-                  <el-steps direction="vertical" :active=4>
+                  <el-steps direction="vertical" :active='calculateStep(switch_item_detail.request_status)'>
                     <el-step title="待接单" />
                     <el-step title="待完成" />
-                    <el-step title="待评分" />
+                    <el-step title="待评价" />
                     <el-step title="已完成" />
                   </el-steps>
                 </div>
@@ -109,7 +119,10 @@ const infoForm = reactive({
   endDate: ''
 });
 
+const listLoading = ref(false);
+
 const queryData = () => {
+  listLoading.value = true;
   cmRequest.request({
     url: 'api/staff/my-info/switch-records/query',
     method: 'GET',
@@ -121,11 +134,12 @@ const queryData = () => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
+      // ElMessage({
+      //   type: 'success',
+      //   message: '刷新成功',
+      // })
       listdata.value = res;
+      listLoading.value = false;
     }
     else {
       ElMessage({
@@ -204,7 +218,7 @@ const goBack = () => {
 const dialogVisible = ref(false);
 const selectedItemId = ref('');
 const status_number = ref(2);
-const item_loading =ref(true);
+const item_loading = ref(true);
 const switch_item_detail = ref({
   plate_number: '',
   position: '',
@@ -213,22 +227,34 @@ const switch_item_detail = ref({
   username: '',
   vehicle_model: '',
   phone_number: '',
-  score:'',
-  battery_id_on:'',
-  battery_id_off:'',
-  switch_type:''
-
+  score: '',
+  battery_id_on: '',
+  battery_type_on: '',
+  battery_id_off: '',
+  battery_type_off: '',
+  switch_type: '',
+  request_status: '',
 })
+
+const calculateStep = (step) => {
+  if (step == "待接单")
+    return 1;
+  if (step == "待完成")
+    return 2;
+  if (step == "待评价")
+    return 3;
+  if (step == "已完成")
+    return 4;
+}
 
 const Detail = (Item) => {
   dialogVisible.value = true;
   selectedItemId.value = Item.switch_record_id;
   get_switch_info(Item.switch_record_id);
-
 }
 
 const get_switch_info = (id) => {
-  item_loading.value=true;
+  item_loading.value = true;
   switch_item_detail.value = {};
   cmRequest.request({
     url: 'api/staff/switch_record/itemDetail',
@@ -238,19 +264,19 @@ const get_switch_info = (id) => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '查看订单成功',
-      })
+      // ElMessage({
+      //   type: 'success',
+      //   message: '查看订单成功',
+      // })
       switch_item_detail.value = res;
-      item_loading.value=false;
+      item_loading.value = false;
     }
     else {
       ElMessage({
         type: 'error',
         message: '查看订单失败',
       })
-      item_loading.value=false;
+      item_loading.value = false;
     }
   })
 }
@@ -263,6 +289,7 @@ const get_switch_info = (id) => {
   font-size: 1.5em;
   /* 调整字体大小 */
 }
+
 .down-block {
   border: 1px white solid;
   border-radius: 10px;
@@ -271,9 +298,12 @@ const get_switch_info = (id) => {
   background-color: white;
   margin: 1em 1em;
   height: 65vh;
-  display: flex; /* 使用Flex布局 */
-  flex-direction: column; /* 纵向排列 */
+  display: flex;
+  /* 使用Flex布局 */
+  flex-direction: column;
+  /* 纵向排列 */
 }
+
 .upper-block {
   border: 1px white solid;
   border-radius: 10px;
@@ -283,6 +313,7 @@ const get_switch_info = (id) => {
   margin: 1em 1em;
   height: 15vh;
 }
+
 .inner-block2 {
   padding: 1em 1em 1em 1em;
 }
@@ -315,6 +346,10 @@ const get_switch_info = (id) => {
   justify-content: center;
   height: 60px;
   border-bottom: 1px solid #ddd;
+}
+
+.list-item:hover {
+  background-color: #e8e8e8;
 }
 
 .infinite-list-wrapper .list-item+.list-item {
