@@ -71,7 +71,7 @@
                     <p>订单编号：{{ selectedItemId }}</p>
                     <p>车牌号：{{ maintenance_item_detail.plate_number }}</p>
                     <p>车型：{{ maintenance_item_detail.vehicle_model }}</p>
-                    <p>用户姓名：{{ maintenance_item_detail.user_name }}</p>
+                    <p>用户姓名：{{ maintenance_item_detail.username }}</p>
                     <p>电话：{{ maintenance_item_detail.phone_number }}</p>
                     <p>地点：{{ maintenance_item_detail.maintenance_location }}</p>
                     <p>提交时间：{{ maintenance_item_detail.order_submission_time }}</p>
@@ -210,7 +210,7 @@ const maintenance_item_detail = ref({
   maintenance_location: '',
   order_status: '',
   remarks: '',
-  evaluations: '',
+  evaluation: '',
   order_submission_time: '',
   service_time: '',
   vehicle_model: '',

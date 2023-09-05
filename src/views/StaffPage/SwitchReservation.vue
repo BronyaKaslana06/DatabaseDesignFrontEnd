@@ -180,7 +180,7 @@ const showDetail = (item) => {
   selectedOrNot.value = true;
   showMap.value = true;
   get_switch_info(item.switch_request_id);
-  showLocation(item);
+  //showLocation(item);
 };
 const switch_detail_loading = ref(false);
 
@@ -255,6 +255,7 @@ const get_switch_info = (id) => {
   }).then((res) => {
     if (!res.code) {
       switch_item_data.value = res.data.switch_request;
+      showLocation(res.data.switch_request.longitude, res.data.switch_request.latitude);
       switch_detail_loading.value = false;
     }
     else {
@@ -268,12 +269,12 @@ const get_switch_info = (id) => {
 }
 //get_switch_info();
 
-const showLocation = (item) => {
+const showLocation = (lng,lat) => {
   if(activeName.value == 3)
     return;
   const BMap = window.BMap;
   const map = new BMap.Map('map-container'); // 创建地图实例
-  const location = new BMap.Point(item.longitude, item.latitude); // 替换为你的坐标经度和纬度
+  const location = new BMap.Point(lng, lat); // 替换为你的坐标经度和纬度
   map.centerAndZoom(location, 11); // 设置地图中心点和缩放级别
   map.enableScrollWheelZoom(true);
   const marker = new BMap.Marker(location); // 创建标记
