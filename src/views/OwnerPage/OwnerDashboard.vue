@@ -3,7 +3,7 @@
     <div class="welcome">
       <div class="left-section">
         <div class="left-content">
-          <img :src="temp_img || ''" alt="" class="profile-image">
+          <img src="@/assets/UserAvatar.svg" alt="" class="profile-image">
           <p class="greeting">
             {{ getGreeting() }}
           </p>
@@ -318,8 +318,6 @@ const getOwnerInfo = () => {
   getChartInfo();
 };
 getOwnerInfo();
-
-const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
 
 
 
