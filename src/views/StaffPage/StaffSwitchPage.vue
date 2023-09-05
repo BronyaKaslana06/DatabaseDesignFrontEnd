@@ -65,9 +65,9 @@
                     <p>订单编号：{{ selectedItemId }}</p>
                     <p>车牌号：{{ switch_item_detail.plate_number }}</p>
                     <p>车型：{{ switch_item_detail.vehicle_model }}</p>
-                    <p>用户姓名：{{ switch_item_detail.username }}</p>
+                    <p>用户名：{{ switch_item_detail.username }}</p>
                     <p>电话：{{ switch_item_detail.phone_number }}</p>
-                    <p>地点：{{ switch_item_detail.position }}</p>
+                    <p>换电站：{{ switch_item_detail.station_name }}</p>
                     <p>换电时间：{{ switch_item_detail.switch_time }}</p>
                     <p>换电类型：{{ switch_item_detail.switch_type }}</p>
                     <p>换上电池ID：{{ switch_item_detail.battery_id_on }}</p>
