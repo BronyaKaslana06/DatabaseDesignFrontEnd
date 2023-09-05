@@ -9,7 +9,7 @@
                 easing: 'ease-out'
             }" class="search-button" @click="search">查询</button>
         </div>
-        <div v-infinite-scroll="load" style="overflow: auto" class="info-list" :infinite-scroll-disabled="loading"
+        <div v-infinite-scroll="load" style="overflow: auto" class="info-list" :infinite-scroll-disabled="loading2"
             infinite-scroll-distance="100" v-loading="loading">
             <div v-for="(item, index) in dataItem" :key="index" class="info-group">
                 <div v-wave="{
@@ -187,6 +187,7 @@ let user_lat = 0;
 let user_lng = 0;
 let carGroup = ref([]);
 const loading = ref(false);
+const loading2 = ref(false);
 const dataItem = ref([]);
 const rsvFlag = ref(false);
 const dateArray = ref([]);
@@ -368,6 +369,8 @@ const pullData = () => {
             var userLocation = r.point;
             user_lat = userLocation.lat;
             user_lng = userLocation.lng;
+            user_lat = 31.289031692675;
+            user_lng = 121.50646901655;
             cmRequest.request({
                 // baseURL:'https://mock.apifox.cn/m1/3058331-0-default',
                 url: 'api/owner/stations',
@@ -380,12 +383,18 @@ const pullData = () => {
                 }
             }).then((res) => {
                 if (!res.code) {
+                    if(res.data.length === 0){
+                        loading2.value = true;
+                        loading.value = false;
+                        return;
+                    }
                     if (typeof dataItem.value === 'undefined' || dataItem.value.length === 0) {
                         dataItem.value = res.data;
                     } else {
                         dataItem.value = [...dataItem.value, ...res.data];
                     }
                     loading.value = false;
+                    loading2.value = false;
                     curInfoIndex++;
                 }
                 else {
@@ -410,6 +419,7 @@ const pullData = () => {
 }
 const load = () => {
     loading.value = true;
+    loading2.value = true;
     pullData();
 }
 
