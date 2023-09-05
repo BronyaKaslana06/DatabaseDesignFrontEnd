@@ -77,7 +77,7 @@
                     <p>提交时间：{{ maintenance_item_detail.order_submission_time }}</p>
                     <p>备注：{{ maintenance_item_detail.remarks ? maintenance_item_detail.remarks : "无" }}</p>
                     <p>服务时间：{{ status_number > 2 ? maintenance_item_detail.service_time : "未进行服务" }}</p>
-                    <p>评价：{{ status_number > 3 ? maintenance_item_detail.evaluations : "用户未作出评价" }}</p>
+                    <p>评价：{{ status_number > 3 ? maintenance_item_detail.evaluation : "用户未作出评价" }}</p>
                     <p>评分：{{ status_number > 3 ? maintenance_item_detail.score : "暂无评分" }}</p>
                   </div>
                 </div>

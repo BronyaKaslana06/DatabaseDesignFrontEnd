@@ -11,7 +11,10 @@
                     <el-row>
                         <el-col :span="8">
                             <el-form-item label="电池型号">
-                                <el-input v-model="formData.battery_type_id" class="input-box"></el-input>
+                                <el-select v-model="formData.battery_type_id" filterable placeholder="选择型号">
+                                    <el-option key="1" value="标准续航型" label="标准续航型"> </el-option>
+                                    <el-option key="2" value="长续航型" label="长续航型"> </el-option>
+                                </el-select>
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
