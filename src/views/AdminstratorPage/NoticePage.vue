@@ -17,14 +17,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="发布者">
-              <el-input
-                v-model="searchFormData.publisher"
-                class="input-box"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="发布时间">
               <el-date-picker
                 v-model="searchFormData.publish_time"
@@ -34,9 +26,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="50">
+          <el-col :span="8">
             <el-form-item label="发布内容">
               <el-input
                 v-model="searchFormData.contents"
@@ -46,6 +36,7 @@
           </el-col>
         </el-row>
         <div class="button-wrapper">
+          <el-button @click="resetSearch">重置</el-button>
           <el-button @click="searchData">搜索</el-button>
           <el-button @click="showCreatePopup = true">新建</el-button>
         </div>
@@ -84,7 +75,7 @@
                       announcement.publish_time.replace(
                         /T/g,
                         "&nbsp;&nbsp;&nbsp;"
-                      )
+                      ).slice(0,21)
                     }}</span
                   >
                 </div>
@@ -331,7 +322,7 @@ const somecontents = (dateString) => {
   if (dateString === null) {
     return "";
   }
-  return dateString.slice(0, 80);
+  return dateString.slice(0, 50);
 };
 
 const deletetime = (dateString) => {
@@ -601,6 +592,15 @@ const deleteAnnouncement = () => {
         message: "删除数据失败，请稍后再试",
       });
     });
+};
+
+const resetSearch = () => {
+  searchFormData.title = "";
+  searchFormData.publisher = "";
+  searchFormData.publish_time = "";
+  searchFormData.publish_pos = "";
+  searchFormData.contents = "";
+  queryData();
 };
 </script>
 
