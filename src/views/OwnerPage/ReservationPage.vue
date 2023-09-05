@@ -318,7 +318,7 @@ const drawer = ref()
 
 const submit = () => {
     if (dateRadio.value == null || timeRadio.value == null || switchType.value == null ||
-     (switchType.value === "上门换电" && address.value == null) || battery_type.value === null || selectedCar.value === null) {
+     (switchType.value === "上门换电" && address.value == null) || batteryType.value === null || selectedCar.value === null) {
         ElMessage({
             type: 'warning',
             message: '请填写完整的表单信息'

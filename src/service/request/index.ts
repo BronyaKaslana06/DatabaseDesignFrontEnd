@@ -1,9 +1,11 @@
 import axios from 'axios'
+import { ElLoading } from 'element-plus'
 import type { InternalAxiosRequestConfig, AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios'
+
 
 interface CMRequsetInterceptors {
   requestInterceptor?: (config: InternalAxiosRequestConfig) => InternalAxiosRequestConfig
-  requestInterceptorCatch?: (error: any) => any
+  requestInterceptorCatch?: (error : any) => any
   responseInterceptor?: (res: AxiosResponse) => AxiosResponse
   responseInterceptorCatch?: (error: any) => any
 }
@@ -34,6 +36,16 @@ class CMRequset {
     // 公共interceptor
     this.instance.interceptors.request.use(
       (config) => {        
+        /* 关于loading部分的代码 */
+        // ElLoading.service({
+        //   lock: true,
+        //   text: '拼命加载中...',
+        //   background: 'rgba(0,0,0,0.2)'
+        // })
+        let token = localStorage.getItem('token');
+        if(token){
+          config.headers.Authorization = `Bearer ${token}`
+        }
         return config
       },
       (err) => {
