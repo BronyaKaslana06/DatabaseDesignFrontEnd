@@ -1,10 +1,5 @@
 <template>
   <div>
-    <!-- <el-page-header :icon="ArrowLeft">
-      <template #content>
-        <span class="text-large font-600 mr-3"> 换电站管理 </span>
-      </template>
-    </el-page-header> -->
     <div class="up-block">
       <div class="inner-block2">
         <el-form :inline="true">
@@ -19,13 +14,6 @@
                 <el-input v-model="formData.station_id" class="input-box"></el-input>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
-            <!-- <el-col :span="8">
-              <el-form-item label="管理员ID">
-                <el-input v-model="formData.employee_id" class="input-box"></el-input>
-              </el-form-item>
-            </el-col> -->
             <el-col :span="8">
               <el-form-item label="可用状态">
                 <!-- <el-input v-model="formData.faliure_status" class="input-box"></el-input> -->
@@ -48,8 +36,8 @@
           <el-button @click="addFlag = true" style="margin-bottom: 10px;">新增</el-button>
           <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
         </div>
-        <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-        v-loading="loadTableData"  >     
+        <el-table :data="tableData" border class="table" header-cell-class-name="table-header"
+        v-loading="loadTableData" height="100vh" >     
           <el-table-column prop="station_name" min-width="10%" label="换电站名" align="center"></el-table-column>
           <el-table-column prop="station_id" min-width="10%" label="换电站ID" align="center"></el-table-column>
           <!-- <el-table-column prop="employee_id" label="管理员工ID" min-width="10%" align="center"></el-table-column> -->
@@ -195,7 +183,7 @@ const addedData = reactive({
   // station_id: '',
   station_name: '',
   // employee_id: '',
-  longtitude: '',
+  longitude: '',
   latitude: '',
   faliure_status: '',
   battery_capacity: '',
@@ -207,7 +195,7 @@ const addedData = reactive({
 
 const query = reactive({
   pageIndex: 1,
-  pageSize: 7,
+  pageSize: 15,
 });
 
 const stationLocation = reactive({
@@ -218,7 +206,7 @@ const stationLocation = reactive({
 const editForm = reactive({
   station_id: '',
   station_name: '',
-  longtitude: '',
+  longitude: '',
   latitude: '',
   faliure_status: '',
   battery_capacity: '',
@@ -252,16 +240,16 @@ const openAdd = () =>{
     point.lat = e.point.lat;
     stationLocation.lng = point.lng;
     stationLocation.lat = point.lat;
-    addedData.longtitude = point.lng;
+    addedData.longitude = point.lng;
     addedData.latitude = point.lat;
-    console.log('地理信息'+addedData.longtitude+' '+addedData.latitude)
+    console.log('地理信息'+addedData.longitude+' '+addedData.latitude)
     marker = new BMap.Marker(point); 
     map.addOverlay(marker);      
   });
 }
 
 const openEdit = () =>{
-  stationLocation.lng = editForm.longtitude;
+  stationLocation.lng = editForm.longitude;
   stationLocation.lat = editForm.latitude;
   const BMap = window.BMap;
   var map = new BMap.Map("myMapEdit"); 
@@ -283,9 +271,9 @@ const openEdit = () =>{
     point.lat = e.point.lat;
     stationLocation.lng = point.lng;
     stationLocation.lat = point.lat;
-    editForm.longtitude = point.lng;
+    editForm.longitude = point.lng;
     editForm.latitude = point.lat;
-    console.log('地理信息'+editForm.longtitude+' '+editForm.latitude)
+    console.log('地理信息'+editForm.longitude+' '+editForm.latitude)
     marker = new BMap.Marker(point); 
     map.addOverlay(marker);      
   });
@@ -303,12 +291,12 @@ const pullData = () => {
     }
   }).then((res) => {
     if(!res.code){
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
+      // ElMessage({
+      //   type: 'success',
+      //   message: '刷新成功',
+      // })
       tableData.value = res.data;
-      pageTotal = parseInt(res.pageTotal);
+      pageTotal = parseInt(res.totalData);
       loadTableData.value = false;
     }
     else{
@@ -338,7 +326,7 @@ const resetAddedData = () => {
   // addedData.station_id = '';
   addedData.station_name = '';
   // addedData.employee_id = '';
-  addedData.longtitude = '';
+  addedData.longitude = '';
   addedData.latitude = '';
   addedData.faliure_status = '';
   addedData.battery_capacity = '';
@@ -394,7 +382,7 @@ const handleEdit = (row) => {
   editForm.station_id = row.station_id;
   editForm.station_name = row.station_name;
   //editForm.employee_id = row.employee_id;
-  editForm.longtitude = row.longtitude;
+  editForm.longitude = row.longitude;
   editForm.latitude = row.latitude;
   editForm.faliure_status = row.faliure_status;
   editForm.battery_capacity = row.battery_capacity;
@@ -428,7 +416,7 @@ const addData = () => {
         // station_id: addedData.station_id,
         station_name: addedData.station_name,
         // employee_id: addedData.employee_id,
-        longtitude: addedData.longtitude,
+        longitude: addedData.longitude,
         latitude: addedData.latitude,
         faliure_status: addedData.faliure_status,
         battery_capacity: Number(addedData.battery_capacity),
@@ -493,7 +481,7 @@ const saveEdit = () => {
       station_id: editForm.station_id,
       station_name: editForm.station_name,
       //employee_id: editForm.employee_id,
-      longitude: editForm.longtitude,
+      longitude: editForm.longitude,
       latitude: editForm.latitude,
       faliure_status: editForm.faliure_status,
       battery_capacity: editForm.battery_capacity,
@@ -550,7 +538,7 @@ const saveEdit = () => {
   overflow: hidden;
   background-color: white;
   margin: 30px 20px;
-  height: 65vh;
+  /*height: 65vh;*/
 }
 .input-box {
   width: 100%;
