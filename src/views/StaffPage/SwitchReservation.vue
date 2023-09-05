@@ -32,7 +32,7 @@
                   <div style="margin-top: 10px;">
                   <span style="font-size: 14px;background-color: #4fd1c4e7;border-radius: 10px;border: solid 1px #4fd1c4; color: white;padding: 2px 10px;margin-right: 20px;">{{ item.vehicle_model }}</span>
                   <span style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px;border: solid 1px #f5a74d; color: white;padding: 2px 10px;margin-right: 20px;">{{ item.request_time }}</span>
-                  <span style="font-size: 14px;background-color: #729cff;border-radius: 10px;border: solid 1px #729cff; color: white;padding: 2px 10px;">{{ item.battery_type_id }}</span>
+                  <span style="font-size: 14px;background-color: #729cff;border-radius: 10px;border: solid 1px #729cff; color: white;padding: 2px 10px;">{{ item.battery_type }}</span>
                   </div>
                 </div>
                 <div class="list-item-button">
@@ -57,7 +57,7 @@
                 <div class="detail-info" style="height: 100%;padding-top: 10px;padding-left: 20px;">
                   <el-form-item label="订单编号">{{ switch_item_data.switch_request_id }}</el-form-item>
                   <el-form-item label="用户姓名">{{ switch_item_data.username }}</el-form-item>
-                  <el-form-item label="电池类型">{{ switch_item_data.battery_type_id }}</el-form-item>
+                  <el-form-item label="电池类型">{{ switch_item_data.battery_type }}</el-form-item>
                   <el-form-item label="预约时间">{{ switch_item_data.request_time }}</el-form-item>
                   <el-form-item label="电话">{{ switch_item_data.phone_number }}</el-form-item>
                   <el-form-item label="车型">{{ switch_item_data.vehicle_model }}</el-form-item>
@@ -196,9 +196,10 @@ const refreshSwitch = () => {
       url: 'api/staff/switchrequest/doortodoor',
       method: 'GET',
       params: {
-        employee_id: '1', //TODO
+        //employee_id: '1', //TODO
+        employee_id: localStorage.getItem('user_id'),
         request_status: state,
-
+        station_id:localStorage.getItem('station_id'),
       }
     }).then((res) => {
       if (!res.code) {
@@ -220,8 +221,8 @@ const refreshSwitch = () => {
       method: 'GET',
       params: {
         request_status: '待完成',
-        //station_id: localStorage.getItem("station_id")  //TODO
-        station_id: '244'
+        station_id: localStorage.getItem("station_id")  //TODO
+        //station_id: '244'
       }
     }).then((res) => {
       if (!res.code) {

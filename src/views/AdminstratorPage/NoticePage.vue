@@ -54,16 +54,23 @@
   </div>
 
   <!-- 原始的公告展示内容从这里开始 -->
-  <div class="down-block">
+  <div class="down-block" v-loading="loadTableData">
+    >
     <div class="inner-block2">
       <div class="top-right">
-        <div class="maintenance-title">
-          信息公告
-        </div>
+        <div class="maintenance-title">信息公告</div>
       </div>
-      <div class="infinite-list-wrapper" style="overflow:auto flex:1;" v-loading="loading">
+      <div
+        class="infinite-list-wrapper"
+        style="overflow:auto flex:1;"
+        v-loading="loading"
+      >
         <ul class="list" :infinite-scroll-disabled="disabled">
-          <li v-for="announcement in announcementArray" :key="announcement.announcement_id" class="list-item">
+          <li
+            v-for="announcement in announcementArray"
+            :key="announcement.announcement_id"
+            class="list-item"
+          >
             <div class="list-item-content">
               <div class="list-item-image">
                 <img src="@/assets/notice.png" alt="Image" />
@@ -72,23 +79,65 @@
                 <div>
                   <span class="title">{{ announcement.title }}</span>
                   <span>
-                    {{ "发布时间：" + announcement.publish_time.replace(/T/g, '&nbsp;&nbsp;&nbsp;') }}</span>
+                    {{
+                      "发布时间：" +
+                      announcement.publish_time.replace(
+                        /T/g,
+                        "&nbsp;&nbsp;&nbsp;"
+                      )
+                    }}</span
+                  >
                 </div>
-                <div style="display: inline-block; margin-top: 0.4em;">
+                <div style="display: inline-block; margin-top: 0.4em">
                   <span
-                    style="font-size: 14px;background-color: #2d79dd;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
-                    {{ "发布人：管理员" + announcement.publisher }}</span>
+                    style="
+                      font-size: 14px;
+                      background-color: #2d79dd;
+                      border-radius: 10px;
+                      color: white;
+                      padding: 2px 10px;
+                      margin-right: 20px;
+                    "
+                  >
+                    {{ "发布人：管理员" + announcement.publisher }}</span
+                  >
                   <span
-                    style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px; color: white;padding: 2px 10px;margin-right: 20px;">
-                    {{ "发布对象：" + (announcement.publish_pos===2?"车主用户":(announcement.publish_pos===1?"员工":"未知")) }}</span>
+                    style="
+                      font-size: 14px;
+                      background-color: #f5a74de7;
+                      border-radius: 10px;
+                      color: white;
+                      padding: 2px 10px;
+                      margin-right: 20px;
+                    "
+                  >
+                    {{
+                      "发布对象：" +
+                      (announcement.publish_pos === 2
+                        ? "车主用户"
+                        : announcement.publish_pos === 1
+                        ? "员工"
+                        : "未知")
+                    }}</span
+                  >
                 </div>
-                <div style="margin-top: 0.4em;">
+                <div style="margin-top: 0.4em">
                   {{ somecontents(announcement.contents) }}......
                 </div>
               </div>
               <div class="list-item-button">
-                <el-button text :icon="Document" @click="openPopup(announcement)">查看详情</el-button>
-                <el-button text :icon="Edit" @click="openEditPopup(announcement)">编辑</el-button>
+                <el-button
+                  text
+                  :icon="Document"
+                  @click="openPopup(announcement)"
+                  >查看详情</el-button
+                >
+                <el-button
+                  text
+                  :icon="Edit"
+                  @click="openEditPopup(announcement)"
+                  >编辑</el-button
+                >
               </div>
             </div>
           </li>
@@ -212,8 +261,10 @@
 import { ref, onMounted, reactive } from "vue";
 import cmRequest from "../../service/index.js";
 import { ElMessage } from "element-plus";
-import { Document } from '@element-plus/icons-vue';
-import { Edit } from '@element-plus/icons-vue';
+import { Document } from "@element-plus/icons-vue";
+import { Edit } from "@element-plus/icons-vue";
+
+const loadTableData = ref(false);
 
 const announcementArray = ref([]);
 
@@ -226,6 +277,7 @@ const searchFormData = reactive({
 });
 
 const queryData = () => {
+  loadTableData.value = true;
   cmRequest
     .request({
       url: "api/administrator/announcement/message",
@@ -236,11 +288,13 @@ const queryData = () => {
     .then((res) => {
       if (!res.code) {
         announcementArray.value = res.announcementArray;
+        loadTableData.value = false;
       } else {
         ElMessage({
           type: "error",
           message: "未找到内容",
         });
+        loadTableData.value = false;
       }
     })
     .catch((error) => {
@@ -249,6 +303,7 @@ const queryData = () => {
         type: "error",
         message: "获取数据失败，请稍后再试",
       });
+      loadTableData.value = false;
     });
 };
 
@@ -291,6 +346,7 @@ const deletetime = (dateString) => {
 };
 
 const searchData = () => {
+  loadTableData.value = true;
   let pos = -1;
   if (localStorage.getItem("user_type") === "0") {
     pos = 2;
@@ -318,11 +374,13 @@ const searchData = () => {
       console.log(res);
       if (!res.code) {
         announcementArray.value = res.announcementArray;
+        loadTableData.value = false;
       } else {
         ElMessage({
           type: "error",
           message: "未找到内容",
         });
+        loadTableData.value = false;
       }
     })
     .catch((error) => {
@@ -331,6 +389,7 @@ const searchData = () => {
         type: "error",
         message: "获取数据失败，请稍后再试",
       });
+      loadTableData.value = false;
     });
 };
 
@@ -658,7 +717,8 @@ const deleteAnnouncement = () => {
 .down-block {
   border: 1px white solid;
   border-radius: 10px;
-  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px rgba(0, 0, 0, 0.066);
+  box-shadow: 0px 3.500000238418579px 5.500000476837158px 0px
+    rgba(0, 0, 0, 0.066);
   overflow: auto;
   background-color: white;
   margin: 1em 1em;

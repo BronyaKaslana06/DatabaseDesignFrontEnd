@@ -8,8 +8,13 @@
         <span class="logo-text">智能电动汽车管理系统</span>
       </div>
       <div class="user-info">
-        <el-avatar :icon="UserFilled" size="default"></el-avatar>
-        <span class="welcome-text">欢迎，{{ user_name }}</span>
+        <div @click="goToSelfCenter" style="cursor: pointer; display:flex;">
+          <el-avatar v-if="userType === '0'" :src="require('../assets/UserAvatar.svg')" size="default"></el-avatar>
+          <el-avatar v-else-if="userType === '1'" :src="require('../assets/staffAvatar.svg')" size="default"></el-avatar>
+          <el-avatar v-else-if="userType === '2'" :src="require('../assets/AdminAvatar.svg')" size="default"></el-avatar>
+          <el-avatar v-else size="default"></el-avatar>
+          <span class="welcome-text">欢迎，{{ user_name }}</span>
+        </div>
         <el-icon class="home-icon" size="1.5em" @click="goToHomes"><HomeFilled /></el-icon>
         <el-icon class="logout-icon" size="1.5em" @click="logout"><CloseBold /></el-icon>
       </div>
@@ -33,13 +38,14 @@ import mySlNav from '@/components/sliderbar-nav.vue'
 //import mySlNav from '../../components/sliderbar-nav.vue'
 import { ref, computed,getCurrentInstance,onBeforeMount,onMounted } from 'vue';
 import { useRouter, createRouter } from 'vue-router';
-import { Setting, CloseBold, UserFilled, HomeFilled } from '@element-plus/icons-vue';
+import { Setting, CloseBold, UserFilled, HomeFilled, Tools,Management } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus'
-
 
 const router = useRouter();
 const shouldChangeOverflow = ref(false);
 const instance = getCurrentInstance();
+const userType = localStorage.getItem('user_type');
+
 const mainStyle = computed(() => {
   return {
     overflow: shouldChangeOverflow.value ? 'hidden' : 'auto',
@@ -59,9 +65,6 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
-
-
-const userAvatar = ref('');
 const user_id = ref(localStorage.getItem('user_id'));
 const user_name = ref(localStorage.getItem('username'));
 const defaultAvatar = '../assets/defaultAvatar.jpg'; // 设置默认头像路径
@@ -70,7 +73,7 @@ const defaultAvatar = '../assets/defaultAvatar.jpg'; // 设置默认头像路径
 
 onMounted(() => {
   // 从localStorage中获取用户头像和用户名
-  userAvatar.value = localStorage.getItem('userAvatar');
+  //userAvatar.value = localStorage.getItem('userAvatar');
   console.log(localStorage.getItem('staff_type'));
   console.log(localStorage.getItem('username'));
 })
@@ -82,8 +85,22 @@ const goToHomes = () => {
   else if(localStorage.getItem('user_type') == 1){
     router.push('/staff-information-page')
   }
+  else if(localStorage.getItem('user_type') == 0){
+    router.push('/ownerDashboard')
+  }
 };
 
+const goToSelfCenter = () => {
+  if(localStorage.getItem('user_type') == 2){
+    router.push('/admin-dashboard-page')
+  }
+  else if(localStorage.getItem('user_type') == 1){
+    router.push('/staff-information-page')
+  }
+  else if(localStorage.getItem('user_type') == 0){
+    router.push('/personal-information-page')
+  }
+}
 const cleanLocalStorage = () =>{
   if(localStorage.getItem('user_type') == 1){
     localStorage.removeItem("staff_type");
@@ -167,6 +184,7 @@ const logout = () => {
   align-items: center;
   padding: 1.2em 2em; /* 增加顶栏的上下内边距 */
   height: 10vh; /* 增加顶栏的高度 */
+  border-bottom: 1px solid #A0AEC0; 
 }
 
 .logo img {
@@ -178,7 +196,9 @@ const logout = () => {
 }
 .welcome-text {
   margin-left: 10px;
-  margin-right: 1.8em; 
+  margin-right: 1.8em;
+  align-items: center;
+  display: flex;
 }
 
 .el-container{
