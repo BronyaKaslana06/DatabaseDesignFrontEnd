@@ -51,6 +51,12 @@
     <div style="display: flex;flex-direction: row;width: 100%;">
       <div style="height: 350px; flex: 6;" class="chart-item">
           <div style="color:#8e8e8e">换电订单统计</div>
+          <el-select v-model="select" style="    position: relative;
+    transform: translateX(-100%);
+    left: 100%;width:100px">
+            <el-option value="近一月" @click="changeChart">近一月</el-option>
+            <el-option value="近一年" @click="changeChart">近一年</el-option>
+          </el-select>
           <div style="height: 350px;">
             <line-chart :chartData="chartData" :key="chartKey" />
           </div>
@@ -70,6 +76,7 @@ import LineChart from '../../components/LineChart.vue'
 const battery= ref(false);
 const OwnerInfo = ref({});
 const CarInfo = ref({});
+const select = ref("近一年");
 
 /*  画电池  */
 const mycanvas = ref(null);
@@ -165,6 +172,15 @@ const gotoPersonal = () => {
   router.push('personal-information-page');
 }
 
+let option="year";
+const changeChart = () => {
+  if (select.value === "近一月")
+    option = "month";
+  else
+    option = "year"
+
+    getChartInfo();
+}
 
 const getCarInfo = () => {
   battery.value = true;
@@ -247,16 +263,20 @@ const getChartInfo = () => {
     url: 'api/owner/dashboard/monthlyswitch',
     method: 'GET',
     params: {
-      user_id: localStorage.getItem('user_id').toString()
+      user_id: localStorage.getItem('user_id').toString(),
+      query_range:option
     }
   }).then((res) => {
     chartData.labels = [];
-    const monthNames = ['一月', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
     if (!res.code) {
       
       let data = [];
       for (let i = 0; i < res.data.length; i++) {
-        chartData.labels.push(monthNames[i]);
+        if(option === "year")
+          chartData.labels.push(monthNames[i]);
+        else
+        chartData.labels.push(i+1);
         data.push(res.data[i]);
       }
       chartData.datasets[0].data = data;
@@ -310,7 +330,7 @@ const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 5px;
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -327,7 +347,18 @@ const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
   border-radius: 10px;
   background-image: linear-gradient(45deg, transparent 25%, rgba(255, 255, 255, 0.2) 25%, rgba(255, 255, 255, 0.2) 50%, transparent 50%, transparent 75%, rgba(255, 255, 255, 0.2) 75%);
 }
-
+.canvas-container {
+  width: 33.33%;
+  padding: 20px;
+  border-radius: 10px;
+  margin-left: 20px;
+  margin-right: 3em;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .profile-image {
   width: 100px;
   height: 100px;
@@ -359,18 +390,7 @@ const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
   font-weight: bold;
 }
 
-.canvas-container {
-  width: 33.33%;
-  padding: 20px;
-  border-radius: 10px;
-  margin-left: 3em;
-  margin-right: 3em;
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+
 .low-capacity {
   background-color: rgb(243, 195, 195); /* 低电量时的背景颜色 */
 }
@@ -391,7 +411,7 @@ const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
 
 .license {
   font-size: 30px;
-  margin-top: 15px;
+  margin-top: 25px;
   font-weight: bold;
 }
 
@@ -419,6 +439,8 @@ const temp_img = 'data:image/png;base64,' + OwnerInfo.avater;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 3em;
 }
 .info-card-item:hover {
   transform: translateY(-5px);

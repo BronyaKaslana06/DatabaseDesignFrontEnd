@@ -130,7 +130,7 @@
                         <li v-for="item in listdata" :key="item.maintenance_item_id" class="list-item">
                             <div class="list-item-content">
                                 <div class="list-item-image">
-                                    <img src="@/assets/repair.png" alt="Image" />
+                                    <img src="@/assets/维修.svg" alt="Image" />
                                 </div>
                                 <div class="list-item-text">
                                     <p class="title">{{ item.title }}</p>
@@ -639,7 +639,8 @@ const handleClose = () => {
 
 
 .infinite-list-wrapper {
-    height: 300px;
+    min-height: 300px;
+    height: auto;
   }
 
   .infinite-list-wrapper .list {

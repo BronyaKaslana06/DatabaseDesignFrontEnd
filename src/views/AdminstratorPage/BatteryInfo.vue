@@ -11,7 +11,7 @@
                     <el-row>
                         <el-col :span="8">
                             <el-form-item label="电池位置">
-                                <el-select v-model="formData.battery_status" filterable placeholder="选择状态">
+                                <el-select v-model="formData.battery_status" filterable placeholder="选择状态" @change="updateselected">
                                     <el-option key="1" value="在换电站" label="在换电站"> </el-option>
                                     <el-option key="2" value="在车辆" label="在车辆"> </el-option>
                                 </el-select>
@@ -34,7 +34,10 @@
                     <el-row>
                         <el-col :span="8">
                             <el-form-item label="电池型号">
-                                <el-input v-model="formData.battery_type_id" class="input-box"></el-input>
+                                <el-select v-model="formData.battery_type_id" filterable placeholder="选择型号">
+                                    <el-option key="1" value="标准续航型" label="标准续航型"> </el-option>
+                                    <el-option key="2" value="长续航型" label="长续航型"> </el-option>
+                                </el-select>
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
@@ -58,16 +61,20 @@
                     <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
                 </div>
                 <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-                    height="120vh">
-                    <el-table-column prop="battery_id" label="电池ID" min-width="10%" align="center"></el-table-column>
+                    height="120vh" v-loading="loadData">
+                    <el-table-column prop="battery_id" label="电池ID" min-width="5%" align="center"></el-table-column>
                     <el-table-column prop="manufacturing_date" min-width="10%" label="出厂日期" align="center">
                     </el-table-column>
-                    <el-table-column prop="battery_type_id" min-width="10%" label="电池型号" align="center">
+                    <el-table-column prop="battery_type_id" min-width="7%" label="电池型号" align="center">
                     </el-table-column>
-                    <el-table-column prop="current_capacity" label="当前电量" min-width="10%" align="center"></el-table-column>
-                    <el-table-column prop="curr_charge_times" label="当前充电次数" min-width="5%" align="center">
+                    <el-table-column prop="current_capacity" label="当前电量" min-width="7%" align="center">
+                        <template v-slot="scope">
+                            {{ scope.row.current_capacity }}%
+                        </template>
                     </el-table-column>
-                    <el-table-column min-width="10%" label="电池状态" align="center">
+                    <el-table-column prop="curr_charge_times" label="当前充电次数" min-width="8%" align="center">
+                    </el-table-column>
+                    <el-table-column min-width="8%" label="电池状态" align="center">
                         <template #default="scope">
                             <template v-if="scope.row.isEditing">
                                 <el-select v-model="scope.row.available_status" filterable placeholder="Select">
@@ -87,7 +94,7 @@
                         </template>
                     </el-table-column>
 
-                        <el-table-column prop="name" :label="getLabel(formData.battery_status)" min-width="10%"
+                        <el-table-column prop="name" :label="getLabel(formData.battery_status)" min-width="15%"
                             align="center">
                         </el-table-column>
 
@@ -110,9 +117,8 @@ import { ElMessage } from 'element-plus'
 import { RefreshRight, Edit, Delete, Check } from '@element-plus/icons-vue';
 const router = useRouter();
 
-const goBack = () => {
-    router.push('/admin-dashboard-page');
-}
+const loadData = ref(false);
+
 
 const getLabel = (val)=>{
     if(val === '在换电站')
@@ -179,7 +185,12 @@ const query = reactive({
 
 var totalData = 1;
 
+const updateselected=()=>{
+    pullData();
+}
+
 const pullData = () => {
+    loadData.value = true;
     cmRequest.request({
         url: 'api/administrator/battery/query',
         method: 'GET',
@@ -188,15 +199,12 @@ const pullData = () => {
             pageSize: query.pageSize,
             battery_type_id: '',
             available_status: '',
-            battery_status: 0,
+            battery_status: formData.battery_status === '在换电站' ? 0 : 1,
             keyword: ''
         }
     }).then((res) => {
         if (!res.code) {
-            ElMessage({
-                type: 'success',
-                message: '刷新成功',
-            })
+            
             tableData.value = res.data;
             totalData = parseInt(res.totaldata);
         }
@@ -206,30 +214,10 @@ const pullData = () => {
                 message: '刷新失败',
             })
         }
+        loadData.value = false;
     })
 }
 pullData();
-/*
-tableData.value = [
-    {
-        battery_id: '111',
-        manufacturing_date: '2021-2-2',
-        battery_type_id: '蔚来汽车01款',
-        current_capacity: '20',
-        curr_charge_times: '30次',
-        available_status: '可用',
-        isEditing: false
-    },
-    {
-        battery_id: '111',
-        manufacturing_date: '2021-2-2',
-        battery_type_id: '蔚来汽车01款',
-        current_capacity: '20',
-        curr_charge_times: '30次',
-        available_status: '已预定',
-        isEditing: false
-    }
-]*/
 
 const changeView = () => {
     cmRequest.request({
@@ -250,24 +238,16 @@ const changeView = () => {
     )
 }
 
-const cancleAddEvent = () => {
-    addFlag.value = false;
-    resetAddedData();
-}
+
 const resetFormData = () => {
     formData.battery_type_id = '';
     formData.available_status = '';
-    formData.battery_status = '在换电站';
     formData.keyword = '';
 }
 
-const resetAddedData = () => {
-    addedData.battery_type_id = '';
-    addedData.manufacturing_date = '';
-}
 
 const queryData = () => {
-
+    loadData.value = true;
 
     cmRequest.request({
         url: 'api/administrator/battery/query',
@@ -292,6 +272,7 @@ const queryData = () => {
             });
         }
         resetFormData();
+        loadData.value = false;
     })
 }
 
@@ -301,109 +282,6 @@ const handlePageChange = (val) => {
 };
 
 
-const handleEdit = (row) => {
-    row.isEditing = !row.isEditing;
-    if (!row.isEditing) {
-        // 在点击“完成”按钮后执行的逻辑
-        saveEdit(row);
-    }
-}
-
-
-const addData = () => {
-    let hasNullValue = false;
-    for (const key in addedData) {
-        if (addedData.hasOwnProperty(key) && addedData[key] === "") {
-            hasNullValue = true;
-            break; // 找到任意一个值为0的属性后，就不再继续检查
-        }
-    }
-    if (hasNullValue) {
-        ElMessage({
-            type: 'warning',
-            message: '请填写完整信息',
-        })
-    }
-    else {
-        cmRequest.request({
-            url: 'api/staff/switchstation/battery/add',
-            method: 'POST',
-            data: {
-                station_id: '1',
-                manufacturing_date: addedData.manufacturing_date,
-                battery_type_id: addedData.battery_type_id
-            }
-        }).then((res) => {
-            addFlag.value = false;
-            resetAddedData();
-            if (!res.code) {
-                changeView();
-                ElMessage({
-                    type: 'success',
-                    message: '新建成功, 添加电池id为' + res.battery_id,
-                })
-            }
-            else {
-                ElMessage({
-                    type: 'error',
-                    message: '新建失败',
-                })
-            }
-        })
-    }
-}
-
-const deleteInfo = (val) => {
-    cmRequest.request({
-        url: 'api/staff/switchstation/battery/delete',
-        method: 'DELETE',
-        params: {
-            station_id: '1',
-            battery_id: val.battery_id
-        }
-    }).then((res) => {
-        if (!res.code) {
-            changeView();
-            ElMessage({
-                type: 'success',
-                message: '删除成功',
-            })
-        }
-        else {
-            ElMessage({
-                type: 'error',
-                message: '删除失败',
-            })
-        }
-    })
-}
-
-const saveEdit = (row) => {
-    cmRequest.request({
-        url: 'api/staff/switchstation/battery/update',
-        method: 'PATCH',
-        data: {
-            station_id: '1',
-            battery_id: row.battery_id,
-            available_status: row.available_status
-        }
-    }).then((res) => {
-        editFlag.value = false;
-        if (!res.code) {
-            changeView();
-            ElMessage({
-                type: 'success',
-                message: '更新成功',
-            })
-        }
-        else {
-            ElMessage({
-                type: 'error',
-                message: '更新失败',
-            })
-        }
-    })
-}
 </script>
 
 <style scoped>

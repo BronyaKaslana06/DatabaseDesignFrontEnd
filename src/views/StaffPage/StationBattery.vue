@@ -36,7 +36,7 @@
                     <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
                 </div>
                 <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-                    height="100vh">
+                    height="100vh" v-loading="loadData">
                     <el-table-column prop="battery_id" label="电池ID" min-width="10%" align="center"></el-table-column>
                     <el-table-column prop="manufacturing_date" min-width="10%" label="出厂日期" align="center">
                     </el-table-column>
@@ -157,7 +157,7 @@ const one_options = [
 const tableData = ref([]);
 const editFlag = ref(false);
 const addFlag = ref(false);
-
+const loadData= ref(false);
 const formData = reactive({
     station_id:'',
     battery_id: '',
@@ -205,6 +205,7 @@ getStationID();
 var totalData = 1;
 
 const pullData = () => {
+    loadData.value = true;
     cmRequest.request({
         url: 'api/staff/switchstation/battery',
         method: 'GET',
@@ -230,32 +231,13 @@ const pullData = () => {
                 message: '刷新失败',
             })
         }
+        loadData.value = false;
     })
 }
 
-/*
-tableData.value = [
-    {
-        battery_id: '111',
-        manufacturing_date: '2021-2-2',
-        battery_type_id: '蔚来汽车01款',
-        current_capacity: '20',
-        curr_charge_times: '30次',
-        available_status: '可用',
-        isEditing: false
-    },
-    {
-        battery_id: '111',
-        manufacturing_date: '2021-2-2',
-        battery_type_id: '蔚来汽车01款',
-        current_capacity: '20',
-        curr_charge_times: '30次',
-        available_status: '已预定',
-        isEditing: false
-    }
-]*/
 
 const changeView = () => {
+    loadData.value = true;
     cmRequest.request({
         url: 'api/staff/switchstation/battery',
         method: 'GET',
@@ -269,7 +251,9 @@ const changeView = () => {
     }).then((res) => {
         tableData.value = res.data;
         totalData = parseInt(res.totaldata);
+        loadData.value = false;
     }
+    
     )
 }
 
@@ -290,7 +274,7 @@ const resetAddedData = () => {
 
 const queryData = () => {
 
-
+    loadData.value = true;
     cmRequest.request({
         url: 'api/staff/switchstation/battery',
         method: 'GET',
@@ -313,6 +297,7 @@ const queryData = () => {
             });
         }
         resetFormData();
+        loadData.value = false;
     })
 }
 
