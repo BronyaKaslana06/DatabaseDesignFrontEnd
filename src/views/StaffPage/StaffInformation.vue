@@ -4,7 +4,7 @@
       <div class="username-container">
         <el-avatar
           class="extra-large-avatar"
-          :src="userAvatar || defaultAvatar"
+          :src="require('../../assets/staffAvatar.svg')"
         ></el-avatar>
         <p class="username">欢迎,{{ user_name }}</p>
         <p class="userid">id:{{ storedUserInfo }}</p>

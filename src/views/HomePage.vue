@@ -8,10 +8,10 @@
         <span class="logo-text">智能电动汽车管理系统</span>
       </div>
       <div class="user-info">
-        <div @click="goToSelfCenter" style="cursor: pointer;">
-          <el-avatar v-if="userType === '0'" :icon="UserFilled" size="default"></el-avatar>
-          <el-avatar v-else-if="userType === '1'" :icon="Tools" size="default"></el-avatar>
-          <el-avatar v-else-if="userType === '2'" :icon="Management" size="default"></el-avatar>
+        <div @click="goToSelfCenter" style="cursor: pointer; display:flex;">
+          <el-avatar v-if="userType === '0'" :src="require('../assets/UserAvatar.svg')" size="default"></el-avatar>
+          <el-avatar v-else-if="userType === '1'" :src="require('../assets/staffAvatar.svg')" size="default"></el-avatar>
+          <el-avatar v-else-if="userType === '2'" :src="require('../assets/AdminAvatar.svg')" size="default"></el-avatar>
           <el-avatar v-else size="default"></el-avatar>
           <span class="welcome-text">欢迎，{{ user_name }}</span>
         </div>
@@ -196,7 +196,9 @@ const logout = () => {
 }
 .welcome-text {
   margin-left: 10px;
-  margin-right: 1.8em; 
+  margin-right: 1.8em;
+  align-items: center;
+  display: flex;
 }
 
 .el-container{

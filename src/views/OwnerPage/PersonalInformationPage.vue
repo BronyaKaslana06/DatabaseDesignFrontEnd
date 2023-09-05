@@ -4,7 +4,7 @@
       <div class="username-container">
         <el-avatar
           class="extra-large-avatar"
-          :src="userAvatar || defaultAvatar"
+          :src="require('../../assets/UserAvatar.svg')"
         ></el-avatar>
         <p class="username">欢迎,{{ user_name }}</p>
         <p class="userid">id:{{ storedUserInfo }}</p>
@@ -141,6 +141,7 @@
 import { ref, reactive } from "vue";
 import cmRequest from "../../service/index.js";
 import { ElMessage } from "element-plus";
+import { Setting, CloseBold, UserFilled, HomeFilled, Tools,Management } from '@element-plus/icons-vue';
 
 const storedUserInfo = JSON.parse(localStorage.getItem("user_id")); //获取用户ID
 const user_name = ref(localStorage.getItem("username"));
