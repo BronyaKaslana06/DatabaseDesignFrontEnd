@@ -184,10 +184,7 @@ const getStationID = () => {
         }
     }).then((res) => {
         if (!res.code) {
-            ElMessage({
-                type: 'success',
-                message: '刷新成功',
-            })
+
             formData.station_id = res.data.station_id;
             pullData();
         }
@@ -218,10 +215,7 @@ const pullData = () => {
         }
     }).then((res) => {
         if (!res.code) {
-            ElMessage({
-                type: 'success',
-                message: '刷新成功',
-            })
+
             tableData.value = res.data;
             totalData = parseInt(res.totaldata);
         }
@@ -382,6 +376,7 @@ const deleteInfo = (val) => {
             })
         }
     })
+    changeView();
 }
 
 const saveEdit = (row) => {

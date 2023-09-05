@@ -35,7 +35,7 @@
             </el-date-picker>
           </div>
         </div>
-        <div class="infinite-list-wrapper" style="overflow:auto flex:1;">
+        <div class="infinite-list-wrapper" style="overflow:auto flex:1;" v-loading="loadData">
           <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
             <li v-for="item in listdata" :key="item.maintenance_items_id" class="list-item" style="cursor: pointer;"
               @click="Detail(item)">
@@ -114,8 +114,10 @@ const infoForm = reactive({
   endDate: ''
 });
 
-const queryData = () => {
+const loadData=ref(false);
 
+const queryData = () => {
+  loadData.value = true;
   cmRequest.request({
     url: 'api/staff/my-info/repair-records/query',
     method: 'GET',
@@ -127,10 +129,7 @@ const queryData = () => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
+      
       listdata.value = res;
     }
     else {
@@ -139,6 +138,7 @@ const queryData = () => {
         message: '刷新失败',
       })
     }
+    loadData.value = false;
   })
 };
 queryData();
@@ -253,10 +253,7 @@ const get_maintenance_info = (id) => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '查看订单成功',
-      })
+      
       maintenance_item_detail.value = res;
       item_loading.value = false;
     }

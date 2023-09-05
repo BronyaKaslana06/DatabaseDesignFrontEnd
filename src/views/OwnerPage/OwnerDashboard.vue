@@ -192,10 +192,7 @@ const getCarInfo = () => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
+      
       CarInfo.value = res.data;
       mycanvas.value = mycanvas.value || null;
       ctx.value = mycanvas.value.getContext('2d');
@@ -301,10 +298,7 @@ const getOwnerInfo = () => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
+      
       OwnerInfo.value = res.data;
     }
     else {
