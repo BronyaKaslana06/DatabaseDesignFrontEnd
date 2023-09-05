@@ -67,7 +67,7 @@
           </el-table-column>
         </el-table>
         <div class="pagination">
-          <el-pagination :current-page="query.page_index" :page-size="query.page_size" :total="totaldata"
+          <el-pagination :current-page="query.page_index" :page-size="query.page_size" :total="totalData"
             @current-change="handlePageChange" layout="prev, pager, next"></el-pagination>
         </div>
       </div>
@@ -85,6 +85,7 @@ const tableData = ref([]);
 const editFlag = ref(false);
 const addFlag = ref(false);
 const loadData = ref(false);
+const totalData = ref(0);
 
 const formData = reactive({
   switch_service_id: '',
@@ -122,7 +123,6 @@ const Text=(val)=>{
       return val;
 }
 
-var totaldata = 1;
 const pullData = () => {
   loadData.value = true;
   cmRequest.request({
@@ -140,7 +140,7 @@ const pullData = () => {
     if (!res.code) {
       
       tableData.value = res.data;
-      totaldata = parseInt(res.totaldata); //如果可以直接返回数字，就可以不要这个parseInt转换函数
+      totalData.value = parseInt(res.totalData); //如果可以直接返回数字，就可以不要这个parseInt转换函数
     }
     else {
       ElMessage({
