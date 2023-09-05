@@ -1,102 +1,112 @@
 <template>
-  <div>
-    <div class="upper-block">
-      <div class="inner-block">
-        <el-form :inline="true">
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="订单状态">
-                <el-select v-model="infoForm.order_status">
-                  <el-option key="0" value="" label="所有状态"> </el-option>
-                  <el-option key="1" value="待完成" label="待完成"> </el-option>
-                  <el-option key="2" value="待评分" label="待评分"> </el-option>
-                  <el-option key="3" value="已完成" label="已完成"> </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-        <div class="button-wrapper">
-          <el-button @click="queryData">搜索</el-button>
+  <div v-if="staff_type === '2'">
+    <div>
+      <div class="upper-block">
+        <div class="inner-block">
+          <el-form :inline="true">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="订单状态">
+                  <el-select v-model="infoForm.order_status">
+                    <el-option key="0" value="" label="所有状态"> </el-option>
+                    <el-option key="1" value="待完成" label="待完成"> </el-option>
+                    <el-option key="2" value="待评分" label="待评分"> </el-option>
+                    <el-option key="3" value="已完成" label="已完成"> </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+          <div class="button-wrapper">
+            <el-button @click="queryData">搜索</el-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="down-block">
+        <div class="inner-block2">
+          <div class="top-right">
+            <div class="maintenance-title">
+              维修历史记录
+            </div>
+            <div class="date-picker-wrapper">
+              <el-date-picker v-model="timeValue" type="daterange" align="right" unlink-panels range-separator="至"
+                start-placeholder="开始日期" end-placeholder="结束日期" value-format="YYYY-MM-DD" format="YYYY 年 MM 月 DD 日"
+                :shortcuts="shortcuts" @change="getDate">
+              </el-date-picker>
+            </div>
+          </div>
+          <div class="infinite-list-wrapper" style="overflow:auto flex:1;">
+            <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
+              <li v-for="item in listdata" :key="item.maintenance_items_id" class="list-item" style="cursor: pointer;"
+                @click="Detail(item)">
+                <div class="list-item-content">
+                  <div class="list-item-image">
+                    <img src="@/assets/维修.svg" alt="Image" />
+                  </div>
+                  <div class="list-item-text">
+                    <p class="title">{{ item.title }}</p>
+                    <p class="location-date">{{ item.maintenance_location }} - {{ item.order_submission_time
+                    }}</p>
+                  </div>
+                  <div class="list-item-button">
+                    <template v-if="item.order_status === '待接单'">
+                      <el-button type="primary" disabled>待接单</el-button>
+                    </template>
+                    <template v-if="item.order_status === '待完成'">
+                      <el-button type="info" disabled>待完成</el-button>
+                    </template>
+                    <template v-if="item.order_status === '待评分'">
+                      <el-button type="warning" disabled>待评分</el-button>
+                    </template>
+                    <template v-if="item.order_status === '已完成'">
+                      <el-button type="success" disabled>已完成</el-button>
+                    </template>
+                  </div>
+                </div>
+              </li>
+              <el-dialog v-model="dialogVisible" title="订单详情" width="50%">
+                <div class="container-vertical" v-loading="item_loading">
+                  <div class="left-info-part">
+                    <div class="detail-info">
+                      <p>订单编号：{{ selectedItemId }}</p>
+                      <p>车牌号：{{ maintenance_item_detail.plate_number }}</p>
+                      <p>车型：{{ maintenance_item_detail.vehicle_model }}</p>
+                      <p>用户姓名：{{ maintenance_item_detail.username }}</p>
+                      <p>电话：{{ maintenance_item_detail.phone_number }}</p>
+                      <p>地点：{{ maintenance_item_detail.maintenance_location }}</p>
+                      <p>提交时间：{{ maintenance_item_detail.order_submission_time }}</p>
+                      <p>备注：{{ maintenance_item_detail.remarks ? maintenance_item_detail.remarks : "无" }}</p>
+                      <p>服务时间：{{ status_number > 2 ? maintenance_item_detail.service_time : "未进行服务" }}</p>
+                      <p>评价：{{ status_number > 3 ? maintenance_item_detail.evaluations : "用户未作出评价" }}</p>
+                      <p>评分：{{ status_number > 3 ? maintenance_item_detail.score : "暂无评分" }}</p>
+                    </div>
+                  </div>
+                  <div class="steps-part" style="height: 20em">
+                    <el-steps direction="vertical" :active="status_number">
+                      <el-step title="待接单" />
+                      <el-step title="待完成" />
+                      <el-step title="待评分" />
+                      <el-step title="已完成" />
+                    </el-steps>
+                  </div>
+                </div>
+
+              </el-dialog>
+            </ul>
+            <p v-if="loading">加载中...</p>
+            <p v-if="noMore">没有更多了</p>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="down-block">
-      <div class="inner-block2">
-        <div class="top-right">
-          <div class="maintenance-title">
-            维修历史记录
-          </div>
-          <div class="date-picker-wrapper">
-            <el-date-picker v-model="timeValue" type="daterange" align="right" unlink-panels range-separator="至"
-              start-placeholder="开始日期" end-placeholder="结束日期" value-format="YYYY-MM-DD" format="YYYY 年 MM 月 DD 日"
-              :shortcuts="shortcuts" @change="getDate">
-            </el-date-picker>
-          </div>
-        </div>
-        <div class="infinite-list-wrapper" style="overflow:auto flex:1;">
-          <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
-            <li v-for="item in listdata" :key="item.maintenance_items_id" class="list-item" style="cursor: pointer;"
-              @click="Detail(item)">
-              <div class="list-item-content">
-                <div class="list-item-image">
-                  <img src="@/assets/维修.svg" alt="Image" />
-                </div>
-                <div class="list-item-text">
-                  <p class="title">{{ item.title }}</p>
-                  <p class="location-date">{{ item.maintenance_location }} - {{ item.order_submission_time
-                  }}</p>
-                </div>
-                <div class="list-item-button">
-                  <template v-if="item.order_status === '待接单'">
-                    <el-button type="primary" disabled>待接单</el-button>
-                  </template>
-                  <template v-if="item.order_status === '待完成'">
-                    <el-button type="info" disabled>待完成</el-button>
-                  </template>
-                  <template v-if="item.order_status === '待评分'">
-                    <el-button type="warning" disabled>待评分</el-button>
-                  </template>
-                  <template v-if="item.order_status === '已完成'">
-                    <el-button type="success" disabled>已完成</el-button>
-                  </template>
-                </div>
-              </div>
-            </li>
-            <el-dialog v-model="dialogVisible" title="订单详情" width="50%">
-              <div class="container-vertical" v-loading="item_loading">
-                <div class="left-info-part">
-                  <div class="detail-info">
-                    <p>订单编号：{{ selectedItemId }}</p>
-                    <p>车牌号：{{ maintenance_item_detail.plate_number }}</p>
-                    <p>车型：{{ maintenance_item_detail.vehicle_model }}</p>
-                    <p>用户姓名：{{ maintenance_item_detail.username }}</p>
-                    <p>电话：{{ maintenance_item_detail.phone_number }}</p>
-                    <p>地点：{{ maintenance_item_detail.maintenance_location }}</p>
-                    <p>提交时间：{{ maintenance_item_detail.order_submission_time }}</p>
-                    <p>备注：{{ maintenance_item_detail.remarks ? maintenance_item_detail.remarks : "无" }}</p>
-                    <p>服务时间：{{ status_number > 2 ? maintenance_item_detail.service_time : "未进行服务" }}</p>
-                    <p>评价：{{ status_number > 3 ? maintenance_item_detail.evaluations : "用户未作出评价" }}</p>
-                    <p>评分：{{ status_number > 3 ? maintenance_item_detail.score : "暂无评分" }}</p>
-                  </div>
-                </div>
-                <div class="steps-part" style="height: 20em">
-                  <el-steps direction="vertical" :active="status_number">
-                    <el-step title="待接单" />
-                    <el-step title="待完成" />
-                    <el-step title="待评分" />
-                    <el-step title="已完成" />
-                  </el-steps>
-                </div>
-              </div>
-
-            </el-dialog>
-          </ul>
-          <p v-if="loading">加载中...</p>
-          <p v-if="noMore">没有更多了</p>
-        </div>
+  </div>
+  <div v-else style="display: flex; justify-content: center;">
+    <div style="display: flex; align-items: center;  flex-direction: column;">
+      <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">
+        您不是维修员工，不可以查看维修项历史
       </div>
+      <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">
     </div>
   </div>
 </template>
@@ -113,9 +123,10 @@ const infoForm = reactive({
   startDate: '',
   endDate: ''
 });
-
+const staff_type = ref(localStorage.getItem('staff_type'));
 const queryData = () => {
-
+  if (staff_type.value != '2')
+    return;
   cmRequest.request({
     url: 'api/staff/my-info/repair-records/query',
     method: 'GET',
@@ -342,9 +353,11 @@ const get_maintenance_info = (id) => {
   height: 60px;
   border-bottom: 1px solid #ddd;
 }
+
 .list-item:hover {
-  background-color: #e8e8e8; 
+  background-color: #e8e8e8;
 }
+
 .infinite-list-wrapper .list-item+.list-item {
   margin-top: 10px;
 }

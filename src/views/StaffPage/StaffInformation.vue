@@ -36,7 +36,7 @@
     </div>
 
     <div class="block">
-      <div class="inner-block">
+      <div v-if="staff_type === '1'" class="inner-block">
         <div class="title-and-left">
           <div class="mytitle">
             <p class="car-information-left-top-text">我的换电站</p>
@@ -51,7 +51,7 @@
                   {{ stationInfo.station_id }}
                 </el-form-item>
                 <el-form-item label="换电站地址 :" style="font-weight: bold">
-                  {{ stationInfo.station_name }}
+                  {{ stationInfo.station_address }}
                 </el-form-item>
                 <el-form-item label="电池情况 :" style="font-weight: bold">
                   {{ stationInfo.available_battery_count }} /
@@ -64,6 +64,11 @@
         <div class="right-section">
           <div id="myMap" style="width: 100%; height: 260px"></div>
         </div>
+      </div>
+      <div v-else>
+        <div style="font-weight: bold; color: black; margin: 1.5em; font-size: 2em;">  
+          您不是换电站管理员，无法查看换电站信息
+        </div> 
       </div>
     </div>
 
@@ -112,6 +117,7 @@ const userInfo = reactive({
 const storedUserInfo = JSON.parse(localStorage.getItem("user_id")); //获取用户ID
 const user_name = ref(localStorage.getItem("username"));
 const loadTableData = ref(false);
+const staff_type = ref(localStorage.getItem('staff_type'));
 
 const queryData = () => {
   loadTableData.value = true;
@@ -197,6 +203,8 @@ const saveEditedInfo = () => {
 const stationInfo = ref({});
 
 const pullData = () => {
+  if (staff_type.value != '1')
+    return;
   cmRequest
     .request({
       url: "api/staff/switchstation/station_info",
@@ -207,10 +215,10 @@ const pullData = () => {
     })
     .then((res) => {
       if (!res.code) {
-        ElMessage({
-          type: "success",
-          message: "刷新成功",
-        });
+        // ElMessage({
+        //   type: "success",
+        //   message: "刷新成功",
+        // });
         stationInfo.value = res.data;
         mapOpen(res.data.longitude,res.data.latitude);
       } else {

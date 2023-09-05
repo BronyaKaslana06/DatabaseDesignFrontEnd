@@ -46,7 +46,6 @@
 
   <!-- 原始的公告展示内容从这里开始 -->
   <div class="down-block" v-loading="loadTableData">
-    >
     <div class="inner-block2">
       <div class="top-right">
         <div class="maintenance-title">信息公告</div>
@@ -786,6 +785,11 @@ const resetSearch = () => {
 .infinite-list-wrapper .publisher-publish_pos {
   font-size: 14px;
   color: #999;
+}
+.maintenance-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 </style>
 

@@ -1,113 +1,114 @@
 <template>
-  <!-- <div v-if="staff_type === '2'"> -->
-  <div>
-    <div class="flex-container">
-      <el-card class="left-card-block" :body-style="{ height: '85%' }">
-        <template #header>
-          <div class="maintenance-title">
-            <span>待处理维修项</span>
-          </div>
-          <div>
-            <div class="switch-button">
-              <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleSwitchChange">
-                <el-tab-pane label="待接单订单" name="1" :disabled="listLoading"></el-tab-pane>
-                <el-tab-pane label="待完成订单" name="2" :disabled="listLoading"></el-tab-pane>
-              </el-tabs>
-              <div>
-                <el-button @click="refreshRepair(true)" :icon="RefreshRight">
-                  刷新</el-button>
-              </div>
-            </div>
-          </div>
-        </template>
-        <div class="infinite-list-wrapper" style="overflow:auto" v-loading="listLoading">
-          <ul class="list">
-            <li v-for="item in repair_data" :key="item.maintenance_item_id" class="list-item" @click="showDetail(item)"
-              style="cursor: pointer;">
-              <div class="list-item-content">
-                <div class="list-item-text">
-                  <div style="display: flex;margin-bottom: 5px;">
-                    <div
-                      style="font-weight: bold; margin-top = 0em; margin-bottom =0em;width: fit-content;margin-right: 20px;">
-                      {{ item.title }}</div>
-                  </div>
-                  <div style="margin-top: 10px;">
-                    <span
-                      style="font-size: 14px;background-color: #4fd1c4e7;border-radius: 10px;border: solid 1px #4fd1c4; color: white;padding: 2px 10px;margin-right: 20px;">{{
-                        item.vehicle_model }}</span>
-                    <span
-                      style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px;border: solid 1px #f5a74d; color: white;padding: 2px 10px;margin-right: 20px;">{{
-                        item.plate_number }}</span>
-                  </div>
-                </div>
-                <div class="list-item-button">
-                  <el-button v-if="activeName === '1'" :icon="Document" type="primary" @click="take_order(item)"
-                    style="background-color: #9dd8ff58;border: solid 2px #2d79dd;color:#2d79dd;font-weight:bolder;margin-right: 20px;">接单</el-button>
-                  <el-button v-else :icon="Document" type="success" @click="finish_order(item)"
-                    style="background-color: rgb(240, 249, 235);border: solid 2px rgb(61 169 87);color:rgb(61 169 87);font-weight:bolder;margin-right: 20px;">完成</el-button>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </el-card>
-      <div class="card-container-vertical">
-        <el-card class="right-card-block" :body-style="{ height: '83%' }">
+  <div v-if="staff_type === '2'">
+    <div>
+      <div class="flex-container">
+        <el-card class="left-card-block" :body-style="{ height: '85%' }">
           <template #header>
             <div class="maintenance-title">
-              <span>订单信息</span>
+              <span>待处理维修项</span>
             </div>
-          </template>
-          <div v-if="selectedOrNot" style="height: 100%;">
-            <div class="container-vertical" v-loading="repair_item_loading" style="height: 100%;">
-              <div class="right-info-part">
-                <div class="detail-info" style="height: 100%;padding-top: 10px;padding-left: 20px;overflow: auto;">
-                  <el-form-item label="订单编号">{{ repair_item_data.maintenance_item_id }}</el-form-item>
-                  <el-form-item label="预约时间">{{ repair_item_data.appoint_time }}</el-form-item>
-                  <el-form-item label="车牌号">{{ repair_item_data.plate_number }}</el-form-item>
-                  <el-form-item label="用户姓名">{{ repair_item_data.username }}</el-form-item>
-                  <el-form-item label="用户电话">{{ repair_item_data.phone_number }}</el-form-item>
-                  <el-form-item label="车型">{{ repair_item_data.vehicle_model }}</el-form-item>
-                  <el-form-item label="备注">{{ repair_item_data.remarks }}</el-form-item>
+            <div>
+              <div class="switch-button">
+                <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleSwitchChange">
+                  <el-tab-pane label="待接单订单" name="1" :disabled="listLoading"></el-tab-pane>
+                  <el-tab-pane label="待完成订单" name="2" :disabled="listLoading"></el-tab-pane>
+                </el-tabs>
+                <div>
+                  <el-button @click="refreshRepair(true)" :icon="RefreshRight">
+                    刷新</el-button>
                 </div>
               </div>
-              <div class="steps-part" style="height: 50%;position: relative;top: 50%;transform: translateY(-50%);">
-                <el-steps direction="vertical" :active="activeName === '1' ? 1 : 2">
-                  <el-step title="待接单" />
-                  <el-step title="待完成" />
-                  <el-step title="待评分" />
-                  <el-step title="已完成" />
-                </el-steps>
-              </div>
-            </div>
-          </div>
-          <div class="block-text" v-else>
-            <p class="no-selection-text">请选择一个订单,以查看该订单的信息</p>
-          </div>
-        </el-card>
-        <el-card class="right-card-block" style="margin-top: 2em;">
-          <template #header>
-            <div>
-              <span style="font-size: 16px;font-weight: bold;margin-bottom: 0.5em;">订单位置</span>
-              <div style="margin-top: 0.3em;" v-if="!selectedOrNot">请选择一个订单,以查看该订单的地址</div>
-              <div style="margin-top: 0.3em;" v-else>地址：{{ repair_item_data.maintenance_location }}</div>
             </div>
           </template>
-          <div v-show="showMap">
-            <div id="map-container" style="width:100%;height:240px"></div>
+          <div class="infinite-list-wrapper" style="overflow:auto" v-loading="listLoading">
+            <ul class="list">
+              <li v-for="item in repair_data" :key="item.maintenance_item_id" class="list-item" @click="showDetail(item)"
+                style="cursor: pointer;">
+                <div class="list-item-content">
+                  <div class="list-item-text">
+                    <div style="display: flex;margin-bottom: 5px;">
+                      <div
+                        style="font-weight: bold; margin-top = 0em; margin-bottom =0em;width: fit-content;margin-right: 20px;">
+                        {{ item.title }}</div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                      <span
+                        style="font-size: 14px;background-color: #4fd1c4e7;border-radius: 10px;border: solid 1px #4fd1c4; color: white;padding: 2px 10px;margin-right: 20px;">{{
+                          item.vehicle_model }}</span>
+                      <span
+                        style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px;border: solid 1px #f5a74d; color: white;padding: 2px 10px;margin-right: 20px;">{{
+                          item.plate_number }}</span>
+                    </div>
+                  </div>
+                  <div class="list-item-button">
+                    <el-button v-if="activeName === '1'" :icon="Document" type="primary" @click="take_order(item)"
+                      style="background-color: #9dd8ff58;border: solid 2px #2d79dd;color:#2d79dd;font-weight:bolder;margin-right: 20px;">接单</el-button>
+                    <el-button v-else :icon="Document" type="success" @click="finish_order(item)"
+                      style="background-color: rgb(240, 249, 235);border: solid 2px rgb(61 169 87);color:rgb(61 169 87);font-weight:bolder;margin-right: 20px;">完成</el-button>
+                  </div>
+                </div>
+              </li>
+            </ul>
           </div>
         </el-card>
+        <div class="card-container-vertical">
+          <el-card class="right-card-block" :body-style="{ height: '83%' }">
+            <template #header>
+              <div class="maintenance-title">
+                <span>订单信息</span>
+              </div>
+            </template>
+            <div v-if="selectedOrNot" style="height: 100%;">
+              <div class="container-vertical" v-loading="repair_item_loading" style="height: 100%;">
+                <div class="right-info-part">
+                  <div class="detail-info" style="height: 100%;padding-top: 10px;padding-left: 20px;overflow: auto;">
+                    <el-form-item label="订单编号">{{ repair_item_data.maintenance_item_id }}</el-form-item>
+                    <el-form-item label="预约时间">{{ repair_item_data.appoint_time }}</el-form-item>
+                    <el-form-item label="车牌号">{{ repair_item_data.plate_number }}</el-form-item>
+                    <el-form-item label="用户姓名">{{ repair_item_data.username }}</el-form-item>
+                    <el-form-item label="用户电话">{{ repair_item_data.phone_number }}</el-form-item>
+                    <el-form-item label="车型">{{ repair_item_data.vehicle_model }}</el-form-item>
+                    <el-form-item label="备注">{{ repair_item_data.remarks }}</el-form-item>
+                  </div>
+                </div>
+                <div class="steps-part" style="height: 50%;position: relative;top: 50%;transform: translateY(-50%);">
+                  <el-steps direction="vertical" :active="activeName === '1' ? 1 : 2">
+                    <el-step title="待接单" />
+                    <el-step title="待完成" />
+                    <el-step title="待评分" />
+                    <el-step title="已完成" />
+                  </el-steps>
+                </div>
+              </div>
+            </div>
+            <div class="block-text" v-else>
+              <p class="no-selection-text">请选择一个订单,以查看该订单的信息</p>
+            </div>
+          </el-card>
+          <el-card class="right-card-block" style="margin-top: 2em;">
+            <template #header>
+              <div>
+                <span style="font-size: 16px;font-weight: bold;margin-bottom: 0.5em;">订单位置</span>
+                <div style="margin-top: 0.3em;" v-if="!selectedOrNot">请选择一个订单,以查看该订单的地址</div>
+                <div style="margin-top: 0.3em;" v-else>地址：{{ repair_item_data.maintenance_location }}</div>
+              </div>
+            </template>
+            <div v-show="showMap">
+              <div id="map-container" style="width:100%;height:240px"></div>
+            </div>
+          </el-card>
+        </div>
       </div>
     </div>
   </div>
-  <!-- <div v-else style="display: flex; justify-content: center;">  
-    <div style="display: flex; align-items: center;  flex-direction: column;">  
-      <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">  
-        您不是维修员工，不可以查看维修项表  
-      </div>  
-      <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">  
-    </div>  
-  </div> -->
+  <div v-else style="display: flex; justify-content: center;">
+    <div style="display: flex; align-items: center;  flex-direction: column;">
+      <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">
+        您不是维修员工，不可以查看维修项表
+      </div>
+      <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">
+    </div>
+  </div>
 </template>
 
 <script setup lang="js">
@@ -145,10 +146,15 @@ const showDetail = (item) => {
 };
 const repair_item_loading = ref(false);
 
+const deleteTimeString = (str) => {
+  console.log(str);
+  return str.replace(/T/g, '&nbsp;&nbsp;')
+}
+
 //根据switch决定的show_status当的状态，决定获取哪些状态的订单
 const refreshRepair = (show_message) => {
-  // if (staff_type.value != '2')
-  //   return;
+  if (staff_type.value != '2')
+    return;
   console.log("call refresh");
   listLoading.value = true;
   //repair_data.value = [];
@@ -163,10 +169,10 @@ const refreshRepair = (show_message) => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '获取維修订单列表成功',
-      })
+      // ElMessage({
+      //   type: 'success',
+      //   message: '获取維修订单列表成功',
+      // })
       repair_data.value = res.maintanence_item_array;
       listLoading.value = false;
     }
