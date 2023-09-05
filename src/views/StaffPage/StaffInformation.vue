@@ -212,6 +212,7 @@ const pullData = () => {
           message: "刷新成功",
         });
         stationInfo.value = res.data;
+        mapOpen(res.data.longitude,res.data.latitude);
       } else {
         ElMessage({
           type: "error",
@@ -222,24 +223,26 @@ const pullData = () => {
 };
 pullData();
 
-const mapOpen = () => {
+const mapOpen = (lng,lat) => {
   const BMap = window.BMap;
   var map = new BMap.Map("myMap");
+  console.log(lng)
+  console.log(lat)
   var point = new BMap.Point(
-    stationInfo.value.longitude,
-    stationInfo.value.latitude
+    lng,
+    lat
   ); //?
   map.centerAndZoom(
-    new BMap.Point(stationInfo.value.longitude, stationInfo.value.latitude),
-    100
+    new BMap.Point(lng, lat),
+    11
   ); //?
   map.enableScrollWheelZoom(true);
   var marker = new BMap.Marker(point);
   map.addOverlay(marker);
 };
-onMounted(() => {
-  mapOpen();
-});
+// onMounted(() => {
+//   mapOpen();
+// });
 
 queryData(); // 在组件加载时获取用户信息
 </script>

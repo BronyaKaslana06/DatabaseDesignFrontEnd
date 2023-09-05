@@ -43,18 +43,25 @@
         </div>
         <div class="infinite-list-wrapper" style="overflow:auto flex:1;" v-loading="listLoading">
           <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
-            <li v-for="item in listdata" :key="item.switch_record_id" class="list-item">
+            <li v-for="item in listdata" :key="item.switch_record_id" class="list-item" style="cursor: pointer"
+              @click="Detail(item)">
               <div class="list-item-content">
                 <div class="list-item-image">
                   <img src="@/assets/switch.png" alt="Image" />
                 </div>
                 <div class="list-item-text">
                   <p class="title">换电记录{{ item.switch_record_id }}</p>
-                  <p class="type-date">{{ item.switch_time
+                  <p class="type-date">预约时间：{{ item.switch_time
                   }}</p>
                 </div>
-                <div class="list-item-button">
-                  <el-button text :icon="Document" @click="Detail(item)">查看详情</el-button>
+                <div class="list-item-button" style="margin-right: 3em;">
+                  <!-- <el-button text :icon="Document" @click="Detail(item)">查看详情</el-button> -->
+                  <template v-if="item.request_status === '待评价'">
+                    <el-button type="warning" disabled>待评价</el-button>
+                  </template>
+                  <template v-if="item.request_status === '已完成'">
+                    <el-button type="success" disabled>已完成</el-button>
+                  </template>
                 </div>
               </div>
             </li>
@@ -62,20 +69,21 @@
               <div class="container-vertical" v-loading="item_loading">
                 <div class="left-info-part">
                   <div class="detail-info">
-                    <p>订单编号：{{ selectedItemId }}</p>
-                    <p>车牌号：{{ switch_item_detail.plate_number }}</p>
-                    <p>车型：{{ switch_item_detail.vehicle_model }}</p>
-                    <p>用户名：{{ switch_item_detail.username }}</p>
-                    <p>电话：{{ switch_item_detail.phone_number }}</p>
-                    <p>换电站：{{ switch_item_detail.station_name }}</p>
-                    <p>换电时间：{{ switch_item_detail.switch_time }}</p>
-                    <p>换电类型：{{ switch_item_detail.switch_type }}</p>
-                    <p>换上电池ID：{{ switch_item_detail.battery_id_on }}</p>
-                    <p>换上电池型号：{{ switch_item_detail.battery_type_on }}</p>
-                    <p>换下电池ID：{{ switch_item_detail.battery_id_off }}</p>
-                    <p>换下电池型号：{{ switch_item_detail.battery_type_off }}</p>
-                    <p>评价：{{ switch_item_detail.evaluations===''?'暂无评价': switch_item_detail.evaluations}}</p>
-                    <p>评分：{{ switch_item_detail.score===-1?'暂无评分':switch_item_detail.score }}</p>
+                    <p><strong>订单编号：</strong>{{ selectedItemId }}</p>
+                    <p><strong>车牌号：</strong>{{ switch_item_detail.plate_number }}</p>
+                    <p><strong>车型：</strong>{{ switch_item_detail.vehicle_model }}</p>
+                    <p><strong>用户名：</strong>{{ switch_item_detail.username }}</p>
+                    <p><strong>电话：</strong>{{ switch_item_detail.phone_number }}</p>
+                    <p><strong>换电站：</strong>{{ switch_item_detail.station_name }}</p>
+                    <p><strong>换电时间：</strong>{{ switch_item_detail.switch_time }}</p>
+                    <p><strong>换电类型：</strong>{{ switch_item_detail.switch_type }}</p>
+                    <p><strong>换上电池ID：</strong>{{ switch_item_detail.battery_id_on }}</p>
+                    <p><strong>换上电池型号：</strong>{{ switch_item_detail.battery_type_on }}</p>
+                    <p><strong>换下电池ID：</strong>{{ switch_item_detail.battery_id_off }}</p>
+                    <p><strong>换下电池型号：</strong>{{ switch_item_detail.battery_type_off }}</p>
+                    <p><strong>评价：</strong>{{ switch_item_detail.evaluations === '' ? '暂无评价' : switch_item_detail.evaluations }}
+                    </p>
+                    <p><strong>评分：</strong>{{ switch_item_detail.score === -1 ? '暂无评分' : switch_item_detail.score }}</p>
                   </div>
                 </div>
                 <div class="steps-part" style="height: 20em">
@@ -126,10 +134,10 @@ const queryData = () => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
+      // ElMessage({
+      //   type: 'success',
+      //   message: '刷新成功',
+      // })
       listdata.value = res;
       listLoading.value = false;
     }
@@ -256,10 +264,10 @@ const get_switch_info = (id) => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '查看订单成功',
-      })
+      // ElMessage({
+      //   type: 'success',
+      //   message: '查看订单成功',
+      // })
       switch_item_detail.value = res;
       item_loading.value = false;
     }
@@ -338,6 +346,10 @@ const get_switch_info = (id) => {
   justify-content: center;
   height: 60px;
   border-bottom: 1px solid #ddd;
+}
+
+.list-item:hover {
+  background-color: #e8e8e8;
 }
 
 .infinite-list-wrapper .list-item+.list-item {
@@ -425,4 +437,5 @@ const get_switch_info = (id) => {
 
 .detail-info {
   flex: 70%;
-}</style>
+}
+</style>

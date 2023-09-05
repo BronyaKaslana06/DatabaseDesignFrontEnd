@@ -37,10 +37,10 @@
         </div>
         <div class="infinite-list-wrapper" style="overflow:auto flex:1;">
           <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
-            <li v-for="item in listdata" :key="item.maintenance_items_id" class="list-item">
+            <li v-for="item in listdata" :key="item.maintenance_items_id" class="list-item" style="cursor: pointer" @click="Detail(item)">
               <div class="list-item-content">
                 <div class="list-item-image">
-                  <img src="@/assets/repair.png" alt="Image" />
+                  <img src="@/assets/维修.svg" alt="Image" />
                 </div>
                 <div class="list-item-text">
                   <p class="title">{{ item.title }}</p>
@@ -59,14 +59,14 @@
                     <p>订单编号：{{ selectedItemId }}</p>
                     <p>车牌号：{{ maintenance_item_detail.plate_number }}</p>
                     <p>车型：{{ maintenance_item_detail.vehicle_model }}</p>
-                    <p>用户姓名：{{ maintenance_item_detail.user_name }}</p>
+                    <p>用户姓名：{{ maintenance_item_detail.username }}</p>
                     <p>电话：{{ maintenance_item_detail.phone_number }}</p>
                     <p>地点：{{ maintenance_item_detail.maintenance_location }}</p>
                     <p>提交时间：{{ maintenance_item_detail.order_submission_time }}</p>
                     <p>备注：{{ maintenance_item_detail.remarks?maintenance_item_detail.remarks:"无" }}</p>
-                    <p>服务时间：{{ status_number>2?maintenance_item_detail.service_time:"未进行服务" }}</p>
-                    <p>评价：{{ status_number>3?maintenance_item_detail.evaluations:"用户未作出评价" }}</p>
-                    <p>评分：{{ status_number>3?maintenance_item_detail.score:"暂无评分" }}</p>
+                    <p>服务时间：{{ maintenance_item_detail.service_time==''?'暂未服务':maintenance_item_detail.service_time}}</p>
+                    <p>评价：{{ maintenance_item_detail.evaluation==''?'暂无评价':maintenance_item_detail.evaluations }}</p>
+                    <p>评分：{{ maintenance_item_detail.score==='-1'?"暂无评分":maintenance_item_detail.score }}</p>
                   </div>
                 </div>
                 <div class="steps-part" style="height: 20em">
@@ -198,7 +198,7 @@ const maintenance_item_detail = ref({
   maintenance_location: '',
   order_status: '',
   remarks: '',
-  evaluations: '',
+  evaluation: '',
   order_submission_time: '',
   service_time: '',
   vehicle_model: '',
@@ -409,5 +409,8 @@ const get_maintenance_info = (id) => {
 .steps-part {
   flex: 30%;
   margin-left: 2em;
+}
+.list-item:hover {
+  background-color: #e8e8e8;
 }
 </style>
