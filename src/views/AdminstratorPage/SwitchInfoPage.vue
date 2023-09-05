@@ -349,6 +349,11 @@ const saveEdit = () => {
   justify-content: flex-end;
   margin-top: 10px;
 }
-
+.box-item{
+  width:30px;
+  display: flex;
+  margin-left:5em;
+  margin-right:3em;
+}
 
 </style>

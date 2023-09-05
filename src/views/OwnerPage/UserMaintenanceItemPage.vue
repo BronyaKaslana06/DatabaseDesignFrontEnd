@@ -195,18 +195,14 @@ const store = useStore();
 
 const getOptions = () => {
     cmRequest.request({
-      url: 'api/owner/repair_reservation/own_query',
-      //url: '/owner/repair_reservation/own_query',      
+      url: 'api/owner/repair_reservation/own_query',  
       method: 'GET',
       params: {
         owner_id: localStorage.getItem('user_id')  
       }
     }).then((res) => {
       if(!res.code){
-        ElMessage({
-          type: 'success',
-          message: '刷新成功',
-        })
+
         options.value = res.data;
         selectedValue.value = res.data[0].vehicle_id;
         updateSelected();
@@ -237,8 +233,7 @@ const infoForm = reactive({
 const rough_query=()=>{
     loadData2.value = true;
     cmRequest.request({
-      url: 'api/owner/repair_reservation/rough_query',
-      //url: '/owner/repair_reservation/rough_query',      
+      url: 'api/owner/repair_reservation/rough_query',      
       method: 'GET',
       params: {
         vehicle_id : infoForm.vehicle_id,
@@ -247,10 +242,7 @@ const rough_query=()=>{
       }
     }).then((res) => {
       if(!res.code){
-        ElMessage({
-          type: 'success',
-          message: '刷新成功',
-        })
+
         listdata.value=res.data;
         //listdata.value = 
       }
@@ -270,18 +262,13 @@ const updateSelected = () => {
     // 根据选择器的选择更新相关变量的值
     infoForm.vehicle_id = selectedValue.value;
     cmRequest.request({
-      url: 'api/owner/repair_reservation/info_query',
-      //url: '/owner/repair_reservation/info_query',      
+      url: 'api/owner/repair_reservation/info_query',   
       method: 'GET',
       params: {
         vehicle_id : infoForm.vehicle_id
       }
     }).then((res) => {
       if(!res.code){
-        ElMessage({
-          type: 'success',
-          message: '刷新成功',
-        })
         infoForm.vehicle_model = res.data[0].vehicle_model;
         infoForm.purchase_date = res.data[0].purchase_date;
         infoForm.current_capacity = res.data[0].current_capacity;
@@ -401,7 +388,6 @@ const deleteInfo = (maintenanceItemId) => {
   console.log('Deleting item with ID:', maintenanceItemId);
   cmRequest.request({
       url: 'api/owner/repair_reservation/delete',
-      //url: '/owner/repair_reservation/delete',
       method: 'DELETE',
       params: {
         maintenance_item_id: maintenanceItemId
@@ -570,7 +556,6 @@ const handleClose = () => {
     else {
         cmRequest.request({
             url: 'api/owner/repair_reservation/submit',
-            //url: 'owner/repair_reservation/submit',
             method: 'POST',
             data: {
                 vehicle_id: (repairItem.vehicle_id).toString(),
@@ -588,7 +573,7 @@ const handleClose = () => {
                 clearRepairItem();
                 ElMessage({
                     type: 'success',
-                    message: '添加维修项成功',
+                    message: '预约成功',
                 })
                 rough_query();
             }

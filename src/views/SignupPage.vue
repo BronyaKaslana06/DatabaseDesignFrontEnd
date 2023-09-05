@@ -220,6 +220,7 @@ const submitForm = async () => {
                     })
                     localStorage.setItem('user_type', selected.value);
                     localStorage.setItem('user_id', res.data.user_id);
+                    localStorage.setItem('token', res.token);
                     if (selected.value == 0)
                         router.push('/reservation');
                     else if (selected.value == 1)
