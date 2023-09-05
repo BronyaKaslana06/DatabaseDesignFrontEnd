@@ -19,7 +19,8 @@
                     easing: 'ease-in',
                 }" class="info-block" @click="drawer = true, getSpecificInfo(item.station_id)">
                     <div class="station_name">{{ item.station_name }}</div>
-                    <div class="distance">{{ item.distance + "m" }}</div>
+                    <!-- <div class="distance">{{ item.distance + "m" }}</div> -->
+                    <div class="distance">{{ formatDistance(item.distance) }}</div>
                     <div class="opening_time">{{ "营业时间：" + item.opening_time }}</div>
                     <div class="cell">
                         <div style="align-items: center; display: flex;transform: translateY(-4px);">
@@ -35,7 +36,7 @@
         <el-drawer v-model="drawer" direction="rtl" size="40%" :with-header="false">
             <div class="drawer-info-group">
                 <div class="spc-st-name">{{ specificDataItem.station_name }}</div>
-                <div class="spc-st-dist">{{ "距离您约" + specificDataItem.distance + "米" }}</div>
+                <div class="spc-st-dist">{{ "距离您约" + formatDistance(specificDataItem.distance) }}</div>
                 <div class="green-block">
                     <div style="display: inline-block;position: relative;left:25%">
                         <div>
@@ -177,7 +178,7 @@
 
 <script setup lang="js">
 import { ElMessage } from 'element-plus';
-import { reactive, ref, onMounted, nextTick } from 'vue';
+import { reactive, ref, onMounted, nextTick, computed } from 'vue';
 
 import cmRequest from '../../service/index.js';
 
@@ -208,6 +209,15 @@ const timeArray = ref([
     { label: "20:00-24:00", value: 5, disabled: false }
 ]);
 
+const formatDistance = (distance) => {
+    if (distance < 1000) {
+        // 不到1000m，以'm'为单位
+        return distance.toFixed(1) + 'm';
+    } else {
+        // 1000m以上，以'km'为单位
+        return (distance / 1000).toFixed(1) + 'km';
+    }
+}
 
 const timeArrayCheck = (selectedDate) => {
     const currentDate = dateArray.value[0];
@@ -317,7 +327,7 @@ const drawer = ref()
 
 const submit = () => {
     if (dateRadio.value == null || timeRadio.value == null || switchType.value == null ||
-     (switchType.value === "上门换电" && address.value == null) || battery_type.value === null || selectedCar.value === null) {
+        (switchType.value === "上门换电" && address.value == null) || battery_type.value === null || selectedCar.value === null) {
         ElMessage({
             type: 'warning',
             message: '请填写完整的表单信息'
@@ -368,6 +378,8 @@ const pullData = () => {
             var userLocation = r.point;
             user_lat = userLocation.lat;
             user_lng = userLocation.lng;
+            console.log(user_lat);
+            console.log(user_lng);
             cmRequest.request({
                 // baseURL:'https://mock.apifox.cn/m1/3058331-0-default',
                 url: 'api/owner/stations',
@@ -449,28 +461,69 @@ const assignment = (data) => {
 }
 
 const getSpecificInfo = (id) => {
-    cmRequest.request({
-        url: "api/owner/stations/detailed-infos",
-        method: "GET",
-        params: {
-            station_id: id,
-            longitude: 120,
-            latitude: 30,
-        }
-    }).then((res) => {
-        if (!res.code) {
-            curStationID = id;
-            assignment(res.data);
-            drawMap();
+    const BMap = window.BMap;
+    var geolocation = new BMap.Geolocation();
+    geolocation.getCurrentPosition((r) => {
+        if (geolocation.getStatus() == 0) {
+            var userLocation = r.point;
+            user_lat = userLocation.lat;
+            user_lng = userLocation.lng;
+            console.log(user_lat);
+            console.log(user_lng);
+            cmRequest.request({
+                // baseURL:'https://mock.apifox.cn/m1/3058331-0-default',
+                url: "api/owner/stations/detailed-infos",
+                method: 'GET',
+                params: {
+                    station_id: id,
+                    longitude: user_lng,
+                    latitude: user_lat,
+                }
+            }).then((res) => {
+                if (!res.code) {
+                    curStationID = id;
+                    assignment(res.data);
+                    drawMap();
+                }
+                else {
+                    ElMessage({
+                        type: 'error',
+                        message: '获取换电站具体信息失败',
+                    })
+                    return;
+                }
+            })
         }
         else {
             ElMessage({
                 type: 'error',
-                message: '获取换电站具体信息失败',
+                message: '获取用户位置失败',
             })
             return;
         }
-    })
+    });
+    // cmRequest.request({
+    //     url: "api/owner/stations/detailed-infos",
+    //     method: "GET",
+    //     params: {
+    //         station_id: id,
+    //         longitude: 120,
+    //         latitude: 30,
+    //     }
+    // }).then((res) => {
+    //     if (!res.code) {
+    //         curStationID = id;
+    //         assignment(res.data);
+    //         drawMap();
+    //     }
+    //     else {
+    //         ElMessage({
+    //             type: 'error',
+    //             message: '获取换电站具体信息失败',
+    //         })
+    //         return;
+    //     }
+    // })
 }
 
 const drawMap = () => {
