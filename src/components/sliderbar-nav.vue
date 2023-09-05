@@ -290,12 +290,12 @@ for (let name of svgArray) {
   content: url(../assets/公告管理-active.svg);
 }
 
-
+.icon-维修历史::before,
 .icon-维修订单管理::before {
   content: url(../assets/维修订单管理.svg);
 }
 
-.icon-active-维修订单::before,
+.icon-active-维修历史::before,
 .icon-active-维修订单管理::before {
   content: url(../assets/维修订单管理-active.svg);
 }
