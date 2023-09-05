@@ -2,7 +2,7 @@
   <!-- <div v-if="staff_type === '2'"> -->
   <div>
     <div class="flex-container">
-      <el-card class="left-card-block" :body-style="{height: '85%'}">
+      <el-card class="left-card-block" :body-style="{ height: '85%' }">
         <template #header>
           <div class="maintenance-title">
             <span>待处理维修项</span>
@@ -41,9 +41,10 @@
                   </div>
                 </div>
                 <div class="list-item-button">
-                  <el-button v-if="activeName === '1'" :icon="Document" type="primary"
-                    @click="take_order(item)" style="background-color: #9dd8ff58;border: solid 2px #2d79dd;color:#2d79dd;font-weight:bolder;margin-right: 20px;">接单</el-button>
-                  <el-button v-else :icon="Document" type="success" @click="finish_order(item)" style="background-color: rgb(240, 249, 235);border: solid 2px rgb(61 169 87);color:rgb(61 169 87);font-weight:bolder;margin-right: 20px;">完成</el-button>
+                  <el-button v-if="activeName === '1'" :icon="Document" type="primary" @click="take_order(item)"
+                    style="background-color: #9dd8ff58;border: solid 2px #2d79dd;color:#2d79dd;font-weight:bolder;margin-right: 20px;">接单</el-button>
+                  <el-button v-else :icon="Document" type="success" @click="finish_order(item)"
+                    style="background-color: rgb(240, 249, 235);border: solid 2px rgb(61 169 87);color:rgb(61 169 87);font-weight:bolder;margin-right: 20px;">完成</el-button>
                 </div>
               </div>
             </li>
@@ -51,7 +52,7 @@
         </div>
       </el-card>
       <div class="card-container-vertical">
-        <el-card class="right-card-block" :body-style="{height:'83%'}">
+        <el-card class="right-card-block" :body-style="{ height: '83%' }">
           <template #header>
             <div class="maintenance-title">
               <span>订单信息</span>
@@ -62,6 +63,7 @@
               <div class="right-info-part">
                 <div class="detail-info" style="height: 100%;padding-top: 10px;padding-left: 20px;overflow: auto;">
                   <el-form-item label="订单编号">{{ repair_item_data.maintenance_item_id }}</el-form-item>
+                  <el-form-item label="预约时间">{{ repair_item_data.appoint_time }}</el-form-item>
                   <el-form-item label="车牌号">{{ repair_item_data.plate_number }}</el-form-item>
                   <el-form-item label="用户姓名">{{ repair_item_data.username }}</el-form-item>
                   <el-form-item label="用户电话">{{ repair_item_data.phone_number }}</el-form-item>
@@ -139,7 +141,7 @@ const showDetail = (item) => {
   selectedOrNot.value = true;
   showMap.value = true;
   get_repair_info(item.maintenance_item_id);
-  showLocation(item);
+  //showLocation(repair_item_data.longitude,repair_item_data.latitude);
 };
 const repair_item_loading = ref(false);
 
@@ -198,6 +200,13 @@ const get_repair_info = (id) => {
       // })
       repair_item_data.value = res.data;
       repair_item_data.value.maintenance_item_id = id;
+      const BMap = window.BMap;
+      const map = new BMap.Map('map-container'); // 创建地图实例
+      const location = new BMap.Point(res.data.longitude, res.data.latitude); // 替换为你的坐标经度和纬度
+      map.centerAndZoom(location, 11); // 设置地图中心点和缩放级别
+      map.enableScrollWheelZoom(true);
+      const marker = new BMap.Marker(location); // 创建标记
+      map.addOverlay(marker); // 将标记添加到地图上
       repair_item_loading.value = false;
     }
     else {
@@ -210,16 +219,6 @@ const get_repair_info = (id) => {
   })
 }
 //get_repair_info();
-
-const showLocation = (item) => {
-  const BMap = window.BMap;
-  const map = new BMap.Map('map-container'); // 创建地图实例
-  const location = new BMap.Point(item.longitude, item.latitude); // 替换为你的坐标经度和纬度
-  map.centerAndZoom(location, 11); // 设置地图中心点和缩放级别
-  map.enableScrollWheelZoom(true);
-  const marker = new BMap.Marker(location); // 创建标记
-  map.addOverlay(marker); // 将标记添加到地图上
-}
 
 const take_order = (item) => {
   console.log(item.maintenance_item_id + "接单");
@@ -394,9 +393,9 @@ const finish_order = (item) => {
   padding: 5px 0;
 }
 
-.infinite-list-wrapper .list-item:hover{
+.infinite-list-wrapper .list-item:hover {
   background-color: rgba(218, 218, 218, 0.516);
-  transition: all  0.4s ease;
+  transition: all 0.4s ease;
 }
 
 /*.infinite-list-wrapper .list-item+.list-item {
@@ -420,12 +419,12 @@ const finish_order = (item) => {
   height: 30em;
 }
 
-:deep(.el-form-item__content){
-  font-weight:500;
+:deep(.el-form-item__content) {
+  font-weight: 500;
   color: black;
 }
 
-:deep(.el-card__body){
-    padding: 0;
+:deep(.el-card__body) {
+  padding: 0;
 }
 </style>

@@ -9,7 +9,7 @@
                 easing: 'ease-out'
             }" class="search-button" @click="search">查询</button>
         </div>
-        <div v-infinite-scroll="load" style="overflow: auto" class="info-list" :infinite-scroll-disabled="loading"
+        <div v-infinite-scroll="load" style="overflow: auto" class="info-list" :infinite-scroll-disabled="loading2"
             infinite-scroll-distance="100" v-loading="loading">
             <div v-for="(item, index) in dataItem" :key="index" class="info-group">
                 <div v-wave="{
@@ -19,7 +19,8 @@
                     easing: 'ease-in',
                 }" class="info-block" @click="drawer = true, getSpecificInfo(item.station_id)">
                     <div class="station_name">{{ item.station_name }}</div>
-                    <div class="distance">{{ item.distance + "m" }}</div>
+                    <!-- <div class="distance">{{ item.distance + "m" }}</div> -->
+                    <div class="distance">{{ formatDistance(item.distance) }}</div>
                     <div class="opening_time">{{ "营业时间：" + item.opening_time }}</div>
                     <div class="cell">
                         <div style="align-items: center; display: flex;transform: translateY(-4px);">
@@ -35,7 +36,7 @@
         <el-drawer v-model="drawer" direction="rtl" size="40%" :with-header="false">
             <div class="drawer-info-group">
                 <div class="spc-st-name">{{ specificDataItem.station_name }}</div>
-                <div class="spc-st-dist">{{ "距离您约" + specificDataItem.distance + "米" }}</div>
+                <div class="spc-st-dist">{{ "距离您约" + formatDistance(specificDataItem.distance) }}</div>
                 <div class="green-block">
                     <div style="display: inline-block;position: relative;left:25%">
                         <div>
@@ -107,7 +108,7 @@
 
         </el-drawer>
         <el-dialog v-model="rsvFlag" @close="resetForm">
-            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%);">预约换电日期</div>
+            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%); font-weight: bold;">预约换电日期</div>
             <div
                 style="display: flex;align-items: center;justify-content: space-around;width: 90%;position: relative;left:50%;transform:translateX(-50%);margin-top: 20px;">
                 <el-radio-group v-model="dateRadio">
@@ -117,18 +118,18 @@
                     </div>
                 </el-radio-group>
             </div>
-            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%);margin:20px 0">预约换电时间段
+            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%);margin:20px 0; font-weight: bold;">预约换电时间段
             </div>
             <div
                 style="display: flex;align-items: center;justify-content: space-around;position: relative;left:50%;transform:translateX(-50%);flex-wrap: nowrap;">
                 <el-radio-group v-model="timeRadio">
-                    <div v-for="(item, index) in timeArray">
-                        <el-radio border :key="index" :label="item.value" :disabled="item.disabled">{{
+                    <div v-for="(item, index) in timeArray" >
+                        <el-radio border :key="index" :label="item.label" :disabled="item.disabled">{{
                             item.label }}</el-radio>
                     </div>
                 </el-radio-group>
             </div>
-            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%);margin:20px 0">换电方式
+            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%);margin:20px 0;font-weight: bold;">换电方式
             </div>
             <div
                 style="display: flex;align-items: center;justify-content: space-around;width: 90%;position: relative;left:50%;transform:translateX(-50%);">
@@ -137,7 +138,7 @@
                     <el-radio label="上门换电"></el-radio>
                 </el-radio-group>
             </div>
-            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%);margin:20px 0">待换电汽车
+            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%);margin:20px 0;font-weight: bold;">待换电汽车
             </div>
             <div
                 style="display: flex;align-items: center;justify-content: space-around;width: 90%;position: relative;left:50%;transform:translateX(-50%);">
@@ -145,7 +146,7 @@
                     <el-option v-for="(item, index) in carGroup" :key="index" :label="item.plate_number" :value="index" />
                 </el-select>
             </div>
-            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%);margin:20px 0">电池类型
+            <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%);margin:20px 0;font-weight: bold;">电池类型
             </div>
             <div
                 style="display: flex;align-items: center;justify-content: space-around;width: 90%;position: relative;left:50%;transform:translateX(-50%);">
@@ -177,7 +178,7 @@
 
 <script setup lang="js">
 import { ElMessage } from 'element-plus';
-import { reactive, ref, onMounted, nextTick } from 'vue';
+import { reactive, ref, onMounted, nextTick, computed } from 'vue';
 
 import cmRequest from '../../service/index.js';
 
@@ -187,6 +188,7 @@ let user_lat = 0;
 let user_lng = 0;
 let carGroup = ref([]);
 const loading = ref(false);
+const loading2 = ref(false);
 const dataItem = ref([]);
 const rsvFlag = ref(false);
 const dateArray = ref([]);
@@ -208,6 +210,15 @@ const timeArray = ref([
     { label: "20:00-24:00", value: 5, disabled: false }
 ]);
 
+const formatDistance = (distance) => {
+    if (distance < 1000) {
+        // 不到1000m，以'm'为单位
+        return distance.toFixed(1) + 'm';
+    } else {
+        // 1000m以上，以'km'为单位
+        return (distance / 1000).toFixed(1) + 'km';
+    }
+}
 
 const timeArrayCheck = (selectedDate) => {
     const currentDate = dateArray.value[0];
@@ -267,8 +278,8 @@ const resetForm = () => {
 const getMoreInfo = () => {
     let owner_id = localStorage.getItem("user_id");
     cmRequest.request({
-        baseURL: 'https://mock.apifox.cn/m1/3058331-0-default',
-        url: 'owner/repair_reservation/own_query',
+        //baseURL: 'https://mock.apifox.cn/m1/3058331-0-default',
+        url: 'api/owner/repair_reservation/own_query',
         method: 'GET',
         params: {
             owner_id: owner_id
@@ -316,8 +327,9 @@ const specificDataItem = reactive({
 const drawer = ref()
 
 const submit = () => {
+    //let timeString;
     if (dateRadio.value == null || timeRadio.value == null || switchType.value == null ||
-     (switchType.value === "上门换电" && address.value == null) || battery_type.value === null || selectedCar.value === null) {
+        (switchType.value === "上门换电" && address.value == null) || batteryType.value === null || selectedCar.value === null) {
         ElMessage({
             type: 'warning',
             message: '请填写完整的表单信息'
@@ -350,6 +362,7 @@ const submit = () => {
                 type: 'success',
                 message: '换电请求发送成功',
             })
+            rsvFlag.value = false;
         }
         else {
             ElMessage({
@@ -368,6 +381,8 @@ const pullData = () => {
             var userLocation = r.point;
             user_lat = userLocation.lat;
             user_lng = userLocation.lng;
+            console.log(user_lat);
+            console.log(user_lng);
             cmRequest.request({
                 // baseURL:'https://mock.apifox.cn/m1/3058331-0-default',
                 url: 'api/owner/stations',
@@ -380,12 +395,18 @@ const pullData = () => {
                 }
             }).then((res) => {
                 if (!res.code) {
+                    if(res.data.length === 0){
+                        loading2.value = true;
+                        loading.value = false;
+                        return;
+                    }
                     if (typeof dataItem.value === 'undefined' || dataItem.value.length === 0) {
                         dataItem.value = res.data;
                     } else {
                         dataItem.value = [...dataItem.value, ...res.data];
                     }
                     loading.value = false;
+                    loading2.value = false;
                     curInfoIndex++;
                 }
                 else {
@@ -410,6 +431,7 @@ const pullData = () => {
 }
 const load = () => {
     loading.value = true;
+    loading2.value = true;
     pullData();
 }
 
@@ -449,13 +471,54 @@ const assignment = (data) => {
 }
 
 const getSpecificInfo = (id) => {
+    // const BMap = window.BMap;
+    // var geolocation = new BMap.Geolocation();
+    // geolocation.getCurrentPosition((r) => {
+    //     if (geolocation.getStatus() == 0) {
+    //         var userLocation = r.point;
+    //         user_lat = userLocation.lat;
+    //         user_lng = userLocation.lng;
+    //         console.log(user_lat);
+    //         console.log(user_lng);
+    //         cmRequest.request({
+    //             // baseURL:'https://mock.apifox.cn/m1/3058331-0-default',
+    //             url: "api/owner/stations/detailed-infos",
+    //             method: 'GET',
+    //             params: {
+    //                 station_id: id,
+    //                 longitude: user_lng,
+    //                 latitude: user_lat,
+    //             }
+    //         }).then((res) => {
+    //             if (!res.code) {
+    //                 curStationID = id;
+    //                 assignment(res.data);
+    //                 drawMap();
+    //             }
+    //             else {
+    //                 ElMessage({
+    //                     type: 'error',
+    //                     message: '获取换电站具体信息失败',
+    //                 })
+    //                 return;
+    //             }
+    //         })
+    //     }
+    //     else {
+    //         ElMessage({
+    //             type: 'error',
+    //             message: '获取用户位置失败',
+    //         })
+    //         return;
+    //     }
+    // });
     cmRequest.request({
         url: "api/owner/stations/detailed-infos",
         method: "GET",
         params: {
             station_id: id,
-            longitude: 120,
-            latitude: 30,
+            longitude: user_lng,
+            latitude: user_lat,
         }
     }).then((res) => {
         if (!res.code) {

@@ -18,12 +18,12 @@
             <div class="information-item-line">
               <p><strong>姓名：</strong>{{ userInfo.personalInfo.name }}</p>
               <p><strong>联系方式：</strong>{{ userInfo.personalInfo.phone_number }}</p>
-              <p><strong>职位：</strong>{{ userInfo.personalInfo.positions }}</p>
+              <p><strong>职位：</strong>{{ userInfo.personalInfo.postions }}</p>
             </div>
             <div class="information-item-line">
               <p><strong>性别：</strong>{{ userInfo.personalInfo.gender }}</p>
-              <p><strong>评语：</strong>{{ userInfo.performance.total_performance }}</p>
-              <p><strong>绩效：</strong>{{ userInfo.performance.score }}</p>
+              <p><strong>绩效：</strong>{{ userInfo.performance.total_performance }}</p>
+              <p><strong>评分：</strong>{{ userInfo.performance.score }}</p>
             </div>
             <div class="information-item-right">
               <Text class="edit-button" @click="showEditDialog(userInfo)"
@@ -98,7 +98,7 @@ import { ElMessage } from "element-plus";
 const userInfo = reactive({
   personalInfo: {
     name: "",
-    positions: "",
+    postions: "",
     gender: "",
     phone_number: "",
   },
@@ -399,4 +399,5 @@ queryData(); // 在组件加载时获取用户信息
   font-size: 30px;
 }
 </style>
+
 
