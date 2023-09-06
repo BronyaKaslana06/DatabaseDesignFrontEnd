@@ -58,14 +58,20 @@
             <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
           </div>
           <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-            height="100vh">
+            height="100vh" v-loading="loadTableData">
             <el-table-column prop="employee_id" label="员工ID" min-width="10%" align="center"></el-table-column>
             <el-table-column prop="username" label="员工姓名" min-width="10%" align="center"></el-table-column>
             <el-table-column prop="gender" label="性别" min-width="5%" align="center">
             </el-table-column>
             <el-table-column prop="station_name" min-width="10%" label="换电站名" align="center">
+              <template v-slot="scope">
+                <span>{{ scope.row.station_name===null ? "维修工无所属换电站":scope.row.station_name }}</span>
+              </template>
             </el-table-column>
             <el-table-column prop="station_id" min-width="10%" label="换电站ID" align="center">
+              <template v-slot="scope">
+                <span>{{ scope.row.station_id===-1 ? "维修工无所属换电站":scope.row.station_id }}</span>
+              </template>
             </el-table-column>
             <el-table-column prop="phone_number" min-width="10%" label="手机号" align="center">
             </el-table-column>
@@ -171,6 +177,7 @@
   const totalData = ref(0);
   const editFlag = ref(false);
   const addFlag = ref(false);
+  const loadTableData = ref(false);
 
   const formData = reactive({
     employee_id: '',
@@ -204,6 +211,7 @@
 
 
   const pullData = () => {
+    loadTableData.value = true;
     cmRequest.request({
       url: 'api/administrator/staff-info/query',
       method: 'GET',
@@ -215,12 +223,14 @@
       if(!res.code){
         tableData.value = res.data;
         totalData.value = parseInt(res.totalData);
+        loadTableData.value = false;
       }
       else{
         ElMessage({
           type: 'error',
           message: '刷新失败',
         })
+        loadTableData.value = false;
       }
     })
     cmRequest.request({
@@ -353,7 +363,7 @@
         changeView();
         ElMessage({
           type: 'success',
-          message: '新建成功, 新员工id为'+res.employee_id,
+          message: '新建成功,请刷新后查看，新员工id为'+res.employee_id,
         })
       }
       else {
@@ -407,7 +417,7 @@
         changeView();
         ElMessage({
           type: 'success',
-          message: '更新成功',
+          message: '更新成功，请刷新后查看',
         })
       }
       else {

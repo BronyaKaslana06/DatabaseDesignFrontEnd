@@ -1,107 +1,118 @@
 <template>
-  <div>
-    <!-- <el-page-header @back="goBack">
+  <div v-if="staff_type === '1'">
+    <div>
+      <!-- <el-page-header @back="goBack">
       <template #content>
         <span class="text-large font-600 mr-3 custom-text"> 换电服务 </span>
       </template>
     </el-page-header> -->
 
-    <div class="upper-block">
-      <div class="inner-block2">
-        <el-form :inline="true">
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="换电类型">
-                <el-select v-model="infoForm.switch_type">
-                  <el-option key="1" value="" label="所有类型"> </el-option>
-                  <el-option key="1" value="上门换电" label="上门换电"> </el-option>
-                  <el-option key="2" value="到店换电" label="到店换电"> </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-        <div class="button-wrapper">
-          <el-button @click="queryData">搜索</el-button>
+      <div class="upper-block">
+        <div class="inner-block2">
+          <el-form :inline="true">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="换电类型">
+                  <el-select v-model="infoForm.switch_type">
+                    <el-option key="1" value="" label="所有类型"> </el-option>
+                    <el-option key="1" value="上门换电" label="上门换电"> </el-option>
+                    <el-option key="2" value="到店换电" label="到店换电"> </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+          <div class="button-wrapper">
+            <el-button @click="queryData">搜索</el-button>
+          </div>
+        </div>
+      </div>
+
+      <div class="down-block">
+        <div class="inner-block2">
+          <div class="top-right">
+            <div class="maintenance-title">
+              换电记录
+            </div>
+            <!-- 日期选择 -->
+            <div class="date-picker-wrapper">
+              <el-date-picker v-model="timeValue" type="daterange" align="right" unlink-panels range-separator="至"
+                start-placeholder="开始日期" end-placeholder="结束日期" value-format="YYYY-MM-DD" format="YYYY 年 MM 月 DD 日"
+                :shortcuts="shortcuts" @change="getDate">
+              </el-date-picker>
+            </div>
+          </div>
+          <div class="infinite-list-wrapper" style="overflow:auto flex:1;" v-loading="listLoading">
+            <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
+              <li v-for="item in listdata" :key="item.switch_record_id" class="list-item" style="cursor: pointer"
+                @click="Detail(item)">
+                <div class="list-item-content">
+                  <div class="list-item-image">
+                    <img src="@/assets/switch.png" alt="Image" />
+                  </div>
+                  <div class="list-item-text">
+                    <p class="title">换电记录{{ item.switch_record_id }}</p>
+                    <p class="type-date">预约时间：{{ item.switch_time
+                    }}</p>
+                  </div>
+                  <div class="list-item-button" style="margin-right: 3em;">
+                    <!-- <el-button text :icon="Document" @click="Detail(item)">查看详情</el-button> -->
+                    <template v-if="item.request_status === '待评价'">
+                      <el-button type="warning" disabled>待评价</el-button>
+                    </template>
+                    <template v-if="item.request_status === '已完成'">
+                      <el-button type="success" disabled>已完成</el-button>
+                    </template>
+                  </div>
+                </div>
+              </li>
+              <el-dialog v-model="dialogVisible" title="订单详情" width="50%">
+                <div class="container-vertical" v-loading="item_loading">
+                  <div class="left-info-part">
+                    <div class="detail-info">
+                      <p><strong>订单编号：</strong>{{ selectedItemId }}</p>
+                      <p><strong>车牌号：</strong>{{ switch_item_detail.plate_number }}</p>
+                      <p><strong>车型：</strong>{{ switch_item_detail.vehicle_model }}</p>
+                      <p><strong>用户名：</strong>{{ switch_item_detail.username }}</p>
+                      <p><strong>电话：</strong>{{ switch_item_detail.phone_number }}</p>
+                      <p><strong>换电站：</strong>{{ switch_item_detail.station_name }}</p>
+                      <p><strong>换电时间：</strong>{{ switch_item_detail.switch_time }}</p>
+                      <p><strong>换电类型：</strong>{{ switch_item_detail.switch_type }}</p>
+                      <p><strong>换上电池ID：</strong>{{ switch_item_detail.battery_id_on }}</p>
+                      <p><strong>换上电池型号：</strong>{{ switch_item_detail.battery_type_on }}</p>
+                      <p><strong>换下电池ID：</strong>{{ switch_item_detail.battery_id_off }}</p>
+                      <p><strong>换下电池型号：</strong>{{ switch_item_detail.battery_type_off }}</p>
+                      <p><strong>评价：</strong>{{ switch_item_detail.evaluations === '' ? '暂无评价' :
+                        switch_item_detail.evaluations }}
+                      </p>
+                      <p><strong>评分：</strong>{{ switch_item_detail.score === -1 ? '暂无评分' : switch_item_detail.score }}</p>
+                    </div>
+                  </div>
+                  <div class="steps-part" style="height: 20em">
+                    <el-steps direction="vertical" :active='calculateStep(switch_item_detail.request_status)'>
+                      <el-step title="待接单" />
+                      <el-step title="待完成" />
+                      <el-step title="待评价" />
+                      <el-step title="已完成" />
+                    </el-steps>
+                  </div>
+                </div>
+
+              </el-dialog>
+            </ul>
+            <p v-if="loading">加载中...</p>
+            <p v-if="noMore">没有更多了</p>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="down-block">
-      <div class="inner-block2">
-        <div class="top-right">
-          <div class="maintenance-title">
-            换电记录
-          </div>
-          <!-- 日期选择 -->
-          <div class="date-picker-wrapper">
-            <el-date-picker v-model="timeValue" type="daterange" align="right" unlink-panels range-separator="至"
-              start-placeholder="开始日期" end-placeholder="结束日期" value-format="YYYY-MM-DD" format="YYYY 年 MM 月 DD 日"
-              :shortcuts="shortcuts" @change="getDate">
-            </el-date-picker>
-          </div>
-        </div>
-        <div class="infinite-list-wrapper" style="overflow:auto flex:1;" v-loading="listLoading">
-          <ul v-infinite-scroll="load" class="list" :infinite-scroll-disabled="disabled">
-            <li v-for="item in listdata" :key="item.switch_record_id" class="list-item" style="cursor: pointer"
-              @click="Detail(item)">
-              <div class="list-item-content">
-                <div class="list-item-image">
-                  <img src="@/assets/switch.png" alt="Image" />
-                </div>
-                <div class="list-item-text">
-                  <p class="title">换电记录{{ item.switch_record_id }}</p>
-                  <p class="type-date">预约时间：{{ item.switch_time
-                  }}</p>
-                </div>
-                <div class="list-item-button" style="margin-right: 3em;">
-                  <!-- <el-button text :icon="Document" @click="Detail(item)">查看详情</el-button> -->
-                  <template v-if="item.request_status === '待评价'">
-                    <el-button type="warning" disabled>待评价</el-button>
-                  </template>
-                  <template v-if="item.request_status === '已完成'">
-                    <el-button type="success" disabled>已完成</el-button>
-                  </template>
-                </div>
-              </div>
-            </li>
-            <el-dialog v-model="dialogVisible" title="订单详情" width="50%">
-              <div class="container-vertical" v-loading="item_loading">
-                <div class="left-info-part">
-                  <div class="detail-info">
-                    <p><strong>订单编号：</strong>{{ selectedItemId }}</p>
-                    <p><strong>车牌号：</strong>{{ switch_item_detail.plate_number }}</p>
-                    <p><strong>车型：</strong>{{ switch_item_detail.vehicle_model }}</p>
-                    <p><strong>用户名：</strong>{{ switch_item_detail.username }}</p>
-                    <p><strong>电话：</strong>{{ switch_item_detail.phone_number }}</p>
-                    <p><strong>换电站：</strong>{{ switch_item_detail.station_name }}</p>
-                    <p><strong>换电时间：</strong>{{ switch_item_detail.switch_time }}</p>
-                    <p><strong>换电类型：</strong>{{ switch_item_detail.switch_type }}</p>
-                    <p><strong>换上电池ID：</strong>{{ switch_item_detail.battery_id_on }}</p>
-                    <p><strong>换上电池型号：</strong>{{ switch_item_detail.battery_type_on }}</p>
-                    <p><strong>换下电池ID：</strong>{{ switch_item_detail.battery_id_off }}</p>
-                    <p><strong>换下电池型号：</strong>{{ switch_item_detail.battery_type_off }}</p>
-                    <p><strong>评价：</strong>{{ switch_item_detail.evaluations === '' ? '暂无评价' : switch_item_detail.evaluations }}
-                    </p>
-                    <p><strong>评分：</strong>{{ switch_item_detail.score === -1 ? '暂无评分' : switch_item_detail.score }}</p>
-                  </div>
-                </div>
-                <div class="steps-part" style="height: 20em">
-                  <el-steps direction="vertical" :active='calculateStep(switch_item_detail.request_status)'>
-                    <el-step title="待接单" />
-                    <el-step title="待完成" />
-                    <el-step title="待评价" />
-                    <el-step title="已完成" />
-                  </el-steps>
-                </div>
-              </div>
-
-            </el-dialog>
-          </ul>
-          <p v-if="loading">加载中...</p>
-          <p v-if="noMore">没有更多了</p>
-        </div>
+  </div>
+  <div v-else style="display: flex; justify-content: center;">
+    <div style="display: flex; align-items: center;  flex-direction: column;">
+      <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">
+        您不是换电站管理员，不可以查看换电站电池
       </div>
+      <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">
     </div>
   </div>
 </template>
@@ -112,6 +123,7 @@ import { useRouter } from 'vue-router';
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElButton, ElSelect, ElOption } from 'element-plus';
 import { RefreshRight, Edit, Delete, Plus, Document } from '@element-plus/icons-vue';
+const staff_type = ref(localStorage.getItem('staff_type'));
 
 const infoForm = reactive({
   switch_type: '',

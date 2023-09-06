@@ -1,106 +1,120 @@
 <template>
-  <!-- <div v-if="staff_type === '1'"> -->
-  <div>
-    <div class="flex-container">
-      <el-card class="left-card-block" :body-style="{height: '85%'}">
-        <template #header>
-          <div class="maintenance-title">
-            <span>待处理订单</span>
-          </div>
-          <div>
-            <div class="switch-button">
-              <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleSwitchChange">
-                <el-tab-pane label="待接单订单" name="1" :disabled="listLoading"></el-tab-pane>
-                <el-tab-pane label="待完成订单" name="2" :disabled="listLoading"></el-tab-pane>
-                <el-tab-pane label="换电站订单" name="3" :disabled="listLoading"></el-tab-pane>
-              </el-tabs>
-              <div>
-                <el-button @click="refreshSwitch" :icon="RefreshRight">
-                  刷新</el-button>
-              </div>
-            </div>
-          </div>
-        </template>
-        <div class="infinite-list-wrapper" style="overflow:auto" v-loading="listLoading">
-          <ul class="list">
-            <li v-for="item in switch_data" :key="item.switch_request_id" class="list-item" @click="showDetail(item)">
-              <div class="list-item-content">
-                <div class="list-item-text">
-                  <div style="display: flex;margin-bottom: 5px;">
-                  <div style="font-weight: bold; margin-top = 0em; margin-bottom =0em;width: fit-content;margin-right: 20px;" >订单ID</div>
-                  <div style="width: fit-content;">{{ item.switch_request_id }}</div></div>
-                  <div style="margin-top: 10px;">
-                  <span style="font-size: 14px;background-color: #4fd1c4e7;border-radius: 10px;border: solid 1px #4fd1c4; color: white;padding: 2px 10px;margin-right: 20px;">{{ item.vehicle_model }}</span>
-                  <span style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px;border: solid 1px #f5a74d; color: white;padding: 2px 10px;margin-right: 20px;">{{ item.switch_date + ' ' + item.switch_period }}</span>
-                  <span style="font-size: 14px;background-color: #729cff;border-radius: 10px;border: solid 1px #729cff; color: white;padding: 2px 10px;">{{ item.battery_type }}</span>
-                  </div>
-                </div>
-                <div class="list-item-button">
-                  <el-button v-if="activeName==='1'" :icon="Document" @click="take_order(item)" style="background-color: #9dd8ff58;border: solid 2px #2d79dd;color:#2d79dd;font-weight:bolder;margin-right: 20px;">接单</el-button>
-                  <el-button v-else :icon="Document" type="success" @click="finish_order(item)" style="background-color: rgb(240, 249, 235);border: solid 2px rgb(61 169 87);color:rgb(61 169 87);font-weight:bolder;margin-right: 20px;">完成</el-button>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </el-card>
-      <div class="card-container-vertical">
-        <el-card class="right-card-block"  :body-style="{height:'83%'}">
+  <div v-if="staff_type === '1'">
+    <div>
+      <div class="flex-container">
+        <el-card class="left-card-block" :body-style="{ height: '85%' }">
           <template #header>
             <div class="maintenance-title">
-              <span>订单信息</span>
+              <span>待处理订单</span>
             </div>
-          </template>
-          <div v-if="selectedOrNot" style="height: 100%;">
-            <div class="container-vertical" v-loading="switch_detail_loading" style="height: 100%;">
-              <div class="right-info-part" style="overflow: auto;">
-                <div class="detail-info" style="height: 100%;padding-top: 10px;padding-left: 20px;">
-                  <el-form-item label="订单编号">{{ switch_item_data.switch_request_id }}</el-form-item>
-                  <el-form-item label="用户姓名">{{ switch_item_data.username }}</el-form-item>
-                  <el-form-item label="电池类型">{{ switch_item_data.battery_type }}</el-form-item>
-                  <el-form-item label="预约时间">{{ switch_item_data.switch_date+ ' ' + switch_item_data.switch_period }}</el-form-item>
-                  <el-form-item label="电话">{{ switch_item_data.phone_number }}</el-form-item>
-                  <el-form-item label="车型">{{ switch_item_data.vehicle_model }}</el-form-item>
-                  <el-form-item label="备注">{{ switch_item_data.remarks }}</el-form-item>
+            <div>
+              <div class="switch-button">
+                <el-tabs v-model="activeName" class="demo-tabs" @tab-change="handleSwitchChange">
+                  <el-tab-pane label="待接单订单" name="1" :disabled="listLoading"></el-tab-pane>
+                  <el-tab-pane label="待完成订单" name="2" :disabled="listLoading"></el-tab-pane>
+                  <el-tab-pane label="换电站订单" name="3" :disabled="listLoading"></el-tab-pane>
+                </el-tabs>
+                <div>
+                  <el-button @click="refreshSwitch" :icon="RefreshRight">
+                    刷新</el-button>
                 </div>
               </div>
-              <div class="steps-part" style="height: 50%;position: relative;top: 50%;transform: translateY(-50%);">
-                <el-steps direction="vertical" :active="activeName !='1' ? 2 : 1">
-                  <el-step title="待接单" />
-                  <el-step title="待完成" />
-                  <el-step title="待评分" />
-                  <el-step title="已完成" />
-                </el-steps>
-              </div>
-            </div>
-          </div>
-          <div class="block-text" v-else>
-            <p class="no-selection-text">请选择一个订单,以查看该订单的信息</p>
-          </div>
-        </el-card>
-        <el-card v-if="activeName === '1'|| activeName === '2'" class="right-card-block" style="margin-top: 2em;">
-          <template #header>
-            <div>
-              <span style="font-size: 16px;font-weight: bold;margin-bottom: 0.5em;">订单位置</span>
-              <div style="margin-top: 0.3em;" v-if="!selectedOrNot">请选择一个订单,以查看该订单的地址</div>
-              <div style="margin-top: 0.3em;" v-else>地址：{{ switch_item_data.position }}</div>
             </div>
           </template>
-          <div v-show="showMap">
-            <div id="map-container" style="width:100%;height:240px"></div>
+          <div class="infinite-list-wrapper" style="overflow:auto" v-loading="listLoading">
+            <ul class="list">
+              <li v-for="item in switch_data" :key="item.switch_request_id" class="list-item" @click="showDetail(item)">
+                <div class="list-item-content">
+                  <div class="list-item-text">
+                    <div style="display: flex;margin-bottom: 5px;">
+                      <div
+                        style="font-weight: bold; margin-top = 0em; margin-bottom =0em;width: fit-content;margin-right: 20px;">
+                        订单ID</div>
+                      <div style="width: fit-content;">{{ item.switch_request_id }}</div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                      <span
+                        style="font-size: 14px;background-color: #4fd1c4e7;border-radius: 10px;border: solid 1px #4fd1c4; color: white;padding: 2px 10px;margin-right: 20px;">{{
+                          item.vehicle_model }}</span>
+                      <span
+                        style="font-size: 14px;background-color: #f5a74de7;border-radius: 10px;border: solid 1px #f5a74d; color: white;padding: 2px 10px;margin-right: 20px;">{{
+                          item.switch_date + ' ' + item.switch_period }}</span>
+                      <span
+                        style="font-size: 14px;background-color: #729cff;border-radius: 10px;border: solid 1px #729cff; color: white;padding: 2px 10px;">{{
+                          item.battery_type }}</span>
+                    </div>
+                  </div>
+                  <div class="list-item-button">
+                    <el-button v-if="activeName === '1'" :icon="Document" @click="take_order(item)"
+                      style="background-color: #9dd8ff58;border: solid 2px #2d79dd;color:#2d79dd;font-weight:bolder;margin-right: 20px;">接单</el-button>
+                    <el-button v-else :icon="Document" type="success" @click="finish_order(item)"
+                      style="background-color: rgb(240, 249, 235);border: solid 2px rgb(61 169 87);color:rgb(61 169 87);font-weight:bolder;margin-right: 20px;">完成</el-button>
+                  </div>
+                </div>
+              </li>
+            </ul>
           </div>
         </el-card>
+        <div class="card-container-vertical">
+          <el-card class="right-card-block" :body-style="{ height: '83%' }">
+            <template #header>
+              <div class="maintenance-title">
+                <span>订单信息</span>
+              </div>
+            </template>
+            <div v-if="selectedOrNot" style="height: 100%;">
+              <div class="container-vertical" v-loading="switch_detail_loading" style="height: 100%;">
+                <div class="right-info-part" style="overflow: auto;">
+                  <div class="detail-info" style="height: 100%;padding-top: 10px;padding-left: 20px;">
+                    <el-form-item label="订单编号">{{ switch_item_data.switch_request_id }}</el-form-item>
+                    <el-form-item label="用户姓名">{{ switch_item_data.username }}</el-form-item>
+                    <el-form-item label="电池类型">{{ switch_item_data.battery_type }}</el-form-item>
+                    <el-form-item label="预约时间">{{ switch_item_data.switch_date + ' ' + switch_item_data.switch_period
+                    }}</el-form-item>
+                    <el-form-item label="电话">{{ switch_item_data.phone_number }}</el-form-item>
+                    <el-form-item label="车型">{{ switch_item_data.vehicle_model }}</el-form-item>
+                    <el-form-item label="备注">{{ switch_item_data.remarks }}</el-form-item>
+                  </div>
+                </div>
+                <div class="steps-part" style="height: 50%;position: relative;top: 50%;transform: translateY(-50%);">
+                  <el-steps direction="vertical" :active="activeName != '1' ? 2 : 1">
+                    <el-step title="待接单" />
+                    <el-step title="待完成" />
+                    <el-step title="待评分" />
+                    <el-step title="已完成" />
+                  </el-steps>
+                </div>
+              </div>
+            </div>
+            <div class="block-text" v-else>
+              <p class="no-selection-text">请选择一个订单,以查看该订单的信息</p>
+            </div>
+          </el-card>
+          <el-card v-if="activeName === '1' || activeName === '2'" class="right-card-block" style="margin-top: 2em;">
+            <template #header>
+              <div>
+                <span style="font-size: 16px;font-weight: bold;margin-bottom: 0.5em;">订单位置</span>
+                <div style="margin-top: 0.3em;" v-if="!selectedOrNot">请选择一个订单,以查看该订单的地址</div>
+                <div style="margin-top: 0.3em;" v-else>地址：{{ switch_item_data.position }}</div>
+              </div>
+            </template>
+            <div v-show="showMap">
+              <div id="map-container" style="width:100%;height:240px"></div>
+            </div>
+          </el-card>
+        </div>
       </div>
     </div>
+
   </div>
-  <!-- <div v-else style="display: flex; justify-content: center;">  
-    <div style="display: flex; align-items: center;  flex-direction: column;">  
-      <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">  
-        您不是换电站管理员，不可以查看换电订单  
-      </div>  
-      <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">  
-    </div>  
-  </div> -->
+  <div v-else style="display: flex; justify-content: center;">
+    <div style="display: flex; align-items: center;  flex-direction: column;">
+      <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">
+        您不是换电站管理员，不可以查看换电订单
+      </div>
+      <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">
+    </div>
+  </div>
   <el-dialog v-model="show_switch_log" title="订单完成情况" width="30%" @open="open_switch_log" draggable>
     <div class='window'>
       <el-row :gutter="10" class="custom-row">
@@ -186,8 +200,8 @@ const switch_detail_loading = ref(false);
 
 //根据switch决定的show_status当的状态，决定获取哪些状态的订单
 const refreshSwitch = () => {
-  // if (staff_type.value != '1')
-  //   return;
+  if (staff_type.value != '1')
+    return;
   listLoading.value = true;
   //switch_data.value = [];
   if (activeName.value != '3') {
@@ -199,7 +213,7 @@ const refreshSwitch = () => {
         //employee_id: '1', //TODO
         employee_id: localStorage.getItem('user_id'),
         request_status: state,
-        station_id:localStorage.getItem('station_id'),
+        station_id: localStorage.getItem('station_id'),
       }
     }).then((res) => {
       if (!res.code) {
@@ -269,8 +283,8 @@ const get_switch_info = (id) => {
 }
 //get_switch_info();
 
-const showLocation = (lng,lat) => {
-  if(activeName.value == 3)
+const showLocation = (lng, lat) => {
+  if (activeName.value == 3)
     return;
   const BMap = window.BMap;
   const map = new BMap.Map('map-container'); // 创建地图实例
@@ -464,9 +478,9 @@ const open_switch_log = () => {
   padding: 5px 0;
 }
 
-.infinite-list-wrapper .list-item:hover{
+.infinite-list-wrapper .list-item:hover {
   background-color: rgba(218, 218, 218, 0.516);
-  transition: all  0.4s ease;
+  transition: all 0.4s ease;
 }
 
 .infinite-list-wrapper .list-item-content {
@@ -493,17 +507,16 @@ const open_switch_log = () => {
   /* 调整行间距 */
 }
 
-.el-form-item{
+.el-form-item {
   font-weight: bolder;
-  color:#797979;
+  color: #797979;
 }
 
-:deep(.el-form-item__content){
-  font-weight:500;
+:deep(.el-form-item__content) {
+  font-weight: 500;
   color: black;
 }
 
-:deep(.el-card__body){
-    padding: 0;
-}
-</style>
+:deep(.el-card__body) {
+  padding: 0;
+}</style>

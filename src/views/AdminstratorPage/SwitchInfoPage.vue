@@ -49,10 +49,10 @@
           <el-table-column prop="score" min-width="8%" label="评分" align="center"></el-table-column>
           <el-table-column prop="evaluations" min-width="19%" label="评价" align="center">
             <template v-slot="scope">
-        <el-tooltip class="box-item" effect="light" :content="scope.row.evaluations" placement="top-end" >
-          <span>{{ Text(scope.row.evaluations) }}</span>
-        </el-tooltip>
-      </template>
+              <el-tooltip class="box-item" effect="light" :content="scope.row.evaluations" placement="top-end">
+                <span>{{scope.row.evaluations===null?'暂无评价': Text(scope.row.evaluations) }}</span>
+              </el-tooltip>
+            </template>
           </el-table-column>
           <el-table-column :inline="true" label="操作" min-width="10%" align="center">
             <template #default="scope">
@@ -117,13 +117,13 @@ const editForm = reactive({
   battery_id_off: ''
 });
 
-const Text=(val)=>{
-  if(val === null)
+const Text = (val) => {
+  if (val === null)
     return '';
   if (val.length > 70) {
-        return val.slice(0, 70) + '...'; // 截取文本并添加省略号
-      }
-      return val;
+    return val.slice(0, 70) + '...'; // 截取文本并添加省略号
+  }
+  return val;
 }
 
 const pullData = () => {
@@ -215,7 +215,7 @@ const deleteInfo = (val) => {
     }
   }).then((res) => {
     if (!res.code) {
-      
+
     }
     else {
       ElMessage({
@@ -261,11 +261,11 @@ const deleteInfo = (val) => {
   justify-content: flex-end;
   margin-top: 10px;
 }
-.box-item{
-  width:30px;
-  display: flex;
-  margin-left:5em;
-  margin-right:3em;
-}
 
+.box-item {
+  width: 30px;
+  display: flex;
+  margin-left: 5em;
+  margin-right: 3em;
+}
 </style>

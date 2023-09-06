@@ -57,7 +57,7 @@
           <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
         </div>
         <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-          height="100vh">
+          height="100vh" v-loading="loadTableData">
           <el-table-column prop="owner_id" label="车主ID" min-width="10%" align="center"></el-table-column>
           <el-table-column prop="username" label="车主姓名" min-width="10%" align="center"></el-table-column>
           <el-table-column prop="gender" label="性别" min-width="5%" align="center">
@@ -166,6 +166,7 @@ const tableData = ref([]);
 const totalData = ref(0);
 const editFlag = ref(false);
 const addFlag = ref(false);
+const loadTableData = ref(false);
 
 const formData = reactive({
   owner_id: '',
@@ -199,7 +200,8 @@ const editForm = reactive({
 var pageTotal = 1;
 
 const pullData = () => {
-    cmRequest.request({
+  loadTableData.value = true;
+  cmRequest.request({
     url: 'api/administrator/owner-info/message',
     // url: 'administrator/owner-info/message',// 我的本地api地址
     method: 'GET',
@@ -212,18 +214,19 @@ const pullData = () => {
       tableData.value = res.data;
       totalData.value = parseInt(res.totalData);
     }
-    else{
+    else {
       ElMessage({
         type: 'error',
         message: '刷新失败',
       })
+      loadTableData.value = false;
     }
   })
 }
 pullData();
 
 
-const cancleAddEvent =()=>{
+const cancleAddEvent = () => {
   addFlag.value = false;
   resetAddedData();
 }
@@ -245,8 +248,9 @@ const resetAddedData = () => {
 }
 
 const queryData = () => {
+  loadTableData.value = true;
   cmRequest.request({
-    url: 'api/administrator/owner-info/query', 
+    url: 'api/administrator/owner-info/query',
     // url: 'administrator/owner-info/query', // 我的本地api地址
     method: 'GET',
     params: {
@@ -264,11 +268,12 @@ const queryData = () => {
       tableData.value = res.data;
       totalData.value = parseInt(res.totalData);
     }
-    else{
+    else {
       ElMessage({
         type: 'error',
         message: '未找到内容',
       });
+      loadTableData.value = false;
     }
   })
 }
@@ -304,39 +309,39 @@ const addData = () => {
       break; // 找到任意一个值为0的属性后，就不再继续检查
     }
   }
-  if(hasNullValue){
+  if (hasNullValue) {
     ElMessage({
-        type: 'warning',
-        message: '请填写完整信息',
-      })
+      type: 'warning',
+      message: '请填写完整信息',
+    })
   }
-  else{
+  else {
     cmRequest.request({
       url: 'api/administrator/owner-info',
       // url: 'administrator/owner-info', // 我的本地api地址
       method: 'POST',
-      data:{
+      data: {
         username: addedData.username,
         phone_number: addedData.phone_number,
         gender: addedData.gender,
         address: addedData.address,
         password: addedData.password
       }
-    }).then((res)=>{
+    }).then((res) => {
       addFlag.value = false;
       resetAddedData();
       if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '新建成功, 新车主id为'+res.owner_id,
-      })
-    }
-    else {
-      ElMessage({
-        type: 'error',
-        message: '新建失败',
-      })
-    }
+        ElMessage({
+          type: 'success',
+          message: '新建成功, 请刷新后查看，新车主id为' + res.owner_id,
+        })
+      }
+      else {
+        ElMessage({
+          type: 'error',
+          message: '新建失败',
+        })
+      }
     })
   }
 }
@@ -353,7 +358,7 @@ const deleteInfo = (val) => {
     if (!res.code) {
       ElMessage({
         type: 'success',
-        message: '删除成功',
+        message: '删除成功，请刷新后查看',
       })
     }
     else {
@@ -383,7 +388,7 @@ const saveEdit = () => {
     if (!res.code) {
       ElMessage({
         type: 'success',
-        message: '更新成功',
+        message: '更新成功，请刷新后查看',
       })
     }
     else {
