@@ -23,6 +23,7 @@
 
         </el-form>
         <div class="button-wrapper">
+          <el-button @click="reset">重置</el-button>
           <el-button @click="queryData">搜索</el-button>
         </div>
       </div>
@@ -34,9 +35,10 @@
         </div>
         <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
           height="100vh" v-loading ="loadData">
-          <el-table-column prop="switch_service_id" label="换电订单ID" min-width="7%" align="center"></el-table-column>
+          <el-table-column prop="switch_service_id" label="换电订单ID" min-width="8%" align="center"></el-table-column>
           <el-table-column prop="employee_id" label="员工ID" min-width="6%" align="center"></el-table-column>
-          <el-table-column prop="vehicle_id" label="车辆ID" min-width="7%" align="center">
+          <el-table-column prop="ownerid" label="车主ID" min-width="6%" align="center"></el-table-column>
+          <el-table-column prop="vehicle_id" label="车辆ID" min-width="6%" align="center">
           </el-table-column>
           <el-table-column prop="switch_time" min-width="13%" label="换电时间" align="center">
           </el-table-column>
@@ -44,6 +46,7 @@
           </el-table-column>
           <el-table-column prop="battery_id_off" min-width="8%" label="换下电池ID" align="center">
           </el-table-column>
+          <el-table-column prop="score" min-width="8%" label="评分" align="center"></el-table-column>
           <el-table-column prop="evaluations" min-width="19%" label="评价" align="center">
             <template v-slot="scope">
         <el-tooltip class="box-item" effect="light" :content="scope.row.evaluations" placement="top-end" >
@@ -126,19 +129,19 @@ const Text=(val)=>{
 const pullData = () => {
   loadData.value = true;
   cmRequest.request({
-    url: 'api/administrator/switch-info/query',
-    //url: 'administrator/switch-info/query',      
+    url: 'api/administrator/switch-info/query',    
     method: 'GET',
     params: {
       page_index: query.page_index,
       page_size: query.page_size
-      //switch_request_id:'',
-      //employee_id:'',
-      //vehicle_id:''
     }
   }).then((res) => {
     if (!res.code) {
-      
+      for(let item of res.data){
+        if(item.score === -1){
+          item.score = '未评分'
+        }
+      }
       tableData.value = res.data;
       totalData.value = parseInt(res.totalData); //如果可以直接返回数字，就可以不要这个parseInt转换函数
     }
@@ -153,32 +156,16 @@ const pullData = () => {
 }
 pullData();
 
-
-const cancleAddEvent = () => {
-  addFlag.value = false;
-  resetAddedData();
-}
 const resetFormData = () => {
   formData.switch_service_id = '';
   formData.employee_id = '';
   formData.vehicle_id = '';
 }
 
-const resetAddedData = () => {
-  addedData.employee_id = '';
-  addedData.vehicle_id = '';
-  addedData.switch_time = '';
-  addedData.battery_id_on = '';
-  addedData.battery_id_off = '';
-  addedData.evaluations = '';
-}
-
-
 const queryData = () => {
   loadData.value = true;
   cmRequest.request({
     url: 'api/administrator/switch-info/query',
-    //url: 'administrator/switch-info/query',
     method: 'GET',
     params: {
       page_index: query.page_index,
@@ -189,8 +176,13 @@ const queryData = () => {
     }
   }).then((res) => {
     if (!res.code) {
+      for(let item of res.data){
+        if(item.score === -1){
+          item.score = '未评分'
+        }
+      }
       tableData.value = res.data;
-      totaldata = parseInt(res.totaldata);
+      totalData.value = parseInt(res.totalData);
     }
     else {
       ElMessage({
@@ -198,73 +190,20 @@ const queryData = () => {
         message: '未找到内容',
       });
     }
-    resetFormData();
     loadData.value = false;
   })
 }
 
+const reset = () => {
+  query.page_index = 1;
+  resetFormData();
+  pullData();
+}
+
 const handlePageChange = (val) => {
   query.page_index = val;
-
-  pullData();
+  queryData();
 };
-
-
-const handleEdit = (row) => {
-  editFlag.value = true;
-  editForm.switch_request_id = row.switch_request_id;
-  editForm.employee_id = row.employee_id;
-  editForm.vehicle_id = row.vehicle_id;
-  editForm.switch_time = row.switch_time;
-  editForm.battery_id_on = row.battery_id_on;
-  editForm.battery_id_off = row.battery_id_off;
-}
-
-
-const addData = () => {
-  let hasNullValue = false;
-  for (const key in addedData) {
-    if (addedData.hasOwnProperty(key) && addedData[key] === "") {
-      hasNullValue = true;
-      break; // 找到任意一个值为0的属性后，就不再继续检查
-    }
-  }
-  if (hasNullValue) {
-    ElMessage({
-      type: 'warning',
-      message: '请填写完整信息',
-    })
-  }
-  else {
-    cmRequest.request({
-      url: 'administrator/switch-info/add',
-      method: 'POST',
-      data: {
-        employee_id: addedData.employee_id,
-        vehicle_id: addedData.vehicle_id,
-        switch_time: addedData.switch_time,
-        battery_id_on: addedData.battery_id_on,
-        battery_id_off: addedData.battery_id_off,
-        evaluations: addedData.evaluations
-      }
-    }).then((res) => {
-      addFlag.value = false;
-      resetAddedData();
-      if (!res.code) {
-        ElMessage({
-          type: 'success',
-          message: '新建成功, 新换电订单id为' + res.switch_request_id,
-        })
-      }
-      else {
-        ElMessage({
-          type: 'error',
-          message: '2新建失败',
-        })
-      }
-    })
-  }
-}
 
 const deleteInfo = (val) => {
   cmRequest.request({
@@ -288,33 +227,6 @@ const deleteInfo = (val) => {
   pullData();
 }
 
-const saveEdit = () => {
-  cmRequest.request({
-    url: 'administrator/switch-info',
-    method: 'PATCH',
-    data: {
-      switch_request_id: editForm.switch_request_id,
-      employee_id: editForm.employee_id,
-      switch_time: editForm.switch_time,
-      battery_id_on: editForm.battery_id_on,
-      battery_id_off: editForm.battery_id_off
-    }
-  }).then((res) => {
-    editFlag.value = false;
-    if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '更新成功',
-      })
-    }
-    else {
-      ElMessage({
-        type: 'error',
-        message: '更新失败',
-      })
-    }
-  })
-}
 </script>
   
 <style scoped>

@@ -77,7 +77,7 @@
           </el-table-column>
         </el-table>
         <div class="pagination">
-          <el-pagination :current-page="query.pageIndex" :page-size="query.pageSize" :total="pageTotal"
+          <el-pagination :current-page="query.pageIndex" :page-size="query.pageSize" :total="totalData"
             @current-change="handlePageChange" layout="prev, pager, next"></el-pagination>
         </div>
       </div>
@@ -183,6 +183,7 @@ const tableData = ref([]);
 const editFlag = ref(false);
 const addFlag = ref(false);
 const loadTableData = ref(false);
+const totalData = ref(0);
 
 const formData = reactive({
   station_name: '',
@@ -291,7 +292,6 @@ const openEdit = () =>{
   });
 }
 
-var pageTotal = 1;
 const pullData = () => {
   loadTableData.value = true;
   cmRequest.request({
@@ -308,7 +308,7 @@ const pullData = () => {
         message: '刷新成功',
       })
       tableData.value = res.data;
-      pageTotal = parseInt(res.pageTotal);
+      totalData.value = parseInt(res.totalData);
       loadTableData.value = false;
     }
     else{
@@ -368,7 +368,7 @@ const queryData = () => {
   }).then((res) => {
     if(!res.code){
       tableData.value = res.data;
-      pageTotal = parseInt(res.pageTotal);
+      totalData.value = parseInt(res.totalData);
       loadTableData.value = false;
     }
     else{

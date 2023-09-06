@@ -48,7 +48,7 @@ const router = createRouter({
                 {
                     path: '/maintenance-item-page',
                     name: 'maintenance-item-page',
-                    component: () => import('../views/AdminstratorPage/Maintenance_itemPage.vue')
+                    component: () => import('../views/AdminstratorPage/RepairPage.vue')
                 },
                 {
                     path: '/repair',

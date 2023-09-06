@@ -46,6 +46,7 @@
             </el-row>
           </el-form>
           <div class="button-wrapper">
+            <el-button @click="reset">重置</el-button>
             <el-button @click="queryData">搜索</el-button>
           </div>
         </div>
@@ -167,6 +168,7 @@
 
 
   const tableData = ref([]);
+  const totalData = ref(0);
   const editFlag = ref(false);
   const addFlag = ref(false);
 
@@ -200,7 +202,6 @@
     station_id: ''
   });
 
-  var totalData = 1;
 
   const pullData = () => {
     cmRequest.request({
@@ -212,12 +213,8 @@
       }
     }).then((res) => {
       if(!res.code){
-        ElMessage({
-          type: 'success',
-          message: '刷新成功',
-        })
         tableData.value = res.data;
-        totalData = parseInt(res.pageTotal);
+        totalData.value = parseInt(res.totalData);
       }
       else{
         ElMessage({
@@ -244,7 +241,7 @@
       }
     }).then((res) => {
         tableData.value = res.data;
-        totalData = parseInt(res.pageTotal);
+        totalData.value = parseInt(res.totalData);
       }
     )
   }
@@ -271,9 +268,13 @@
     addedData.username = '';
   }
 
-  const queryData = () => {
-    
+  const reset = ()=>{
+    query.pageIndex = 1;
+    resetFormData();
+    pullData();
+  }
 
+  const queryData = () => {
     cmRequest.request({
       url: 'api/administrator/staff-info/query',
       method: 'GET',
@@ -291,7 +292,7 @@
     }).then((res) => {
       if(!res.code){
         tableData.value = res.data;
-        totalData = parseInt(res.pageTotal);
+        totalData.value = parseInt(res.totalData);
       }
       else{
         ElMessage({
@@ -299,13 +300,12 @@
           message: '未找到内容',
         });
       }
-      resetFormData();
     })
   }
 
   const handlePageChange = (val) => {
     query.pageIndex = val;
-    pullData();
+    queryData();
   };
 
 

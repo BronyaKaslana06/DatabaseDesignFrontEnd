@@ -45,6 +45,7 @@
           </el-row>
         </el-form>
         <div class="button-wrapper">
+          <el-button @click="reset">重置</el-button>
           <el-button @click="queryData">搜索</el-button>
         </div>
       </div>
@@ -86,7 +87,7 @@
           </el-table-column>
         </el-table>
         <div class="pagination">
-          <el-pagination :current-page="query.pageIndex" :page-size="query.pageSize" :total="pageTotal"
+          <el-pagination :current-page="query.pageIndex" :page-size="query.pageSize" :total="totalData"
             @current-change="handlePageChange" layout="prev, pager, next"></el-pagination>
         </div>
       </div>
@@ -162,6 +163,7 @@ import { ElMessage } from 'element-plus'
 import { RefreshRight, Edit, Delete } from '@element-plus/icons-vue';
 
 const tableData = ref([]);
+const totalData = ref(0);
 const editFlag = ref(false);
 const addFlag = ref(false);
 
@@ -207,12 +209,8 @@ const pullData = () => {
     }
   }).then((res) => {
     if(!res.code){
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
       tableData.value = res.data;
-      pageTotal = parseInt(res.totalData);
+      totalData.value = parseInt(res.totalData);
     }
     else{
       ElMessage({
@@ -263,10 +261,8 @@ const queryData = () => {
     }
   }).then((res) => {
     if(!res.code){
-      console.log(res);
       tableData.value = res.data;
-      pageTotal = parseInt(res.pageTotal);
-      console.log(pageTotal);
+      totalData.value = parseInt(res.totalData);
     }
     else{
       ElMessage({
@@ -274,15 +270,19 @@ const queryData = () => {
         message: '未找到内容',
       });
     }
-    resetFormData();
   })
 }
 
 const handlePageChange = (val) => {
   query.pageIndex = val;
-
-  pullData();
+  queryData();
 };
+
+const reset = ()=>{
+  query.pageIndex = 1;
+  resetFormData();
+  pullData();
+}
 
 
 const handleEdit = (row) => {

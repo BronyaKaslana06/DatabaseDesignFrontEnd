@@ -71,7 +71,7 @@
           </el-table-column>
         </el-table>
         <div class="pagination">
-          <el-pagination :current-page="query.pageIndex" :page-size="query.pageSize" :total="pageTotal"
+          <el-pagination :current-page="query.pageIndex" :page-size="query.pageSize" :total="totalData"
             @current-change="handlePageChange" layout="prev, pager, next"></el-pagination>
         </div>
       </div>
@@ -106,6 +106,7 @@ import { ElMessage } from 'element-plus'
 import { RefreshRight, Edit, Delete, Document } from '@element-plus/icons-vue';
 
 const tableData = ref([]);
+const totalData = ref([]);
 
 const formData = reactive({
   maintenance_items_id: '',
@@ -124,7 +125,7 @@ const query = reactive({
 var pageTotal = 1;
 const pullData = () => {
   cmRequest.request({
-    url: 'api/administrator/maintenance_itemsInfo/TableMessage',
+    url: 'api/administrator/repair',
     method: 'GET',
     params: {
       pageIndex: query.pageIndex,
@@ -132,12 +133,8 @@ const pullData = () => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '刷新成功',
-      })
-      tableData.value = res;
-      pageTotal = parseInt(res.pageTotal);
+      tableData.value = res.data;
+      totalData.value = parseInt(res.totalData);
     }
     else {
       ElMessage({
@@ -160,7 +157,7 @@ const resetFormData = () => {
 
 const queryData = () => {
   cmRequest.request({
-    url: 'api/administrator/maintenance_itemsInfo/Message',
+    url: 'api/administrator/repair',
     method: 'GET',
     params: {
       pageNum: query.pageIndex,
@@ -172,8 +169,8 @@ const queryData = () => {
     }
   }).then((res) => {
     if (!res.code) {
-      tableData.value = res;
-      pageTotal = parseInt(res.pageTotal);
+      tableData.value = res.data;
+      totalData.value = parseInt(res.totalData);
     }
     else {
       ElMessage({
@@ -193,7 +190,7 @@ const handlePageChange = (val) => {
 
 const deleteInfo = (val) => {
   cmRequest.request({
-    url: 'api/administrator/maintenance_itemsInfo/Erasure',
+    url: 'api/administrator/repair',
     method: 'DELETE',
     params: {
       maintenance_items_id: val.maintenance_items_id
@@ -259,18 +256,13 @@ const Detail = (val) => {
 const get_maintenance_info = (id) => {
   maintenance_item_detail.value = {};
   cmRequest.request({
-    //url: 'api/staff/maintanence/detail',
-    url: 'api/administrator/maintenance_itemsInfo/MessageId',
+    url: 'api/administrator/repair/detail',
     method: 'GET',
     params: {
       maintenance_item_id: id
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '查看订单成功',
-      })
       maintenance_item_detail.value = res;
       item_loading.value = false;
     }
