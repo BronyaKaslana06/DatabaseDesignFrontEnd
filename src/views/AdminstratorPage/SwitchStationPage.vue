@@ -26,6 +26,7 @@
           </el-row>
         </el-form>
         <div class="button-wrapper">
+          <el-button @click="reset">重置</el-button>
           <el-button @click="queryData">搜索</el-button>
         </div>
       </div>
@@ -322,6 +323,13 @@ const resetFormData = () => {
   formData.faliure_status = '';
 }
 
+const reset = ()=>{
+  resetFormData();
+  query.pageIndex = 1;
+  pullData();
+}
+
+
 const resetAddedData = () => {
   // addedData.station_id = '';
   addedData.station_name = '';
@@ -366,14 +374,13 @@ const queryData = () => {
       });
       loadTableData.value = false;
     }
-    resetFormData();
   })
 }
 //queryData();
 
 const handlePageChange = (val) => {
   query.pageIndex = val;
-  pullData();
+  queryData();
 }
 
 
@@ -381,7 +388,6 @@ const handleEdit = (row) => {
   editFlag.value = true;
   editForm.station_id = row.station_id;
   editForm.station_name = row.station_name;
-  //editForm.employee_id = row.employee_id;
   editForm.longitude = row.longitude;
   editForm.latitude = row.latitude;
   editForm.faliure_status = row.faliure_status;
@@ -389,6 +395,7 @@ const handleEdit = (row) => {
   editForm.electricity_fee = row.electricity_fee;
   editForm.service_fee = row.service_fee;
   editForm.station_address = row.station_address;
+
   //editForm.available_battery_count = row.available_battery_count;
 }
 

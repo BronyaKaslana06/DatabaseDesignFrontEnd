@@ -213,6 +213,7 @@ const pullData = () => {
     if(!res.code){
       tableData.value = res.data;
       totalData.value = parseInt(res.totalData);
+      loadTableData.value = false;
     }
     else {
       ElMessage({
@@ -267,6 +268,7 @@ const queryData = () => {
     if(!res.code){
       tableData.value = res.data;
       totalData.value = parseInt(res.totalData);
+      loadTableData.value = false;
     }
     else {
       ElMessage({

@@ -16,7 +16,7 @@
   
 <script setup lang="js">
 import { useRoute, onBeforeRouteUpdate } from "vue-router";
-import { computed, ref, onMounted } from 'vue';
+import {ref } from 'vue';
 
 const selectedItem = ref(null);
 const activePath = ref(null);
@@ -52,15 +52,16 @@ const admin_items = [
     title: '电池管理'
   },
   {
-    path: '公告管理',
-    index: '/notice-info-page',
-    title: '公告管理'
-  },
-  {
     name: '维修订单管理',
     index: '/maintenance-item-page',
     title: '维修订单管理'
   },
+  {
+    path: '公告管理',
+    index: '/notice-info-page',
+    title: '公告管理'
+  },
+
 ];
 
 const owner_items = [

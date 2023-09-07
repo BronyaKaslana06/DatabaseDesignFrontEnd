@@ -39,6 +39,7 @@
           </el-row>
         </el-form>
         <div class="button-wrapper">
+          <el-button @click="reset">重置</el-button>
           <el-button @click="queryData">搜索</el-button>
         </div>
       </div>
@@ -178,13 +179,12 @@ const queryData = () => {
         message: '未找到内容',
       });
     }
-    resetFormData();
   })
 }
 
 const handlePageChange = (val) => {
   query.pageIndex = val;
-  pullData();
+  queryData();
 };
 
 
@@ -275,6 +275,12 @@ const get_maintenance_info = (id) => {
     }
   })
 
+}
+
+const reset = ()=>{
+  query.pageIndex = 1;
+  resetFormData();
+  pullData();
 }
 
 

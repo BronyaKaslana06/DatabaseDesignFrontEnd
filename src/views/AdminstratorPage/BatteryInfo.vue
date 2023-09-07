@@ -51,6 +51,7 @@
                     </el-row>
                 </el-form>
                 <div class="button-wrapper">
+                    <el-button @click="reset">重置</el-button>
                     <el-button @click="queryData">搜索</el-button>
                 </div>
             </div>
@@ -238,6 +239,12 @@ const changeView = () => {
     )
 }
 
+const reset = ()=>{
+    query.pageIndex = 1;
+    resetFormData();
+    pullData();
+}
+
 
 const resetFormData = () => {
     formData.battery_type_id = '';
@@ -271,14 +278,13 @@ const queryData = () => {
                 message: '未找到内容',
             });
         }
-        resetFormData();
         loadData.value = false;
     })
 }
 
 const handlePageChange = (val) => {
     query.pageIndex = val;
-    pullData();
+    queryData();
 };
 
 
