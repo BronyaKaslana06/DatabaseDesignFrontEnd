@@ -123,7 +123,6 @@ const query = reactive({
 });
 
 
-var pageTotal = 1;
 const pullData = () => {
   cmRequest.request({
     url: 'api/administrator/repair',
@@ -161,7 +160,7 @@ const queryData = () => {
     url: 'api/administrator/repair',
     method: 'GET',
     params: {
-      pageNum: query.pageIndex,
+      pageIndex: query.pageIndex,
       pageSize: query.pageSize,
       maintenance_items_id: formData.maintenance_items_id,
       vehicle_id: formData.vehicle_id,

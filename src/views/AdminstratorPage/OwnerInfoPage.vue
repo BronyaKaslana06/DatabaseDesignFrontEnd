@@ -37,11 +37,6 @@
                 <el-input v-model="formData.address" class="input-box"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="密码">
-                <el-input v-model="formData.password" class="input-box"></el-input>
-              </el-form-item>
-            </el-col>
           </el-row>
         </el-form>
         <div class="button-wrapper">
@@ -66,8 +61,7 @@
           </el-table-column>
           <el-table-column prop="address" min-width="15%" label="地址" align="center">
           </el-table-column>
-          <el-table-column prop="password" min-width="15%" label="密码" align="center">
-          </el-table-column>
+          <el-table-column prop="create_time" min-width="10%" label="创建时间" align="center"></el-table-column>
           <el-table-column :inline="true" label="操作" min-width="15%" align="center">
             <template #default="scope">
               <span>
@@ -114,9 +108,6 @@
       <el-form-item label="地址">
         <el-input v-model="editForm.address"></el-input>
       </el-form-item>
-      <el-form-item label="密码">
-        <el-input v-model="editForm.password"></el-input>
-      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -143,17 +134,14 @@
       <el-form-item label=地址>
         <el-input v-model="addedData.address"></el-input>
       </el-form-item>
-      <el-form-item label="密码">
-        <el-input v-model="addedData.password"></el-input>
-      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="cancleAddEvent">取 消</el-button>
         <el-button type="" @click="addData">确 定</el-button>
       </span>
-    </template>
-  </el-dialog>
+    </template> 
+  </el-dialog> 
 </template>
 
 <script setup lang="js">
@@ -174,7 +162,7 @@ const formData = reactive({
   gender: '',
   phone_number: '',
   address: '',
-  password: ''
+  create_time: ''
 });
 
 const addedData = reactive({
@@ -182,7 +170,6 @@ const addedData = reactive({
   gender: '',
   phone_number: '',
   address: '',
-  password: ''
 })
 
 const query = reactive({
@@ -194,15 +181,13 @@ const editForm = reactive({
   gender: '',
   phone_number: '',
   address: '',
-  password: ''
 });
 
-var pageTotal = 1;
 
 const pullData = () => {
   loadTableData.value = true;
   cmRequest.request({
-    url: 'api/administrator/owner-info/message',
+    url: 'api/administrator/owner-info/query',
     // url: 'administrator/owner-info/message',// 我的本地api地址
     method: 'GET',
     params: {
@@ -211,6 +196,9 @@ const pullData = () => {
     }
   }).then((res) => {
     if(!res.code){
+      for(let item of res.data){
+        item.create_time = item.create_time.slice(0,10);
+      }
       tableData.value = res.data;
       totalData.value = parseInt(res.totalData);
       loadTableData.value = false;
@@ -238,14 +226,12 @@ const resetFormData = () => {
   formData.gender = '';
   formData.phone_number = '';
   formData.address = '';
-  formData.password = '';
 }
 
 const resetAddedData = () => {
   addedData.gender = '';
   addedData.phone_number = '';
   addedData.address = '';
-  addedData.password = '';
 }
 
 const queryData = () => {
@@ -262,7 +248,6 @@ const queryData = () => {
       gender: formData.gender,
       phone_number: formData.phone_number,
       address: formData.address,
-      password: formData.password
     }
   }).then((res) => {
     if(!res.code){

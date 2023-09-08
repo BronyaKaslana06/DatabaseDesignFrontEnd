@@ -1,4 +1,4 @@
-  <template>
+<template>
     <div>
       <div class="block">
         <div class="inner-block2">
@@ -163,9 +163,9 @@
         </span>
       </template>
     </el-dialog>
-  </template>
+</template>
 
-  <script setup lang="js">
+<script setup lang="js">
   import cmRequest from '../../service/index.js'
   import { ref, reactive } from 'vue'
   import { ElMessage } from 'element-plus'
@@ -428,9 +428,8 @@
       }
     })
   }
-  </script>
-
-  <style scoped>
+</script>
+<style scoped>
   .inner-block {
     padding: 20px 20px 60px 20px;
   }
@@ -462,7 +461,7 @@
     justify-content: flex-end;
     margin-top: 10px;
   }
-  </style>
+</style>
 
 
 // name: 管理员-员工信息页,

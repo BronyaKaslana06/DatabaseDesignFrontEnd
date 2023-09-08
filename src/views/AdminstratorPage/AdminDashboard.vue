@@ -12,9 +12,6 @@
         <div :class="growthRcd.request_growth === true ? 'up' : 'down'">{{ growthSet.request_growth }}</div>
         <div class="info-card-label">总订单数</div>
       </div>
-
-
-
       <div class="info-card-item">
         <div class="info-card-value">{{ infoSet.staff_count }}</div>
         <div :class="growthRcd.staff_growth === true ? 'up' : 'down'">{{ growthSet.staff_growth }}</div>
