@@ -42,7 +42,7 @@ const router = createRouter({
                 },
                 {
                     path: '/notice-info-page',
-                    name: '/notice-info-page',
+                    name: 'notice-info-page',
                     component: () => import('../views/AdminstratorPage/NoticePage.vue')
                 },
                 {

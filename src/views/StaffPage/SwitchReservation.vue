@@ -56,7 +56,7 @@
           </div>
         </el-card>
         <div class="card-container-vertical">
-          <el-card class="right-card-block" :body-style="{ height: '83%' }">
+          <el-card class="right-card-block" :body-style="{ height: '80%' }">
             <template #header>
               <div class="maintenance-title">
                 <span>订单信息</span>
@@ -312,6 +312,7 @@ const take_order = (item) => {
         message: '接单成功',
       })
       switch_data.value = res.data;
+      selectedOrNot.value = false;
     }
     else {
       ElMessage({
@@ -344,6 +345,7 @@ const finish_order = (item) => {
       })
       switch_log.value = res.switch_log;
       open_switch_log();
+      selectedOrNot.value = false;
     }
     else {
       ElMessage({
@@ -352,7 +354,6 @@ const finish_order = (item) => {
       })
     }
   })
-  selectedOrNot.value = false;
 }
 
 const open_switch_log = () => {
