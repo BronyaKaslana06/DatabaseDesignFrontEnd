@@ -57,7 +57,7 @@ const admin_items = [
     title: '维修订单管理'
   },
   {
-    path: '公告管理',
+    name: '公告管理',
     index: '/notice-info-page',
     title: '公告管理'
   },
