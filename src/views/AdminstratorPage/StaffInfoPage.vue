@@ -58,7 +58,7 @@
             <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
           </div>
           <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-            height="100vh" v-loading="loadTableData">
+            height="70vh" v-loading="loadTableData">
             <el-table-column prop="employee_id" label="员工ID" min-width="10%" align="center"></el-table-column>
             <el-table-column prop="username" label="员工姓名" min-width="10%" align="center"></el-table-column>
             <el-table-column prop="gender" label="性别" min-width="5%" align="center">

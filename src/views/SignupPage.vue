@@ -320,7 +320,12 @@ const submitForm = async () => {
     transform: translateX(-50%);
     width: 30vw;
 }
+
+:deep(.el-input__wrapper.is-focus) {
+    box-shadow: 0 0 0 1px rgb(71, 210, 196) inset !important;
+}
 </style>
+
 
 
 // name: 注册页,

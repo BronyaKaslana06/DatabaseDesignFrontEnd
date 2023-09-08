@@ -62,7 +62,7 @@
                     <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
                 </div>
                 <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-                    height="120vh" v-loading="loadData">
+                    height="70vh" v-loading="loadData">
                     <el-table-column prop="battery_id" label="电池ID" min-width="5%" align="center"></el-table-column>
                     <el-table-column prop="manufacturing_date" min-width="10%" label="出厂日期" align="center">
                     </el-table-column>

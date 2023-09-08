@@ -6,12 +6,11 @@
         </div>
         <div class="login-form">
             <el-form :model="formData">
-                <el-form-item prop="user_id " label="用户ID" ref="info" class="label">
-                    <el-input v-model="formData.user_id">
-                    </el-input>
+                <el-form-item prop="user_id" label="用户ID" class="label">
+                    <el-input v-model="formData.user_id" ></el-input>
                 </el-form-item>
                 <el-form-item prop="password" label="密码" class="label">
-                    <el-input v-model="formData.password"  type="password" show-password ></el-input>
+                    <el-input v-model="formData.password"  type="password" show-password />
                 </el-form-item>
             </el-form>
             <div>
@@ -200,6 +199,14 @@ const signup = () => {
     top: 15%;
     transform: translateX(-50%);
     width: 30vw;
+}
+
+:deep(.el-input__inner:focus){
+    border-color: #4fd1c5 !important;
+}
+
+:deep(.el-input__wrapper.is-focus) {
+    box-shadow: 0 0 0 1px rgb(71, 210, 196) inset !important;
 }
 </style>
 

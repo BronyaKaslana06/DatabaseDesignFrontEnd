@@ -357,8 +357,9 @@ const get_maintenance_info = (id) => {
   background-color: #e8e8e8;
 }
 
-.infinite-list-wrapper .list-item+.list-item {
-  margin-top: 10px;
+.list-item{
+  transition: all 0.3s;
+  padding-top: 10px;
 }
 
 .infinite-list-wrapper .list-item-content {

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div> 
         <div>
             <input v-model="keyword" type="text" class="search-bar" placeholder="请输入关键词" @keydown.enter="search" />
             <button v-wave="{
@@ -19,7 +19,6 @@
                     easing: 'ease-in',
                 }" class="info-block" @click="drawer = true, getSpecificInfo(item.station_id)">
                     <div class="station_name">{{ item.station_name }}</div>
-                    <!-- <div class="distance">{{ item.distance + "m" }}</div> -->
                     <div class="distance">{{ formatDistance(item.distance) }}</div>
                     <div class="opening_time">{{ "营业时间：" + item.opening_time }}</div>
                     <div class="cell">
@@ -34,7 +33,7 @@
             </div>
         </div>
         <el-drawer v-model="drawer" direction="rtl" size="40%" :with-header="false">
-            <div class="drawer-info-group">
+            <div class="drawer-info-group" v-loading="loading3">
                 <div class="spc-st-name">{{ specificDataItem.station_name }}</div>
                 <div class="spc-st-dist">{{ "距离您约" + formatDistance(specificDataItem.distance) }}</div>
                 <div class="green-block">
@@ -46,7 +45,7 @@
                             </div>
                             <div
                                 style="display: inline;font-size: 36.5px;color: black;font-style: normal;font-weight: 700;line-height: 150%;width:auto">
-                                /</div>
+                                / </div>
                             <div
                                 style="display: inline;font-size: 23.5px;color: black;font-style: normal;font-weight: 700;line-height: 150%;">
                                 {{ specificDataItem.cell_num }}
@@ -151,8 +150,8 @@
             <div
                 style="display: flex;align-items: center;justify-content: space-around;width: 90%;position: relative;left:50%;transform:translateX(-50%);">
                 <el-radio-group v-model="batteryType">
-                    <el-radio label="标准续航型"></el-radio>
-                    <el-radio label="长续航型"></el-radio>
+                    <el-radio label="标准续航型" :disabled="stdDab"></el-radio>
+                    <el-radio label="长续航型" :disabled="lngDab"></el-radio>
                 </el-radio-group>
             </div>
             <div v-if="switchType === '上门换电'"
@@ -189,6 +188,7 @@ let user_lng = 0;
 let carGroup = ref([]);
 const loading = ref(false);
 const loading2 = ref(false);
+const loading3 = ref(false);
 const dataItem = ref([]);
 const rsvFlag = ref(false);
 const dateArray = ref([]);
@@ -200,6 +200,8 @@ const keyword = ref(null);
 const selectedCar = ref(null);
 const additionalInfo = ref(null);
 const batteryType = ref(null);
+const stdDab = ref(false);
+const lngDab = ref(false);
 
 const timeArray = ref([
     { label: "0:00-4:00", value: 0, disabled: false },
@@ -242,6 +244,7 @@ const timeArrayCheck = (selectedDate) => {
 const search = () => {
     if (keyword.value == "") {
         dataItem.value = [];
+        loading2.value = false;
         curInfoIndex = 1;
         pullData();
     }
@@ -251,12 +254,15 @@ const search = () => {
         params: {
             info_num: 9,
             info_index: 1,
-            keyword: keyword.value
+            keyword: keyword.value,
+            latitude: user_lat,
+            longitude: user_lng
         }
     }).then((res) => {
         if (!res.code) {
             dataItem.value = res.data;
-            loading.value = true;
+            loading.value = false;
+            loading2.value = true;
         }
         else {
             ElMessage({
@@ -273,6 +279,8 @@ const resetForm = () => {
     switchType.value = null;
     address.value = null;
     additionalInfo.value = null;
+    batteryType.value = null;
+    selectedCar.value = null;
 }
 
 const getMoreInfo = () => {
@@ -469,50 +477,18 @@ const assignment = (data) => {
                 specificDataItem.lng_iavb_num++;
         }
     }
+    if(specificDataItem.std_avb_num === 0)
+        stdDab.value = true;
+    else
+        stdDab.value = false;
+    if(specificDataItem.lng_avb_num === 0)
+        lngDab.value = true;
+    else
+        lngDab.value = false;
 }
 
 const getSpecificInfo = (id) => {
-    // const BMap = window.BMap;
-    // var geolocation = new BMap.Geolocation();
-    // geolocation.getCurrentPosition((r) => {
-    //     if (geolocation.getStatus() == 0) {
-    //         var userLocation = r.point;
-    //         user_lat = userLocation.lat;
-    //         user_lng = userLocation.lng;
-    //         console.log(user_lat);
-    //         console.log(user_lng);
-    //         cmRequest.request({
-    //             // baseURL:'https://mock.apifox.cn/m1/3058331-0-default',
-    //             url: "api/owner/stations/detailed-infos",
-    //             method: 'GET',
-    //             params: {
-    //                 station_id: id,
-    //                 longitude: user_lng,
-    //                 latitude: user_lat,
-    //             }
-    //         }).then((res) => {
-    //             if (!res.code) {
-    //                 curStationID = id;
-    //                 assignment(res.data);
-    //                 drawMap();
-    //             }
-    //             else {
-    //                 ElMessage({
-    //                     type: 'error',
-    //                     message: '获取换电站具体信息失败',
-    //                 })
-    //                 return;
-    //             }
-    //         })
-    //     }
-    //     else {
-    //         ElMessage({
-    //             type: 'error',
-    //             message: '获取用户位置失败',
-    //         })
-    //         return;
-    //     }
-    // });
+    loading3.value = true;
     cmRequest.request({
         url: "api/owner/stations/detailed-infos",
         method: "GET",
@@ -526,6 +502,7 @@ const getSpecificInfo = (id) => {
             curStationID = id;
             assignment(res.data);
             drawMap();
+            loading3.value = false;
         }
         else {
             ElMessage({
@@ -777,7 +754,10 @@ const drawMap = () => {
 .station_name {
     font-size: 23.53px;
     font-weight: bolder;
-    width: 80%;
+    width: 75%;
+    text-overflow:ellipsis;
+    overflow: hidden;
+    white-space: nowrap
 }
 
 .info-group {

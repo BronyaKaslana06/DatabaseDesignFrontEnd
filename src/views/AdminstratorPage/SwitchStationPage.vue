@@ -38,7 +38,7 @@
           <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
         </div>
         <el-table :data="tableData" border class="table" header-cell-class-name="table-header"
-        v-loading="loadTableData" height="100vh" >     
+        v-loading="loadTableData" height="70vh" >     
           <el-table-column prop="station_name" min-width="10%" label="换电站名" align="center"></el-table-column>
           <el-table-column prop="station_id" min-width="10%" label="换电站ID" align="center"></el-table-column>
           <!-- <el-table-column prop="employee_id" label="管理员工ID" min-width="10%" align="center"></el-table-column> -->

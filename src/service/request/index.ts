@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { ElLoading } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import type { InternalAxiosRequestConfig, AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios'
-
+import { useRouter } from 'vue-router'
 
 interface CMRequsetInterceptors {
   requestInterceptor?: (config: InternalAxiosRequestConfig) => InternalAxiosRequestConfig
@@ -10,6 +10,7 @@ interface CMRequsetInterceptors {
   responseInterceptorCatch?: (error: any) => any
 }
 
+const router = useRouter();
 // 扩展属性，可以传入拦截器
 interface CMRequestConfig extends AxiosRequestConfig {
   interceptors?: CMRequsetInterceptors
@@ -36,12 +37,6 @@ class CMRequset {
     // 公共interceptor
     this.instance.interceptors.request.use(
       (config) => {        
-        /* 关于loading部分的代码 */
-        // ElLoading.service({
-        //   lock: true,
-        //   text: '拼命加载中...',
-        //   background: 'rgba(0,0,0,0.2)'
-        // })
         let token = localStorage.getItem('token');
         if(token){
           config.headers.Authorization = `Bearer ${token}`
@@ -63,6 +58,13 @@ class CMRequset {
         }
       },
       (err) => {
+        if(err.response.status == 401){
+          router.push('/login');
+          ElMessage({
+            type:"error",
+            message: "登录过期，请重新登录"
+          })
+        }
         return err
       }
     )

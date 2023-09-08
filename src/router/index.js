@@ -173,10 +173,15 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+    if(to.path === '/sign-up'){
+        next();
+    } 
     const role = localStorage.getItem('user_id');
     if (!role && to.path !== '/login') {
         next('/login');
-    } else {
+    }
+
+    else {
         sessionStorage.setItem("previousPage", to.path);
         next();
     }

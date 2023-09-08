@@ -49,8 +49,8 @@
 
   <div style="width:100%;">
     <div style="display: flex;flex-direction: row;width: 100%;">
-      <div style="height: 350px; flex: 6;" class="chart-item">
-          <div style="color:#8e8e8e">换电订单统计</div>
+      <div style="height: 400px; flex: 6;" class="chart-item">
+          <div style="color:#8e8e8e">换电消费统计</div>
           <el-select v-model="select" style="    position: relative;
     transform: translateX(-100%);
     left: 100%;width:100px">
