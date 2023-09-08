@@ -360,13 +360,14 @@ const get_switch_info = (id) => {
   border-bottom: 1px solid #ddd;
 }
 
+.list-item{
+  transition: all 0.3s;
+  padding-top: 10px;
+}
 .list-item:hover {
   background-color: #e8e8e8;
 }
 
-.infinite-list-wrapper .list-item+.list-item {
-  margin-top: 10px;
-}
 
 .infinite-list-wrapper .list-item-content {
   display: flex;

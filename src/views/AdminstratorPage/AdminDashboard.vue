@@ -19,7 +19,7 @@
       </div>
       <div class="info-card-item">
         <div class="info-card-value">{{ infoSet.switch_benefit }}</div>
-        <div :class="growthRcd.benefit_growth === true ? 'up' : 'down'">{{ growthSet.benefit_growth }}</div>
+        <div :class="growthRcd.benefit_growth === true ? 'up' : 'down'" style="text-wrap: nowrap;">{{ growthSet.benefit_growth }}</div>
         <div class="info-card-label">总收益</div>
       </div>
       <div class="info-card-item">
@@ -30,7 +30,7 @@
     <div style="width:100%;">
       <div style="display: flex;flex-direction: row;gap:20px;width: 100%;">
         <div style="height: 350px; flex: 6;" class="chart-card">
-          <div style="color:#8e8e8e">换电订单统计</div>
+          <div style="color:#8e8e8e">换电订单数量统计</div>
           <el-select v-model="select1" style="    position: relative;
     transform: translateX(-100%);
     left: 100%;width:100px">
@@ -508,6 +508,7 @@ pullData();
   margin-top: 5px;
   display: inline;
   margin-left: 20px;
+  text-wrap: nowrap;
 }
 
 .chart-container {
@@ -523,12 +524,13 @@ pullData();
 
 .up {
   color: red;
+  text-wrap: nowrap;
 
 }
 
 .down {
   color: green;
-
+  text-wrap: nowrap;
 }
 
 .up::before {

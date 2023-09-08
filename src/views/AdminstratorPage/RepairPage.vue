@@ -50,7 +50,7 @@
           <el-button @click="pullData" style="margin-bottom: 10px;" :icon="RefreshRight">刷新</el-button>
         </div>
         <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header"
-          height="100vh">
+          height="70vh" v-loading="loading">
           <el-table-column prop="maintenance_items_id" label="订单ID" min-width="10%" align="center"></el-table-column>
           <el-table-column prop="vehicle_id" label="车辆ID" min-width="10%" align="center"></el-table-column>
           <el-table-column prop="maintenance_location" label="维修地点" min-width="25%" align="center"></el-table-column>
@@ -108,6 +108,7 @@ import { RefreshRight, Edit, Delete, Document } from '@element-plus/icons-vue';
 
 const tableData = ref([]);
 const totalData = ref([]);
+const loading = ref(false);
 
 const formData = reactive({
   maintenance_items_id: '',
@@ -124,6 +125,7 @@ const query = reactive({
 
 
 const pullData = () => {
+  loading.value = true;
   cmRequest.request({
     url: 'api/administrator/repair',
     method: 'GET',
@@ -142,6 +144,7 @@ const pullData = () => {
         message: '刷新失败',
       })
     }
+    loading.value = false;
   })
 }
 pullData();
@@ -156,6 +159,7 @@ const resetFormData = () => {
 
 
 const queryData = () => {
+  loading.value = true;
   cmRequest.request({
     url: 'api/administrator/repair',
     method: 'GET',
@@ -178,6 +182,7 @@ const queryData = () => {
         message: '未找到内容',
       });
     }
+    loading.value = false;
   })
 }
 

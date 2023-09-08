@@ -60,8 +60,9 @@
             v-for="announcement in announcementArray"
             :key="announcement.announcement_id"
             class="list-item"
+            @click="openPopup(announcement)"
           >
-            <div class="list-item-content">
+            <div class="list-item-content" >
               <div class="list-item-image">
                 <img src="@/assets/notice.png" alt="Image" />
               </div>
@@ -118,14 +119,9 @@
               <div class="list-item-button">
                 <el-button
                   text
-                  :icon="Document"
-                  @click="openPopup(announcement)"
-                  >查看详情</el-button
-                >
-                <el-button
-                  text
                   :icon="Edit"
-                  @click="openEditPopup(announcement)"
+                  @click.stop="openEditPopup(announcement)"
+                  style="z-index: 100;"
                   >编辑</el-button
                 >
               </div>
@@ -727,7 +723,15 @@ const resetSearch = () => {
   flex-direction: column;
   /* 纵向排列 */
 }
+.list-item{
+  cursor: pointer;
+  padding-top: 10px;
+  transition: all 0.3s
+}
 
+.list-item:hover{
+  background-color: #e8e8e8 ;
+}
 .inner-block {
   padding: 1em 1em 1em 1em;
 }
@@ -751,14 +755,11 @@ const resetSearch = () => {
   border-bottom: 1px solid #ddd;
 }
 
-.infinite-list-wrapper .list-item + .list-item {
-  margin-top: 10px;
-}
-
 .infinite-list-wrapper .list-item-content {
   display: flex;
   align-items: center;
   width: 100%;
+
 }
 
 .infinite-list-wrapper .list-item-image {

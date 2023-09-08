@@ -488,6 +488,11 @@ const closePopup = () => {
   list-style: none;
 }
 
+.list-item{
+  transition: all 0.3s;
+  padding-top: 10px;
+}
+
 .infinite-list-wrapper .list-item {
   display: flex;
   align-items: center;
@@ -496,9 +501,6 @@ const closePopup = () => {
   border-bottom: 1px solid #ddd;
 }
 
-.infinite-list-wrapper .list-item + .list-item {
-  margin-top: 10px;
-}
 
 .infinite-list-wrapper .list-item-content {
   display: flex;
