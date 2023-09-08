@@ -5,7 +5,7 @@
       <template v-for="item in items" :key="item.index">
         <el-menu-item :index="item.index">
           <div
-            :class="['icon-placeholder', item.index == selectedItem ? 'icon-active-' + item.title : 'icon-' + item.title]">
+            :class="['icon-placeholder', item.index == selectedItem ? 'icon-active-' + item.name : 'icon-' + item.name]">
           </div>
           <template #title>{{ item.title }}</template>
         </el-menu-item>
@@ -134,7 +134,7 @@ const staff_items = [
     title: '维修历史'
   },
   {
-    name: '换电历史',
+    name: '换电订单历史',
     index: '/staffSwitch',
     title: '换电历史'
   }
@@ -182,6 +182,7 @@ const svgArray = [
   '维修订单管理',
   '员工信息',
   '换电订单历史',
+  '换电历史',
   '换电站电池管理'
 ]
 
