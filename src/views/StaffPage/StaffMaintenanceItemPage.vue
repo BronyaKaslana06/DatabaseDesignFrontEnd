@@ -10,7 +10,7 @@
                   <el-select v-model="infoForm.order_status">
                     <el-option key="0" value="" label="所有状态"> </el-option>
                     <el-option key="1" value="待完成" label="待完成"> </el-option>
-                    <el-option key="2" value="待评分" label="待评分"> </el-option>
+                    <el-option key="2" value="待评价" label="待评价"> </el-option>
                     <el-option key="3" value="已完成" label="已完成"> </el-option>
                   </el-select>
                 </el-form-item>
@@ -56,8 +56,8 @@
                     <template v-if="item.order_status === '待完成'">
                       <el-button type="info" disabled>待完成</el-button>
                     </template>
-                    <template v-if="item.order_status === '待评分'">
-                      <el-button type="warning" disabled>待评分</el-button>
+                    <template v-if="item.order_status === '待评价'">
+                      <el-button type="warning" disabled>待评价</el-button>
                     </template>
                     <template v-if="item.order_status === '已完成'">
                       <el-button type="success" disabled>已完成</el-button>
@@ -78,7 +78,7 @@
                       <p>提交时间：{{ maintenance_item_detail.order_submission_time }}</p>
                       <p>备注：{{ maintenance_item_detail.remarks ? maintenance_item_detail.remarks : "无" }}</p>
                       <p>服务时间：{{ status_number > 2 ? maintenance_item_detail.service_time : "未进行服务" }}</p>
-                      <p>评价：{{ status_number > 3 ? maintenance_item_detail.evaluations : "用户未作出评价" }}</p>
+                      <p>评价：{{ status_number > 3 ? maintenance_item_detail.evaluation : "用户未作出评价" }}</p>
                       <p>评分：{{ status_number > 3 ? maintenance_item_detail.score : "暂无评分" }}</p>
                     </div>
                   </div>
@@ -86,7 +86,7 @@
                     <el-steps direction="vertical" :active="status_number">
                       <el-step title="待接单" />
                       <el-step title="待完成" />
-                      <el-step title="待评分" />
+                      <el-step title="待评价" />
                       <el-step title="已完成" />
                     </el-steps>
                   </div>
@@ -242,7 +242,7 @@ const Detail = (Item) => {
     case "待完成":
       status_number.value = 2;
       break;
-    case "待评分":
+    case "待评价":
       status_number.value = 3;
       break;
     case "已完成":

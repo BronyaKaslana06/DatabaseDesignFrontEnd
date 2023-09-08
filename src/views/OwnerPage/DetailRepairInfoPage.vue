@@ -78,8 +78,8 @@
           <template v-if="repairItem.order_status === '待完成'">
             <el-button type="info" disabled>待完成</el-button>
           </template>
-          <template v-if="repairItem.order_status === '待评分'">
-            <el-button type="warning" disabled>待评分</el-button>
+          <template v-if="repairItem.order_status === '待评价'">
+            <el-button type="warning" disabled>待评价</el-button>
           </template>
           <template v-if="repairItem.order_status === '已完成'">
             <el-button type="success" disabled>已完成</el-button>
@@ -104,7 +104,7 @@
         </div>
 
         <div class="detail-item">
-          <!-- <div class="label">评分：<span v-show="repairItem.order_status === '待评分'||repairItem.order_status === '已完成'">{{ repairItem.score }}</span></div> -->
+          <!-- <div class="label">评分：<span v-show="repairItem.order_status === '待评价'||repairItem.order_status === '已完成'">{{ repairItem.score }}</span></div> -->
           <div class="label">评分</div>
           <div v-if="repairItem.order_status === '待接单' || repairItem.order_status === '待完成'">
             订单未完成，暂不能评分
@@ -222,13 +222,13 @@ const goBack = () => {
 }
 
 const disableInput = computed(() => {
-  return repairItem.order_status === '待评分' ? false : true;
+  return repairItem.order_status === '待评价' ? false : true;
 })
 const disableInput2 = computed(() => {
   return repairItem.order_status === '待接单' ? false : true;
 })
 const disableInput3 = computed(() => {
-  return repairItem.order_status === '待评分' || repairItem.order_status === '已完成' ? true : false;
+  return repairItem.order_status === '待评价' || repairItem.order_status === '已完成' ? true : false;
 })
 const disableShow = computed(() => {
   return repairItem.order_status === '已完成' ? true : false;
@@ -317,10 +317,7 @@ const getDetailedData = () => {
     }
   }).then((res) => {
     if (!res.code) {
-      ElMessage({
-        type: 'success',
-        message: '获取维修项成功'
-      })
+      
       //进行赋值操作
       repairItem.plate_number = res.data.plate_number;
       repairItem.title = res.data.title;
@@ -449,7 +446,7 @@ const submitComment = () => {
     if (!res.code) {
       ElMessage({
         type: 'success',
-        message: '评价添加成功',
+        message: '评价提交成功',
       })
       getDetailedData();
       loading.value = false;
@@ -457,7 +454,7 @@ const submitComment = () => {
     else {
       ElMessage({
         type: 'error',
-        message: '评价添加失败',
+        message: '评价提交失败',
       })
       loading.value = false;
     }

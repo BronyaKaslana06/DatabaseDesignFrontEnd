@@ -110,7 +110,7 @@
   <div v-else style="display: flex; justify-content: center;">
     <div style="display: flex; align-items: center;  flex-direction: column;">
       <div style="font-weight: bold; color: black; margin: 2em; font-size: 2em;">
-        您不是换电站管理员，不可以查看换电历史
+        您不是换电站管理员，不可以查看换电历史订单
       </div>
       <img src="../../assets/background.svg" style="width: 100%; height: auto; flex: 1;">
     </div>
