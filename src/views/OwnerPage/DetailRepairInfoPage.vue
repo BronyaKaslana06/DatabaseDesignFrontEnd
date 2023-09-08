@@ -225,7 +225,7 @@ const disableInput = computed(() => {
   return repairItem.order_status === '待评价' ? false : true;
 })
 const disableInput2 = computed(() => {
-  return repairItem.order_status === '待接单' ? false : true;
+  return repairItem.order_status === '待接单'||repairItem.order_status === '待完成' ? false : true;
 })
 const disableInput3 = computed(() => {
   return repairItem.order_status === '待评价' || repairItem.order_status === '已完成' ? true : false;
