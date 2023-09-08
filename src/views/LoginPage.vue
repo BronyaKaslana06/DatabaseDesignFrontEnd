@@ -1,5 +1,5 @@
 <template>
-    <div class="box">
+    <div class="box" v-loading = 'loginLoading'>
         <div class="word-box">
             <div class="title">欢迎</div>
             <div class="content">体验蔚来的汽车换电服务</div>
@@ -31,7 +31,7 @@
 
 <script setup lang="js">
 
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import cmrequest from '../service';
 import { ElMessage } from 'element-plus';
@@ -41,6 +41,7 @@ const formData = reactive({
     password: ''
 })
 const router = useRouter();
+const loginLoading = ref(false);
 
 const submitForm = () => {
     // localStorage.setItem('user_type', parseInt(formData.user_id));
@@ -55,7 +56,7 @@ const submitForm = () => {
 
     // else if(user_type == 2)
     //     router.push('/admin-dashboard-page');
-
+    loginLoading.value = false;
     if (!formData)
         return;
     if (formData.user_id === '' || formData.password === '') {
@@ -82,6 +83,7 @@ const submitForm = () => {
             localStorage.setItem('user_id', msg.data.user_id);
             localStorage.setItem('username', msg.data.username);
             localStorage.setItem('token', msg.token);
+            loginLoading.value = true;
             if (identity == 0)
                 router.push('/ownerDashboard');
             else if (identity == 1) {
