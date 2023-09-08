@@ -81,7 +81,7 @@
                 <p><strong>型号：</strong>{{ car_information.vehicle_model }}</p>
               </div>
               <div class="information-item-line-right">
-                <p><strong>保修期限：</strong>{{ car_information.warrange }}</p>
+                <p><strong>保修期限：</strong>{{ car_information.warrange.replace("T", " ") }}</p>
               </div>
               <div class="information-item-line-right">
                 <p><strong>电池id：</strong>{{ car_information.battery_id }}</p>
