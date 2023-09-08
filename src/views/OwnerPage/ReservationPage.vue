@@ -106,7 +106,7 @@
             </div>
 
         </el-drawer>
-        <el-dialog v-model="rsvFlag" @close="resetForm">
+        <el-dialog style="width: 55vw;" v-model="rsvFlag" @close="resetForm">
             <div style="display:inline-block;position: relative;left:50%;transform: translateX(-50%); font-weight: bold;">预约换电日期</div>
             <div
                 style="display: flex;align-items: center;justify-content: space-around;width: 90%;position: relative;left:50%;transform:translateX(-50%);margin-top: 20px;">
