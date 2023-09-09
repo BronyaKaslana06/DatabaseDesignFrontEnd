@@ -5,7 +5,7 @@
         <div class="logo">
           <img src="@/assets/logo.png" alt="Logo">
         </div>
-        <span class="logo-text">智能电动汽车管理系统</span>
+        <span class="logo-text">智能电动汽车服务管理系统</span>
       </div>
       <div class="user-info">
         <div @click="goToSelfCenter" style="cursor: pointer; display:flex;">
