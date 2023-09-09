@@ -298,7 +298,6 @@ onMounted(() => {
 });
 
 const formatDate = (dateString) => {
-  console.log(dateString);
   if (dateString === "") {
     return "";
   }
@@ -313,7 +312,6 @@ const formatDate = (dateString) => {
 };
 
 const somecontents = (dateString) => {
-  console.log(dateString);
   if (dateString === null) {
     return "";
   }
@@ -321,7 +319,6 @@ const somecontents = (dateString) => {
 };
 
 const deletetime = (dateString) => {
-  console.log(dateString);
   if (dateString === "") {
     return "";
   }
@@ -356,8 +353,6 @@ const searchData = () => {
       params: searchParams, // 将搜索参数作为查询参数传递
     })
     .then((res) => {
-      console.log(searchParams);
-      console.log(res);
       if (!res.code) {
         announcementArray.value = res.announcementArray;
         loadTableData.value = false;
@@ -439,8 +434,6 @@ const saveEdit = () => {
     contents: editFormData.contents,
     publisher: editFormData.publisher,
   };
-  console.log(editFormData);
-  console.log(editFormData.announcement_id);
   cmRequest
     .request({
       //url: "administrator/announcement",
@@ -515,8 +508,6 @@ const saveCreate = () => {
       data: postData,
     })
     .then((res) => {
-      console.log(postData);
-      console.log(res);
       if (createFormdata.publish_pos === "") {
         ElMessage({
           type: "error",
@@ -562,8 +553,6 @@ const deleteAnnouncement = () => {
       data: { announcement_id: announcementIdToDelete },
     })
     .then((res) => {
-      console.log(announcementIdToDelete);
-      console.log(res);
       if (!res.code) {
         // 删除成功，处理相关逻辑
         ElMessage({

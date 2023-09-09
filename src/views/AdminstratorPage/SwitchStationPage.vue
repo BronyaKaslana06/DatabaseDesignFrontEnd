@@ -234,7 +234,6 @@ const openAdd = () =>{
     var pt = e.point;
     geoc.getLocation(pt, (rs) => {
         addedData.station_address = rs.address
-        console.log('地理信息'+addedData.station_address)
     });
     map.removeOverlay(marker);
     marker = null;
@@ -244,7 +243,6 @@ const openAdd = () =>{
     stationLocation.lat = point.lat;
     addedData.longitude = point.lng;
     addedData.latitude = point.lat;
-    console.log('地理信息'+addedData.longitude+' '+addedData.latitude)
     marker = new BMap.Marker(point); 
     map.addOverlay(marker);      
   });
@@ -265,7 +263,6 @@ const openEdit = () =>{
     var pt = e.point;
     geoc.getLocation(pt, (rs) => {
         editForm.station_address = rs.address
-        console.log('地理信息'+editForm.station_address)
     });
     map.removeOverlay(marker);
     marker = null;
@@ -275,7 +272,6 @@ const openEdit = () =>{
     stationLocation.lat = point.lat;
     editForm.longitude = point.lng;
     editForm.latitude = point.lat;
-    console.log('地理信息'+editForm.longitude+' '+editForm.latitude)
     marker = new BMap.Marker(point); 
     map.addOverlay(marker);      
   });

@@ -195,7 +195,6 @@ const submitForm = async () => {
                 email: formData.email === '' ? null : formData.email,
                 invite_code: formData.invite_code === '' ? null : formData.invite_code
             }
-            console.log(obj);
             cmrequest.request({
                 url: "api/sign-up",
                 method: 'POST',

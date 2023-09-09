@@ -331,7 +331,6 @@ const load = () => {
         }
     }).then((res) => {
         if (!res.code) {
-            console.log(trans_order_status, order_status.value)
             if (res.data.length === 0) {
                 if (trans_order_status === '待接单')
                     loading1.value = true;
@@ -449,7 +448,6 @@ const getMoreInfo = (val) => {
             dialogData.latitude = res.data.switch_request.latitude;
             dialogData.longitude = res.data.switch_request.longitude;
             dialogData.plate_number = res.data.switch_request.plate_number;
-            console.log(res)
             drawMap();
         }
         else {

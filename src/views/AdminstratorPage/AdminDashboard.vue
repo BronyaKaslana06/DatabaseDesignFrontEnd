@@ -248,7 +248,6 @@ const pullChart1Data = () => {
       for (let item of res.data) {
         if (select1.value == '近一天') {
           item.time_span = parseInt(item.time_span.substring(0, 2));
-          console.log(item.time_span);
         }
         chartData.labels.push(item.time_span);
         data.push(item.switch_count);
@@ -321,8 +320,6 @@ const pullChart4Data = () => {
       }
       chartData4.labels = labels;
       chartData4.datasets[0].data = benefits;
-      console.log(chartData4.labels);
-      console.log(chartData4.datasets[0].data)
       chartKey4.value++;
     }
   })
@@ -396,8 +393,6 @@ const changeChart1 = () => {
 }
 
 const changeChart3 = () => {
-  console.log(batteryType.value)
-  console.log(standardStas, longStas);
   if (batteryType.value === '标准续航型')
     chartData3.datasets[0].data = standardStas;
   else

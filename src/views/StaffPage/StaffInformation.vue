@@ -127,18 +127,15 @@ const queryData = () => {
       method: "GET",
     })
     .then((res) => {
-      console.log(res.data);
       if (!res.code) {
         const userData = res.data; // 假设响应数据就是用户信息
         Object.assign(userInfo, userData); // 将获取的用户信息赋值给 userInfo
-        console.log(res);
         loadTableData.value = false;
       } else {
         ElMessage({
           type: "error",
           message: "未找到内容",
         });
-        console.log(res);
         loadTableData.value = false;
       }
     })
@@ -175,8 +172,6 @@ const saveEditedInfo = () => {
       data: editedUserInfo, // 使用编辑后的用户信息作为请求数据
     })
     .then((res) => {
-      console.log(editedUserInfo);
-      console.log(res);
       if (!res.code) {
         ElMessage({
           type: "success",
@@ -234,8 +229,6 @@ pullData();
 const mapOpen = (lng,lat) => {
   const BMap = window.BMap;
   var map = new BMap.Map("myMap");
-  console.log(lng)
-  console.log(lat)
   var point = new BMap.Point(
     lng,
     lat

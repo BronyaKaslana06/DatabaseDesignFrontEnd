@@ -61,7 +61,6 @@ onBeforeMount(() => {
 });
 // 使用 beforeEach 导航守卫来检查路由
 router.beforeEach((to, from, next) => {
-  console.log(to.name);
   shouldChangeOverflow.value = to.name === 'reservation-page';
   next();
 });
@@ -72,12 +71,6 @@ const defaultAvatar = '../assets/defaultAvatar.jpg'; // 设置默认头像路径
 
 // localStorage.setItem('user_type', '0');
 
-onMounted(() => {
-  // 从localStorage中获取用户头像和用户名
-  //userAvatar.value = localStorage.getItem('userAvatar');
-  console.log(localStorage.getItem('staff_type'));
-  console.log(localStorage.getItem('username'));
-})
 
 const goToHomes = () => {
   if(localStorage.getItem('user_type') == 2){

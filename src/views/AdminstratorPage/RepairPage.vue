@@ -213,7 +213,6 @@ const deleteInfo = (val) => {
       })
     }
   })
-  //console.log(val.maintenance_items_id)
 }
 
 const dialogVisible = ref(false);
@@ -252,7 +251,6 @@ const Detail = (val) => {
     default:
       status_number.value = 0;
   }
-  //console.log(val.maintenance_items_id)
   get_maintenance_info(val.maintenance_items_id);
 
 }

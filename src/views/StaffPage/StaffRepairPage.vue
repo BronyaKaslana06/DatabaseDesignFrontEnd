@@ -147,7 +147,6 @@ const showDetail = (item) => {
 const repair_item_loading = ref(false);
 
 const deleteTimeString = (str) => {
-  console.log(str);
   return str.replace(/T/g, '&nbsp;&nbsp;')
 }
 
@@ -155,7 +154,6 @@ const deleteTimeString = (str) => {
 const refreshRepair = (show_message) => {
   if (staff_type.value != '2')
     return;
-  console.log("call refresh");
   listLoading.value = true;
   //repair_data.value = [];
   let state = activeName.value === '1' ? '待接单' : '待完成';
@@ -227,7 +225,6 @@ const get_repair_info = (id) => {
 //get_repair_info();
 
 const take_order = (item) => {
-  console.log(item.maintenance_item_id + "接单");
   cmRequest.request({
     url: 'api/staff/maintanence/receive',
     method: 'POST',
@@ -254,7 +251,6 @@ const take_order = (item) => {
 }
 
 const finish_order = (item) => {
-  console.log(item.maintenance_item_id + "完成");
   cmRequest.request({
     url: 'api/staff/maintanence/submit',
     //url: '/staff/switchrequest/submit',

@@ -245,7 +245,6 @@ const chartData = reactive({
           // This case happens on initial chart load
           return;
         }
-        console.log("backgroundColor function is called!");
         return getGradient(ctx, chartArea);
       },
       pointBackgroundColor: 'rgba(75, 192, 192)',
@@ -277,7 +276,6 @@ const getChartInfo = () => {
         data.push(res.data[i]);
       }
       chartData.datasets[0].data = data;
-      console.log(chartData);
       chartKey.value++;
     }
     else {

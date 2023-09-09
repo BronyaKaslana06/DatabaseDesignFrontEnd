@@ -337,20 +337,6 @@ const handleDateClear= () => {
 };
 
 const getDate = () => {
-    console.log('timevalue:', timeValue.value[0]);
-    console.log('startDate:', timeValue.value[0]);
-    console.log('endDate:', timeValue.value[1]);
-    /*
-    if (timeValue.value && timeValue.value[0] !== null && timeValue.value[1] !== null)
-    {
-      infoForm.start_time = timeValue.value[0];
-      infoForm.end_time = timeValue.value[1];
-    }
-    else
-    {
-      infoForm.start_time = '1000-01-01';
-      infoForm.end_time = '9999-12-31';
-  }*/
     infoForm.start_time = timeValue.value[0];
       infoForm.end_time = timeValue.value[1];
     //写接口，进行搜索
@@ -364,7 +350,6 @@ const loading = ref(false)
 const noMore = computed(() => count.value >= listdata.value.length)
 const disabled = computed(() => loading.value || noMore.value)
 const load = () => {
-  console.log("Scroll event triggered");
   loading.value = true
   setTimeout(() => {
     count.value += 2
@@ -385,7 +370,6 @@ const Detail = (maintenanceItemId) => {
     return;
   }
     // Perform the desired action using the maintenanceItemId parameter
-    console.log('Editing item with ID:', maintenanceItemId);
     store.commit('setMaintenanceItemId', maintenanceItemId);
     router.push({
         name: 'detailRepairInfo',
@@ -395,7 +379,6 @@ const Detail = (maintenanceItemId) => {
 
 const deleteInfo = (maintenanceItemId) => {
   // Perform the desired delete action
-  console.log('Deleting item with ID:', maintenanceItemId);
   cmRequest.request({
       url: 'api/owner/repair_reservation/delete',
       method: 'DELETE',
@@ -436,26 +419,13 @@ const repairItem = reactive({
     latitude:''
 })
 const selectedValue2 = ref();
-/*
-const getPlate=(id)=>{
-  console.log("options len",options.length);
-  for(let i=0;i<2;i++)
-  {
-    if(id === options.value[i].vehicle_id)
-    {console.log(1);
-      return options.value[i].plate_number;
-    }
-  }
-  return null;
-}*/
+
 
 const updateSelected2 = () => {
     // 根据选择器的选择更新相关变量的值 
     //对于一个变量没有意义写这个函数，但是防止后续新增的绑定关系，在这里用这个函数来写
     repairItem.vehicle_id = selectedValue2.value;
     repairItem.plate_number = selectedValue2.label;
-    console.log("id:", repairItem.vehicle_id);
-    console.log("plate number:", repairItem.plate_number);
 };
 
 const repairLocation = reactive({
@@ -503,7 +473,6 @@ const openHandin = () => {
                 type: 'warning',
                 message: '获取用户位置失败',
             })
-            console.log("获取用户位置失败");
             loadMapButton.value = false;
         }
     });
@@ -513,7 +482,6 @@ const openHandin = () => {
 const mapOpen = () => {
     const BMap = window.BMap;
     var map = new BMap.Map("myMap");
-    console.log("map open");
     var point = new BMap.Point(repairLocation.lng, repairLocation.lat)
     map.centerAndZoom(new BMap.Point(repairLocation.lng, repairLocation.lat), 12);
     map.enableScrollWheelZoom(true);
@@ -525,7 +493,6 @@ const mapOpen = () => {
         var pt = e.point;
         geoc.getLocation(pt, (rs) => {
             repairItem.maintenance_location = rs.address
-            console.log(rs.address);
         });
         map.removeOverlay(marker);
         marker = null;
@@ -533,13 +500,8 @@ const mapOpen = () => {
         point.lat = e.point.lat;
         marker = new BMap.Marker(point);
         map.addOverlay(marker);
-        //lz
-        console.log("lng:",point.lng);
-        console.log("lat:",point.lat);
         repairItem.longitude=point.lng;
         repairItem.latitude=point.lat;
-        console.log("up lo:",repairItem.longitude);
-        console.log("up lo:",repairItem.latitude);
     });
     
 }

@@ -73,8 +73,6 @@ const submitForm = () => {
             password: formData.password
         }
     }).then((msg) => {
-        console.log(msg);
-        console.log(msg.code);
         if (!msg.code) {
             var identity;
             identity = msg.data.user_type;
@@ -95,53 +93,7 @@ const submitForm = () => {
                 router.push('/admin-dashboard')
             }
         }
-
-        // else if(user_type == 2)
-        //     router.push('/admin-dashboard-page');
     })
-    // if (!formData)
-    //     return;
-    // if(formData.user_id === ''||formData.password === ''){
-    //     ElMessage({
-    //             type: 'error',
-    //             message: "请输入用户ID和密码"
-    //         })
-    //     return;
-    // }
-    // cmrequest.request({
-    //     url: 'api/login',
-    //     method: "POST",
-    //     data: {
-    //         user_id: formData.user_id,
-    //         password: formData.password
-    //     }
-    // }).then((msg) => {
-    //     console.log(msg);
-    //     console.log(msg.code);
-    //     if (!msg.code) {
-    //         var identity;
-    //         identity = msg.data.user_type;
-    //         localStorage.setItem('user_type', identity);
-    //         localStorage.setItem('user_id',msg.data.user_id);
-    //         if(identity == 0)
-    //         router.push('/reservation');
-    //         else if(identity == 1)
-    //         router.push('/employee-dashboard-page')
-    //         else if(identity == 2)
-    //         router.push('/admin-dashboard-page')
-    //     }
-    //     else {
-    //         let info = ""
-    //         if (msg.code == 1)
-    //             info = "没有此ID";
-    //         else if (msg.code == 2)
-    //             info = "密码错误";
-    //         ElMessage({
-    //             type: 'error',
-    //             message: info
-    //         })
-    //     }
-    // })
 }
 const signup = () => {
     router.push('/sign-up')

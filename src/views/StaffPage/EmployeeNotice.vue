@@ -203,7 +203,6 @@ const searchFormData = reactive({
 });
 
 const queryData = () => {
-  //console.log(parseInt(localStorage.getItem('user_type')));
   let pos = 3;
   if (localStorage.getItem("user_type") === "0") {
     pos = 2;
@@ -242,7 +241,6 @@ const queryData = () => {
       });
       load();
     });
-  console.log(loading.value);
 };
 
 onMounted(() => {
@@ -314,7 +312,6 @@ const searchData = () => {
       params: searchParams, // 将搜索参数作为查询参数传递
     })
     .then((res) => {
-      console.log(res);
       if (!res.code) {
         announcementArray.value = res.announcementArray;
       } else {

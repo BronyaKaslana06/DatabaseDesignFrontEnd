@@ -296,7 +296,6 @@ const showLocation = (lng, lat) => {
 }
 
 const take_order = (item) => {
-  console.log(item.switch_request_id + "接单");
   cmRequest.request({
     url: 'api/staff/switchrequest/receive',
     method: 'POST',
@@ -328,7 +327,6 @@ const switch_log = ref({});
 const show_switch_log = ref(false);
 const finish_order = (item) => {
   switch_log.value = {};
-  console.log(item.switch_request_id + "完成");
   cmRequest.request({
     url: 'api/staff/switchrequest/submit',
     //url: '/staff/switchrequest/submit',

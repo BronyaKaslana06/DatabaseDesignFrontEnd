@@ -196,7 +196,7 @@ const dateRadio = ref(null);
 const timeRadio = ref(null);
 const switchType = ref(null);
 const address = ref(null);
-const keyword = ref(null);
+const keyword = ref("");
 const selectedCar = ref(null);
 const additionalInfo = ref(null);
 const batteryType = ref(null);
@@ -347,7 +347,6 @@ const submit = () => {
 
     let owner_id = localStorage.getItem("user_id");
     let vehicle_id = carGroup.value[selectedCar.value].vehicle_id;
-    console.log(vehicle_id);
     cmRequest.request({
         url: 'api/owner/switch_request',
         method: 'POST',
@@ -389,8 +388,6 @@ const pullData = () => {
             var userLocation = r.point;
             user_lat = userLocation.lat;
             user_lng = userLocation.lng;
-            console.log(user_lat);
-            console.log(user_lng);
             
             cmRequest.request({
                 // baseURL:'https://mock.apifox.cn/m1/3058331-0-default',

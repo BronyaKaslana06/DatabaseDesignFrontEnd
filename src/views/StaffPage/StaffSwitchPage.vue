@@ -198,8 +198,6 @@ const shortcuts = [
 ]
 
 const getDate = ([startDate, endDate]) => {
-  console.log('开始日期:', startDate);
-  console.log('结束日期:', endDate);
   infoForm.startDate = startDate;
   infoForm.endDate = endDate;
   //写接口，进行搜索
@@ -214,7 +212,6 @@ const loading = ref(false)
 const noMore = computed(() => count.value >= listdata.value.length)
 const disabled = computed(() => loading.value || noMore.value)
 const load = () => {
-  console.log("Scroll event triggered");
   loading.value = true
   setTimeout(() => {
     count.value += 2

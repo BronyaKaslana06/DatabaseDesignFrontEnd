@@ -275,7 +275,6 @@ const handleChange = () => {
 const mapOpen = () => {
   const BMap = window.BMap;
   var map = new BMap.Map("myMap");
-  console.log("map open");
   var point = new BMap.Point(changeItem.value.longitude, changeItem.value.latitude)
   map.centerAndZoom(new BMap.Point(changeItem.value.longitude, changeItem.value.latitude), 12);
   map.enableScrollWheelZoom(true);
@@ -287,7 +286,6 @@ const mapOpen = () => {
     var pt = e.point;
     geoc.getLocation(pt, (rs) => {
       changeItem.value.maintenance_location = rs.address
-      console.log(rs.address);
     });
     map.removeOverlay(marker);
     marker = null;
@@ -296,19 +294,14 @@ const mapOpen = () => {
     marker = new BMap.Marker(point);
     map.addOverlay(marker);
     //lz
-    console.log("lng:", point.lng);
-    console.log("lat:", point.lat);
     changeItem.value.longitude = point.lng;
     changeItem.value.latitude = point.lat;
-    console.log("up lo:", changeItem.value.longitude);
-    console.log("up lo:", changeItem.value.latitude);
   });
 
 }
 
 const getDetailedData = () => {
   loading.value = true;
-  console.log(repairItem.maintenance_item_id)
   cmRequest.request({
     url: 'api/owner/repair_reservation/query',
     method: 'GET',
@@ -336,7 +329,6 @@ const getDetailedData = () => {
       {
         repairItem.name += res.data.ep_data[i].name + '(' + res.data.ep_data[i].phone_number + ')  ';
       }
-      console.log("repairItem.name:",repairItem.name);
 
       repairItem.score = res.data.score;
       repairItem.evaluations = res.data.evaluations;

@@ -144,19 +144,16 @@ const staff_items = [
 const user_type = localStorage.getItem("user_type");
 let items = [];
 if (user_type == 0) {
-  console.log("a");
   items = owner_items;
   activePath.value = sessionStorage.getItem('previousPage');
   selectedItem.value = sessionStorage.getItem('previousPage');
 }
 else if (user_type == 1) {
-  console.log("b");
   items = staff_items;
   activePath.value = sessionStorage.getItem('previousPage');
   selectedItem.value = sessionStorage.getItem('previousPage');
 }
 else {
-  console.log("c");
   items = admin_items;
   activePath.value = sessionStorage.getItem('previousPage');
   selectedItem.value = sessionStorage.getItem('previousPage');
@@ -169,7 +166,6 @@ onBeforeRouteUpdate((to) => {
 
 const onMenuSelect = (item) => {
   selectedItem.value = item;
-  console.log(selectedItem.value);
 }
 
 // 对于选中时的svg图片进行预加载，防止使用时出现滞后出现

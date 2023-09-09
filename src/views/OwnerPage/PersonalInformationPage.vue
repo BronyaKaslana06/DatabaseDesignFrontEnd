@@ -159,14 +159,12 @@ const userInfo = reactive({
 });
 
 const queryData = () => {
-  console.log(storedUserInfo);
   cmRequest
     .request({
       url: "api/owner/" + storedUserInfo + "/message",
       method: "GET",
     })
     .then((res) => {
-      console.log(res);
       if (!res.code) {
         const userData = res.data; // 假设响应数据就是用户信息
         Object.assign(userInfo, userData); // 将获取的用户信息赋值给 userInfo
@@ -226,8 +224,6 @@ const saveEditedInfo = () => {
       data: editedUserInfo, // 使用编辑后的用户信息作为请求数据
     })
     .then((res) => {
-      console.log(editedUserInfo);
-      console.log(res);
       if (!res.code) {
         ElMessage({
           type: "success",
@@ -265,13 +261,10 @@ const fetchPlateNumbers = () => {
       },
     })
     .then((res) => {
-      console.log(storedUserInfo);
-      console.log(res);
       if (!res.code) {
         plateNumbers.value = res.data; // 将获取的车牌号列表赋值给 plateNumbers
         if (plateNumbers.value.length > 0) {
           selectedPlateNumber.value = res.data[0].vehicle_id; // 设置默认选中的车牌号
-          console.log(selectedPlateNumber.value);
         }
       } else {
         ElMessage({
@@ -314,8 +307,6 @@ const fetchvehicle_id = () => {
       },
     })
     .then((res) => {
-      console.log(selectedPlateNumber.value);
-      console.log(res);
       if (!res.code) {
         car_information.vehicle_model = res.data.vehicle_model;
         car_information.current_capacity = res.data.current_capacity;
