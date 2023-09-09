@@ -134,7 +134,7 @@
                                 </div>
                                 <div class="list-item-text">
                                     <p class="title">{{ item.title }}</p>
-                                    <p class="location-date">{{ item.maintenance_location }} - {{ item.order_submission_time.replace(/T/g, '&nbsp;')
+                                    <p class="location-date">{{ item.maintenance_location }} - {{ item.order_submission_time.replace(/T/g, '&nbsp;').split('.')[0]
                                     }}</p>
                                 </div>
                                 <div class="list-item-button">
