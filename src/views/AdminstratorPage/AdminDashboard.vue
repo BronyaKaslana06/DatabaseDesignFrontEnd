@@ -114,7 +114,7 @@
             </div>
             <div style="display: flex;">
               <div style="width: fit-content;font-size: 5px;color:#8e8e8e;margin-top: 5px;">
-                {{ "时间：" + item.publish_time }}
+                {{ "时间：" + item.publish_time.split('T')[0] }}
               </div>
             </div>
           </div>

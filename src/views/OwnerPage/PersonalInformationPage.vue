@@ -17,7 +17,7 @@
           <div class="information-item-left">
             <div class="information-item-line">
               <p><strong>姓名：</strong>{{ userInfo.user_name }}</p>
-              <p><strong>生日：</strong>{{ userInfo.birthday }}</p>
+              <p><strong>生日：</strong>{{ userInfo.birthday.split('T')[0] }}</p>
               <p><strong>性别：</strong>{{ userInfo.gender }}</p>
             </div>
             <div class="information-item-line">
@@ -81,7 +81,7 @@
                 <p><strong>型号：</strong>{{ car_information.vehicle_model }}</p>
               </div>
               <div class="information-item-line-right">
-                <p><strong>保修期限：</strong>{{ car_information.warrange.replace("T", " ") }}</p>
+                <p><strong>保修期限：</strong>{{ car_information.warrange.split('T')[0] }}</p>
               </div>
               <div class="information-item-line-right">
                 <p><strong>电池id：</strong>{{ car_information.battery_id }}</p>
@@ -93,7 +93,7 @@
                 <p><strong>发动机：</strong>{{ car_information.transmission }}</p>
               </div>
               <div class="information-item-line-right">
-                <p><strong>最高时速：</strong>{{ car_information.mileage }}</p>
+                <p><strong>最高时速：</strong>{{ car_information.max_speed }}(单位：Km/h)</p>
               </div>
             </div>
           </div>

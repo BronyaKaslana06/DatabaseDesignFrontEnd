@@ -20,7 +20,7 @@
                         <div class="value">{{ infoForm.vehicle_model }}</div>
                     </el-form-item>
                     <el-form-item label="购车时间:" style="font-weight: bold;">
-                        <div class="value">{{ infoForm.purchase_date }}</div>
+                        <div class="value">{{ infoForm.purchase_date.split('T')[0] }}</div>
                     </el-form-item>
                     <el-form-item label="当前电池电量:" style="font-weight: bold;">
                         <div class="value">{{ infoForm.current_capacity }}%</div>
@@ -150,17 +150,17 @@
                                     <template v-if="item.order_status === '已完成'">
                                     <el-button type="success" disabled>已完成</el-button>
                                     </template>
-                                    <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" title="请确认是否删除"
+                                    <el-popconfirm confirm-button-text="√" cancel-button-text="×" title="请确认是否取消"
                                         @confirm="deleteInfo(item.maintenance_item_id)">
                                         <template #reference>
                                           <template v-if="item.order_status === '待接单'||item.order_status === '待完成'">
-                                            <el-button style="color: red;" text :icon="Delete">
-                                                删除
+                                            <el-button style="color: red;" text :icon="Delete" @click="handleDelete">
+                                                取消
                                             </el-button>
                                           </template>
                                           <template v-else>
                                             <el-button style="color: red;" text :icon="Delete" disabled>
-                                                删除
+                                                取消
                                             </el-button>
                                           </template>
                                         </template>
@@ -229,6 +229,11 @@ const infoForm = reactive({
     start_time:'1000-01-01',
     end_time:'9999-12-31'
 });
+
+let isDetail = true
+const handleDelete=()=>{
+    isDetail = false;
+}
 
 const rough_query=()=>{
     loadData2.value = true;
@@ -374,6 +379,11 @@ const goBack = () => {
 
 const router = useRouter();
 const Detail = (maintenanceItemId) => {
+  if(!isDetail)
+  {
+    isDetail = !isDetail;
+    return;
+  }
     // Perform the desired action using the maintenanceItemId parameter
     console.log('Editing item with ID:', maintenanceItemId);
     store.commit('setMaintenanceItemId', maintenanceItemId);
@@ -396,13 +406,13 @@ const deleteInfo = (maintenanceItemId) => {
       if (!res.code) {
         ElMessage({
           type: 'success',
-          message: '删除成功',
+          message: '订单取消成功',
         })
       }
       else {
         ElMessage({
           type: 'error',
-          message: '删除失败',
+          message: '订单取消失败',
         })
       }
     })

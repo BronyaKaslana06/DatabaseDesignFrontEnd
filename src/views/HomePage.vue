@@ -1,3 +1,4 @@
+<!-- eslint-disable no-unused-vars -->
 <template>
   <!-- <el-container class="main-container"> -->
     <el-header class="custom-header">
@@ -5,7 +6,7 @@
         <div class="logo">
           <img src="@/assets/logo.png" alt="Logo">
         </div>
-        <span class="logo-text">智能电动汽车管理系统</span>
+        <span class="logo-text">智能电动汽车服务系统</span>
       </div>
       <div class="user-info">
         <div @click="goToSelfCenter" style="cursor: pointer; display:flex;">
@@ -37,9 +38,9 @@
 import mySlNav from '@/components/sliderbar-nav.vue'
 //import mySlNav from '../../components/sliderbar-nav.vue'
 import { ref, computed,getCurrentInstance,onBeforeMount,onMounted } from 'vue';
-import { useRouter, createRouter } from 'vue-router';
-import { Setting, CloseBold, UserFilled, HomeFilled, Tools,Management } from '@element-plus/icons-vue';
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { useRouter } from 'vue-router';
+import { CloseBold, HomeFilled } from '@element-plus/icons-vue';
+import { ElMessageBox } from 'element-plus'
 
 const router = useRouter();
 const shouldChangeOverflow = ref(false);
