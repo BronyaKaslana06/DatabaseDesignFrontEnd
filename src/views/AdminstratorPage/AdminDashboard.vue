@@ -407,7 +407,7 @@ const changeChart3 = () => {
 }
 
 const toNoticePage = () => {
-  router.push('/notice-info-page')
+  router.push('/notice-info')
 }
 
 const pullData = () => {
