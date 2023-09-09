@@ -70,7 +70,8 @@
                 <div class="container-vertical" v-loading="item_loading">
                   <div class="left-info-part">
                     <div class="detail-info">
-                      <p><strong>订单编号：</strong>{{ selectedItemId }}</p>
+                      <!-- <p><strong>订单编号：</strong>{{ selectedItemId }}</p> -->
+                      <p><strong>订单编号：</strong>{{ switch_item_detail.switch_request_id }}</p>
                       <p><strong>车牌号：</strong>{{ switch_item_detail.plate_number }}</p>
                       <p><strong>车型：</strong>{{ switch_item_detail.vehicle_model }}</p>
                       <p><strong>用户名：</strong>{{ switch_item_detail.username }}</p>
@@ -229,6 +230,7 @@ const selectedItemId = ref('');
 const status_number = ref(2);
 const item_loading = ref(true);
 const switch_item_detail = ref({
+  switch_request_id: '',
   plate_number: '',
   position: '',
   evaluations: '',

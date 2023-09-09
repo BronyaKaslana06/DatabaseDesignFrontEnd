@@ -325,9 +325,9 @@ const getDetailedData = () => {
       
       /* 新版 */
       repairItem.name = '';
-      for(let i =0;i<res.data.ep_date.length;i++)
+      for(let i =0;i<res.data.ep_data.length;i++)
       {
-        repairItem.name += res.data.ep_date[i].name + '(' + res.data.ep_date[i].phone_number + ')  ';
+        repairItem.name += res.data.ep_data[i].name + '(' + res.data.ep_data[i].phone_number + ')  ';
       }
 
       repairItem.score = res.data.score;
@@ -336,7 +336,7 @@ const getDetailedData = () => {
       repairItem.maintenance_location = res.data.maintenance_location;
       repairItem.longitude = res.data.longitude;
       repairItem.latitude = res.data.latitude;
-      //repairItem.name = res.data.ep_date[0].name + '  ' + res.data.ep_date[0].phone_number;
+      //repairItem.name = res.data.ep_data[0].name + '  ' + res.data.ep_data[0].phone_number;
       cancelChange();
     }
     else {
