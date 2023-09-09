@@ -84,15 +84,15 @@ const submitForm = () => {
             localStorage.setItem('token', msg.token);
             loginLoading.value = true;
             if (identity == 0)
-                router.push('/ownerDashboard');
+                router.push('/owner-dashboard');
             else if (identity == 1) {
-                router.push('/staff-information-page');
+                router.push('/staff-dashboard');
                 localStorage.setItem('staff_type', msg.data.position);
                 localStorage.setItem('station_id', msg.data.station_id);
             }
             else if (identity == 2){
                 localStorage.setItem('username', '管理员' + msg.data.user_id);
-                router.push('/admin-dashboard-page')
+                router.push('/admin-dashboard')
             }
         }
 

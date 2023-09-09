@@ -222,11 +222,11 @@ const submitForm = async () => {
                     localStorage.setItem('user_id', res.data.user_id);
                     localStorage.setItem('token', res.token);
                     if (selected.value == 0)
-                        router.push('/reservation');
+                        router.push('/owner-dashboard');
                     else if (selected.value == 1)
-                        router.push('/employee-dashboard-page')
+                        router.push('/staff-dashboard')
                     else if (selected.value == 2)
-                        router.push('/admin-dashboard-page')
+                        router.push('/admin-dashboard')
                 }
                 else {
                     ElMessage({

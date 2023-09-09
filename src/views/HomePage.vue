@@ -80,25 +80,25 @@ onMounted(() => {
 
 const goToHomes = () => {
   if(localStorage.getItem('user_type') == 2){
-    router.push('/admin-dashboard-page')
+    router.push('/admin-dashboard')
   }
   else if(localStorage.getItem('user_type') == 1){
-    router.push('/staff-information-page')
+    router.push('/staff-dashboard')
   }
   else if(localStorage.getItem('user_type') == 0){
-    router.push('/ownerDashboard')
+    router.push('/owner-dashboard')
   }
 };
 
 const goToSelfCenter = () => {
   if(localStorage.getItem('user_type') == 2){
-    router.push('/admin-dashboard-page')
+    router.push('/admin-dashboard')
   }
   else if(localStorage.getItem('user_type') == 1){
-    router.push('/staff-information-page')
+    router.push('/staff-dashboard')
   }
   else if(localStorage.getItem('user_type') == 0){
-    router.push('/personal-information-page')
+    router.push('/personal-info')
   }
 }
 const cleanLocalStorage = () =>{

@@ -54,8 +54,7 @@
           <div style="flex: 1;display: flex;flex-direction: column;justify-content: center;">
             <div
               style="font-size: 40px;font-weight: 290;text-align: center;background-color: #5bbeb5;color:white;border-radius: 20px;padding: 10px 10px;">
-              <!-- {{ infoSet.avg_switch_score }} -->
-              {{ 4.5 }}
+              {{ infoSet.avg_switch_score }}
             </div>
             <div style="color:#8e8e8e;margin-top: 10px;font-size: 15px;">
               换电服务均分
@@ -64,8 +63,7 @@
           <div style="flex: 1;display: flex;flex-direction: column;justify-content: center;">
             <div
               style="font-size: 40px;font-weight: 290;text-align: center;background-color: #5bbeb5;color:white;border-radius: 20px;padding: 10px 10px;">
-              <!-- {{ infoSet.avg_repair_score }} -->
-              {{ 4.7 }}
+              {{ infoSet.avg_repair_score }}
             </div>
             <div style="color:#8e8e8e;margin-top: 10px;font-size: 15px;">
               维修服务均分
