@@ -20,7 +20,7 @@
                         <div class="value">{{ infoForm.vehicle_model }}</div>
                     </el-form-item>
                     <el-form-item label="购车时间:" style="font-weight: bold;">
-                        <div class="value">{{ infoForm.purchase_date }}</div>
+                        <div class="value">{{ infoForm.purchase_date.split('T')[0] }}</div>
                     </el-form-item>
                     <el-form-item label="当前电池电量:" style="font-weight: bold;">
                         <div class="value">{{ infoForm.current_capacity }}%</div>
