@@ -134,7 +134,7 @@ const router = useRouter();
 const staff_type = ref(localStorage.getItem('staff_type'));
 
 const goBack = () => {
-    router.push('/admin-dashboard-page');
+    router.push('/admin-dashboard');
 }
 
 const options = [

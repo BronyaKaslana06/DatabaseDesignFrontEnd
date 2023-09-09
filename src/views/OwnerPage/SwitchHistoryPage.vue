@@ -15,7 +15,7 @@
                     <el-table-column label="操作" min-width="10%" align="center">
                         <template #default="scope">
                             <div style="display: flex;flex-direction: column;">
-                                <el-button text :icon="Edit" @click="getMoreInfo(scope.row)" style="color: #4FD1C5">
+                                <el-button text :icon="Document" @click="getMoreInfo(scope.row)" style="color: #4FD1C5">
                                     详情
                                 </el-button>
                                 <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" title="请确认是否撤销"
@@ -45,7 +45,7 @@
                     <el-table-column label="操作" min-width="10%" align="center">
                         <template #default="scope">
                             <div style="display: flex;flex-direction: column;">
-                                <el-button text :icon="Edit" @click="getMoreInfo(scope.row)" style="color: #4FD1C5">
+                                <el-button text :icon="Document" @click="getMoreInfo(scope.row)" style="color: #4FD1C5">
                                     详情
                                 </el-button>
                                 <el-popconfirm confirm-button-text="确认" cancel-button-text="取消" title="请确认是否撤销"
@@ -75,7 +75,7 @@
                     <el-table-column label="操作" min-width="10%" align="center">
                         <template #default="scope">
                             <div style="display: flex;flex-direction: column;">
-                                <el-button text :icon="Edit" @click="getMoreInfo(scope.row)" style="color: #4FD1C5">
+                                <el-button text :icon="Document" @click="getMoreInfo(scope.row)" style="color: #4FD1C5">
                                     详情
                                 </el-button>
                                 <el-button style="color: rgb(227, 178, 29);" text :icon="StarFilled"
@@ -98,6 +98,15 @@
                     <el-table-column prop="station_name" label="负责换电站" min-width="10%" align="center"></el-table-column>
                     <el-table-column prop="station_address" label="换电站地址" min-width="10%" align="center"></el-table-column>
                     <el-table-column prop="request_time" label="订单创建时间" min-width="10%" align="center"></el-table-column>
+                    <el-table-column label="操作" min-width="10%" align="center">
+                        <template #default="scope">
+                            <div style="display: flex;flex-direction: column;">
+                                <el-button text :icon="Document" @click="getMoreInfo(scope.row)" style="color: #4FD1C5">
+                                    详情
+                                </el-button>
+                            </div>
+                        </template>
+                    </el-table-column>
                 </el-table>
             </el-tab-pane>
         </el-tabs>
@@ -186,7 +195,7 @@
 import cmRequest from '../../service/index.js';
 import { ElMessage } from 'element-plus';
 import { ref, reactive } from 'vue';
-import { DeleteFilled, StarFilled, Edit } from '@element-plus/icons-vue';
+import { DeleteFilled, StarFilled, Edit,Document } from '@element-plus/icons-vue';
 
 const order_status = ref("待接单");
 const loading1 = ref(false);

@@ -169,7 +169,7 @@ const getGreeting = () => {
 
 const router = useRouter();
 const gotoPersonal = () => {
-  router.push('personal-information-page');
+  router.push('personal-info');
 }
 
 let option="year";

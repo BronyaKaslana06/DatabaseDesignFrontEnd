@@ -23,42 +23,42 @@ const activePath = ref(null);
 const admin_items = [
   {
     name: '管理员仪表盘',
-    index: '/admin-dashboard-page',
+    index: '/admin-dashboard',
     title: '管理员仪表盘'
   },
   {
     name: '员工信息',
-    index: '/staff-info-page',
+    index: '/staff-info',
     title: '员工信息'
   },
   {
     name: '换电申请信息',
-    index: '/switch-info-page',
+    index: '/switch-info',
     title: '换电申请信息'
   },
   {
     name: '车主信息',
-    index: '/owner-info-page',
+    index: '/owner-info',
     title: '车主信息'
   },
   {
     name: '换电站信息',
-    index: '/switch-station-page',
+    index: '/switch-station',
     title: '换电站信息'
   },
   {
     name: '电池管理',
-    index: '/battery-info-page',
+    index: '/battery-info',
     title: '电池管理'
   },
   {
     name: '维修订单管理',
-    index: '/maintenance-item-page',
+    index: '/maintenance',
     title: '维修订单管理'
   },
   {
     name: '公告管理',
-    index: '/notice-info-page',
+    index: '/notice-info',
     title: '公告管理'
   },
 
@@ -68,7 +68,7 @@ const admin_items = [
 const owner_items = [
   {
     name: '个人主页',
-    index: '/ownerDashboard',
+    index: '/owner-dashboard',
     title: '个人主页'
   },
   {
@@ -88,12 +88,12 @@ const owner_items = [
   },
   {
     name: '个人信息',
-    index: '/personal-information-page',
+    index: '/personal-info',
     title: '个人信息'
   },
   {
     name: '公告信息',
-    index: '/owner-notice-page',
+    index: '/owner-notice',
     title: '公告信息'
   },
 ]
@@ -106,37 +106,37 @@ const staff_items = [
   // },
   {
     name: '员工信息',
-    index: '/staff-information-page',
+    index: '/staff-dashboard',
     title: '员工信息'
   },
   {
     name: '电池管理',
-    index: '/station-battery-page',
+    index: '/station-battery',
     title: '电池管理'
   },
   {
     name: '换电管理',
-    index: '/switchReservation',
+    index: '/switch-reservation',
     title: '换电管理'
   },
   {
     name: '上门维修',
-    index: '/staffRepair',
+    index: '/staff-repair',
     title: '上门维修'
   },
   {
     name: '公告信息',
-    index: '/employee-notice-page',
+    index: '/employee-notice',
     title: '公告信息'
   },
   {
     name: '维修历史',
-    index: '/staffMaintenanceItem',
+    index: '/staff-maintenance',
     title: '维修历史'
   },
   {
     name: '换电订单历史',
-    index: '/staffSwitch',
+    index: '/staff-switch',
     title: '换电历史'
   }
 ]
